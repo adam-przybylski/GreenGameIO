@@ -3,17 +3,16 @@ package io.greengame.greengameio.services;
 
 import io.greengame.greengameio.entity.User;
 import io.greengame.greengameio.repository.UserRepository;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
 @Service
-
+@RequiredArgsConstructor
 public class UserService {
 
-    @Autowired
-    private UserRepository userRepository;
+    private final UserRepository userRepository;
 
     public void createUser(User user) {
         userRepository.save(user);
@@ -29,7 +28,7 @@ public class UserService {
 
     public void updateUser(String username, User user) {
         User userToUpdate = userRepository.findByUsername(username);
-        if(userToUpdate == null) {
+        if (userToUpdate == null) {
             return;
         }
         userToUpdate.setUsername(user.getUsername());

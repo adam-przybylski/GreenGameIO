@@ -4,7 +4,7 @@ package io.greengame.greengameio.controller;
 import io.greengame.greengameio.entity.User;
 import io.greengame.greengameio.services.UserService;
 import jakarta.validation.Valid;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -12,11 +12,11 @@ import java.util.List;
 
 @RestController
 @Validated
-@RequestMapping("/api/v1/users")
+@RequestMapping("/api/v1/")
+@RequiredArgsConstructor
 public class UserController {
 
-    @Autowired
-    private UserService userService;
+    private final UserService userService;
 
     @PostMapping("/user")
     public void createUser(@Valid @RequestBody User user) {
@@ -42,6 +42,4 @@ public class UserController {
     public void deleteUser(@PathVariable String username) {
         userService.deleteUserByUsername(username);
     }
-
-
 }
