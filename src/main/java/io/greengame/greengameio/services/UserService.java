@@ -4,42 +4,54 @@ package io.greengame.greengameio.services;
 import io.greengame.greengameio.entity.User;
 import io.greengame.greengameio.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
 @Service
 @RequiredArgsConstructor
-public class UserService {
+public class UserService implements UserDetailsService {
 
     private final UserRepository userRepository;
 
-    public void createUser(User user) {
-        userRepository.save(user);
+    public User createUser(User user) {
+        return userRepository.save(user);
     }
 
-    public User getUser(String username) {
-        return userRepository.findByUsername(username);
+    public boolean deleteUser(String username) {
+        return userRepository.deleteByUsername(username);
     }
 
-    public List<User> getAllUsers() {
+    public List<User> getUsers() {
         return userRepository.findAll();
     }
 
-    public void updateUser(String username, User user) {
-        User userToUpdate = userRepository.findByUsername(username);
-        if (userToUpdate == null) {
-            return;
-        }
-        userToUpdate.setUsername(user.getUsername());
-        userToUpdate.setPassword(user.getPassword());
-        userToUpdate.setEmail(user.getEmail());
-        userToUpdate.setRole(user.getRole());
-        userRepository.save(userToUpdate);
+    public User getUserByEmail(String email) {
+        return userRepository.findByEmail(email).orElseThrow(() -> new RuntimeException("User not found."));
     }
 
-    public void deleteUserByUsername(String username) {
-        User user = userRepository.findByUsername(username);
-        userRepository.delete(user);
+    public User getUserByUsername(String username) {
+        return userRepository.findByUsername(username).orElseThrow(() -> new RuntimeException("User not found."));
+    }
+
+    public User getUserById(Long id) {
+        return userRepository.findById(id).orElseThrow(() -> new RuntimeException("User not found."));
+    }
+
+    public User updateUser(String username, User user) {
+        User user1 = userRepository.findByUsername(username).orElseThrow(() -> new RuntimeException("User not found."));
+        user1.setUsername(user.getUsername());
+        user1.setPassword(user.getPassword());
+        user1.setEmail(user.getEmail());
+        user1.setType(user.getType());
+        return userRepository.save(user1);
+    }
+
+    @Override
+    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+        return userRepository.findByUsername(username).orElseThrow(() -> new RuntimeException("User not found."));
     }
 }

@@ -3,8 +3,8 @@ package io.greengame.greengameio.controller;
 
 import io.greengame.greengameio.entity.User;
 import io.greengame.greengameio.services.UserService;
-import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -12,34 +12,39 @@ import java.util.List;
 
 @RestController
 @Validated
-@RequestMapping("/api/v1/")
+@RequestMapping("/api/v1/users")
 @RequiredArgsConstructor
 public class UserController {
 
     private final UserService userService;
 
-    @PostMapping("/user")
-    public void createUser(@Valid @RequestBody User user) {
-        userService.createUser(user);
+    @DeleteMapping("/username/{username}")
+    boolean deleteUser(@PathVariable String username) {
+        return userService.deleteUser(username);
     }
 
-    @GetMapping("/user/{username}")
-    public User getUser(@PathVariable String username) {
-        return userService.getUser(username);
+    @GetMapping
+    List<User> getUsers() {
+        return userService.getUsers();
     }
 
-    @GetMapping("/users")
-    public List<User> getAllUsers() {
-        return userService.getAllUsers();
+    @GetMapping("/email/{email}")
+    User getUserByEmail(@PathVariable String email) {
+        return userService.getUserByEmail(email);
     }
 
-    @PutMapping("/user/{username}")
-    public void updateUser(@PathVariable String username, @Valid @RequestBody User user) {
-        userService.updateUser(username, user);
+    @GetMapping("/username/{username}")
+    UserDetails getUserByUsername(@PathVariable String username) {
+        return userService.loadUserByUsername(username);
     }
 
-    @DeleteMapping("/user/{username}")
-    public void deleteUser(@PathVariable String username) {
-        userService.deleteUserByUsername(username);
+    @GetMapping("/id/{id}")
+    User getUserById(@PathVariable Long id) {
+        return userService.getUserById(id);
+    }
+
+    @PostMapping("/username/{username}")
+    User updateUser(@PathVariable String username, @RequestBody User user) {
+        return userService.updateUser(username, user);
     }
 }
