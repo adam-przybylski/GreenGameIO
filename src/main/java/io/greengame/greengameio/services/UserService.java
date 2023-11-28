@@ -13,7 +13,7 @@ import java.util.List;
 
 @Service
 @RequiredArgsConstructor
-public class UserService implements UserDetailsService {
+public class UserService {
 
     private final UserRepository userRepository;
 
@@ -48,10 +48,5 @@ public class UserService implements UserDetailsService {
         user1.setEmail(user.getEmail());
         user1.setType(user.getType());
         return userRepository.save(user1);
-    }
-
-    @Override
-    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        return userRepository.findByUsername(username).orElseThrow(() -> new RuntimeException("User not found."));
     }
 }

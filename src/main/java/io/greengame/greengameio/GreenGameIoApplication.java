@@ -19,7 +19,9 @@ public class GreenGameIoApplication {
 	@Bean
 	CommandLineRunner commandLineRunner(UserRepository userRepository) {
 		return args -> {
-				userRepository.save(new User(1L, "admin", "$2b$12$6J4h6z.Er73Ud7zWhUT4yueCCFl2xCLkUZGHi8JtJYYwxp3NHtbBK", "aaa@email.com", UserType.ADMINISTRATOR));
+			//password is password
+				userRepository.save(new User(1L, "admin", "$2b$12$6J4h6z.Er73Ud7zWhUT4yueCCFl2xCLkUZGHi8JtJYYwxp3NHtbBK", "admin@email.com", UserType.ADMINISTRATOR));
+				userRepository.save(new User(2L, "user", "$2b$12$6J4h6z.Er73Ud7zWhUT4yueCCFl2xCLkUZGHi8JtJYYwxp3NHtbBK", "user@email.com", UserType.USER));
 		};
 	}
 
