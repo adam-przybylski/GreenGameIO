@@ -1,30 +1,20 @@
-# React + TypeScript + Vite
+# How to start
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+You need node and yarn installed to run this app.
+Yarn installation: https://classic.yarnpkg.com/lang/en/docs/install/#windows-stable
 
-Currently, two official plugins are available:
+1. Clone the repo
+2. Go to the `web` directory
+3. Install dependencies with `yarn`
+4. Run dev server with `yarn dev`
+5. Server is running on port `:3000`
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+# Dependencies used
 
-## Expanding the ESLint configuration
-
-If you are developing a production application, we recommend updating the configuration to enable type aware lint rules:
-
-- Configure the top-level `parserOptions` property like this:
-
-```js
-export default {
-  // other rules...
-  parserOptions: {
-    ecmaVersion: 'latest',
-    sourceType: 'module',
-    project: ['./tsconfig.json', './tsconfig.node.json'],
-    tsconfigRootDir: __dirname,
-  },
-}
-```
-
-- Replace `plugin:@typescript-eslint/recommended` to `plugin:@typescript-eslint/recommended-type-checked` or `plugin:@typescript-eslint/strict-type-checked`
-- Optionally add `plugin:@typescript-eslint/stylistic-type-checked`
-- Install [eslint-plugin-react](https://github.com/jsx-eslint/eslint-plugin-react) and add `plugin:react/recommended` & `plugin:react/jsx-runtime` to the `extends` list
+- Vite https://vitejs.dev/
+- React https://react.dev/
+- Tailwindcss https://tailwindcss.com/
+- react-router-dom https://reactrouter.com/
+- react-icons https://react-icons.github.io/
+- react-hook-form https://www.react-hook-form.com/
+- tailwind-merge https://github.com/dcastil/tailwind-merge
