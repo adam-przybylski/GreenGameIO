@@ -2,11 +2,11 @@ package io.greengame.greengameio.services;
 
 
 import io.greengame.greengameio.entity.User;
+import io.greengame.greengameio.friendmodule.model.UserFM;
+import io.greengame.greengameio.friendmodule.repositories.AbstractChatHolderRepository;
+import io.greengame.greengameio.friendmodule.repositories.UserFMRepository;
 import io.greengame.greengameio.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -16,12 +16,18 @@ import java.util.List;
 public class UserService {
 
     private final UserRepository userRepository;
+    private final UserFMRepository userFMRepository;
+    private final AbstractChatHolderRepository abstractChatHolderRepository;
 
     public User createUser(User user) {
-        return userRepository.save(user);
+        User user1 = userRepository.save(user);
+        createUserFM(user1.getId());
+        return user1;
     }
 
     public boolean deleteUser(String username) {
+        User user = userRepository.findByUsername(username).orElseThrow();
+        deleteUserFM(user.getId());
         return userRepository.deleteByUsername(username);
     }
 
@@ -48,5 +54,20 @@ public class UserService {
         user1.setEmail(user.getEmail());
         user1.setType(user.getType());
         return userRepository.save(user1);
+    }
+    private void createUserFM(Long id) {
+        UserFM userFM = new UserFM();
+        userFM.setId(id);
+        userFMRepository.save(userFM);
+    }
+    private void deleteUserFM(Long id) {
+        UserFM userFM = userFMRepository.findById(id).orElseThrow();
+        List<String> friendList = userFM.getFriends();
+        List<UserFM> userFMList= userFMRepository.findAll();
+        userFMList.forEach(userFM1 -> {
+            userFM1.getFriends().removeAll(friendList);
+        });
+        abstractChatHolderRepository.deleteAllById(friendList);
+        userFMRepository.deleteById(id);
     }
 }

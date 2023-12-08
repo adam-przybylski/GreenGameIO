@@ -7,7 +7,7 @@ import java.time.LocalDateTime;
 
 @Data
 public class Message {
-    private String senderID;
+    private Long senderID;
     private LocalDateTime timestamp;
     private String content;
 }
