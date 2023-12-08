@@ -1,0 +1,71 @@
+@import url('https://fonts.googleapis.com/css2?family=New+Tegomin&display=swap');
+*{
+    padding: 0;
+    margin: 0;
+}
+
+.body{
+    background: url("../img/bg8.jpg"); 
+    min-height: 100vh;
+    background-size: 100vw 100vh;
+    background-repeat: no-repeat;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+#scoreView{
+    position: absolute;
+    top: 9px;
+    right: 200px;
+    font-size: 39px;
+    font-weight: bold;
+    font-family: 'New Tegomin', serif;
+}
+
+
+#gameBoard{
+    background: linear-gradient(rgb(170, 236, 170), rgb(236, 236, 167));
+    width: 90vmin;
+    height: 92vmin;
+    border: 2px solid black;
+    display: grid;
+    grid-template-rows: repeat(18, 1fr);
+    grid-template-columns: repeat(18, 1fr);
+}
+
+.head{
+    background: url("../img/snake_head.png");
+    background-size: cover;
+}
+
+.snake{
+    background-color: purple;
+    border: .25vmin solid white;
+    border-radius: 12px;
+}
+
+.food{
+    background-color: purple;
+    background-size: cover;
+    border: .25vmin solid black;
+    border-radius: 8px;
+}
+.bin_paper{
+    background-image: url('../img/paper.png');
+    background-size: cover;
+    
+}
+.bin_glass{
+    background-image: url('../img/szklo.png');
+    background-size: cover;
+    
+}
+.glass_bootle{
+    background-image: url('../img/glass_bootle.png');
+    background-size: cover;
+}
+.paper_waste{
+    background-image: url('../img/paper_waste.png');
+    background-size: cover;
+}
