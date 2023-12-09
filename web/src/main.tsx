@@ -11,6 +11,7 @@ import AuthRouteGuard from "./pages/AuthRouteGuard";
 import LoginPage from "./pages/login";
 import RegisterPage from "./pages/register";
 import "./index.css";
+import AuthenticationLayout from "./pages/AuthenticationLayout";
 
 const router = createBrowserRouter([
   {
@@ -21,8 +22,14 @@ const router = createBrowserRouter([
       { path: "/", Component: AuthRouteGuard, children: ProtectedRoutes },
     ],
   },
-  { path: "/login", Component: LoginPage },
-  { path: "/register", Component: RegisterPage },
+  {
+    path: "/",
+    Component: AuthenticationLayout,
+    children: [
+      { path: "/register", Component: RegisterPage },
+      { path: "/login", Component: LoginPage },
+    ]
+  },
 ] satisfies RouteObject[]);
 
 ReactDOM.createRoot(document.getElementById("root")!).render(
