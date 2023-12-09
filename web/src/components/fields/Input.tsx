@@ -10,9 +10,9 @@ const Input: FC<InputProps> = ({ label, name, ...props }) => {
   const { field } = useController({ name });
 
   return (
-    <div>
-      <label htmlFor={field.name}>{label}</label>
-      <input {...field} {...props} id={field.name} />
+    <div className="flex flex-col mb-5">
+      <label htmlFor={field.name} className="mb-2">{label}</label>
+      <input {...field} {...props} id={field.name} className="border rounded-md h-9 pl-2 outline-nice-green" />
     </div>
   );
 };
