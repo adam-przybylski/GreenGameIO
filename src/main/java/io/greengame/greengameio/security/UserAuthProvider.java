@@ -14,10 +14,11 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.stereotype.Component;
 import org.springframework.beans.factory.annotation.Value;
 
-import java.time.Instant;
 import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.Base64;
 import java.util.Collections;
+import java.util.Date;
 
 @RequiredArgsConstructor
 @Component
@@ -37,9 +38,9 @@ public class UserAuthProvider {
         LocalDateTime now = LocalDateTime.now();
         LocalDateTime validity = now.plusHours(1);
         return JWT.create()
-                .withIssuer(login)
-                .withIssuedAt(Instant.from(now))
-                .withExpiresAt(Instant.from(validity))
+                .withSubject(login)
+                .withIssuedAt(Date.from(now.atZone(ZoneId.systemDefault()).toInstant()))
+                .withExpiresAt(Date.from(validity.atZone(ZoneId.systemDefault()).toInstant()))
                 .sign(Algorithm.HMAC256(secretKey));
     }
 

@@ -9,8 +9,6 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
 
@@ -29,8 +27,8 @@ public class SecurityConfig {
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 .and()
                 .authorizeHttpRequests((requests) -> { requests
-                        .requestMatchers(HttpMethod.POST, "/api/v1/login", "/api/v1/register").permitAll()
-                        .anyRequest().hasAnyAuthority("ROLE_USER", "ROLE_ADMINISTRATOR");
+                        .requestMatchers(HttpMethod.POST, "/api/v1/authentication/login", "/api/v1/authentication/register").permitAll()
+                        .requestMatchers("/api/v1/**").authenticated();
                 });
 
         return http.build();

@@ -24,7 +24,7 @@ public class AuthenticationController {
     public ResponseEntity<UserDto> registerUser(@RequestBody SignUpDto user) {
         UserDto userDto = authenticationService.registerUser(user);
         userDto.setToken(userAuthProvider.createToken(userDto.getLogin()));
-        return ResponseEntity.status(HttpStatus.CREATED).body(authenticationService.registerUser(user));
+        return ResponseEntity.status(HttpStatus.CREATED).body(userDto);
     }
 
     @PostMapping("/login")

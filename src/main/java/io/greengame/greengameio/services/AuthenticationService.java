@@ -6,10 +6,6 @@ import io.greengame.greengameio.dtos.UserDto;
 import io.greengame.greengameio.dtos.UserMapper;
 import io.greengame.greengameio.repository.UserRepository;
 import io.greengame.greengameio.entity.User;
-import org.springframework.http.HttpStatus;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
