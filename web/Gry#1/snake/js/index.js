@@ -158,10 +158,8 @@ function updateGame(){
 }
 function gameOver(cause){
     lost = true;
-    //send score and xp to database
     showGameOverModal(cause)
     resetGame();
-    console.log(lost)
 }
 function  getXp(){
     return score/5
@@ -177,7 +175,6 @@ function resetGame(){
     bootle_taken = false;
     paper_taken = false;
     scoreView.innerHTML = "Score: " + score +" Xp "+xp;
-    console.log(lost)
 }
 function showGameOverModal(cause) {
     document.getElementById('pointsEarned').innerText = cause+" ,zdobyte punkty "+ score;
@@ -234,11 +231,13 @@ window.requestAnimationFrame(gameLoop);
                 break;
             case "Escape":
                 toggleGame();
-                continueGameAfterLost();
                 break;
 
             default:
                 break;
         }
     });
+document.addEventListener("mousedown", (event) => {
+    continueGameAfterLost();
+});
 
