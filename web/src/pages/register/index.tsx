@@ -34,7 +34,7 @@ const RegisterPage: FC = () => {
       <div className="flex justify-center">
         <FormProvider {...methods}>
           <form onSubmit={onSubmit} className="pt-[50px] w-[60%]">
-            <Input label="Email: " placeholder="Podaj email" name="email" />
+            <Input label="Email: " type="email" placeholder="Podaj email" name="email" />
             <Input label="Login: " placeholder="Podaj login" name="login" />
             <Input label="Hasło: " placeholder="Podaj hasło" name="password" type="password" />
             <div className="flex justify-center">
