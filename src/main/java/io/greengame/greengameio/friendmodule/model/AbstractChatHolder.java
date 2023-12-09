@@ -6,8 +6,6 @@ import lombok.Setter;
 import lombok.ToString;
 import org.springframework.data.annotation.Id;
 
-import java.util.ArrayList;
-
 @Getter
 @Setter
 @ToString
@@ -15,5 +13,5 @@ import java.util.ArrayList;
 public abstract class AbstractChatHolder {
     @Id
     private String id;
-    private ArrayList<Message> chat;
+    private Chat chat;
 }

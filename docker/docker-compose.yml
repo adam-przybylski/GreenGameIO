@@ -1,8 +1,6 @@
 version: '3.8'
 
 services:
-  # Te 2 węzły sa niepotrzebne i mozna je wywalic ale chce mi sie tego robic teraz
-  # docker exec mongo1 /scripts/rs-init.sh po starcie
   mongo1:
     container_name: mongo1
     image: mongo:4.4
@@ -58,8 +56,6 @@ services:
     restart: always
     ports:
       - 8080:8080
-networks:
-  mongors-network:
-    driver: bridge
+
 volumes:
   pg:
