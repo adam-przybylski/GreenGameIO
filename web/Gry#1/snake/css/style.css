@@ -5,7 +5,7 @@
 }
 
 .body{
-    background: url("../img/bg8.jpg"); 
+    background: url("../img/bg8.jpg");
     min-height: 100vh;
     background-size: 100vw 100vh;
     background-repeat: no-repeat;
@@ -17,8 +17,8 @@
 #scoreView{
     position: absolute;
     top: 9px;
-    right: 200px;
-    font-size: 39px;
+    right: 161px;
+    font-size: 35px;
     font-weight: bold;
     font-family: 'New Tegomin', serif;
 }
@@ -54,12 +54,12 @@
 .bin_paper{
     background-image: url('../img/paper.png');
     background-size: cover;
-    
+    transform: scale(2);
 }
 .bin_glass{
     background-image: url('../img/szklo.png');
     background-size: cover;
-    
+    transform: scale(2);
 }
 .glass_bootle{
     background-image: url('../img/glass_bootle.png');
@@ -68,4 +68,63 @@
 .paper_waste{
     background-image: url('../img/paper_waste.png');
     background-size: cover;
+}
+.overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+.modal-content {
+    background: #fff;
+    padding: 20px;
+    border-radius: 5px;
+    text-align: center;
+
+    position: relative;
+    top: 50%;
+    transform: translateY(-50%);
+}
+.note-header {
+    position: fixed;
+    top: 7%;
+    left: 5%;
+    transform: translate(-50%, -50%);
+    z-index: 999; /* Ustawienie z-index, aby znak zapytania był na wierzchu */
+    padding: 10px;
+    cursor: pointer;
+}
+.note-container{
+    position: fixed;
+    top: 0;
+    right: 0;
+    width: 0;
+    height: 100%;
+    background-color: darkolivegreen;
+    border: 1px solid #dee2e6;
+    border-radius: 0 10px 10px 0;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+}
+.note-content{
+    padding: 30px;
+    color:white;
+    font-size: 23px;
+}
+
+.note-header:hover + .note-container {
+    width: 30%; /* Szerokość notatki po najechaniu myszką */
+}
+
+.note-text {
+    color: #dee2e6;
+}
+
+img {
+    margin-left: 13%;
 }

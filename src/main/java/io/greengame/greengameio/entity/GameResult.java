@@ -22,7 +22,7 @@ public class GameResult {
     private Long userId;
 
     @Column(name = "xp", nullable = false)
-    private int xp;
+    private double xp;
 
     @Column(name = "snake_score")
     private int snakeScore;

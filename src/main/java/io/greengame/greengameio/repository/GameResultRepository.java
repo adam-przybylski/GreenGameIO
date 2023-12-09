@@ -10,8 +10,9 @@ import java.util.Optional;
 @Repository
 public interface GameResultRepository extends JpaRepository<GameResult, Long> {
 
-    int findXpByUserId(Long userId);
-
+    double findXpByUserId(Long userId);
+    int findSnakeScoreById(Long id);
+    int findLightsOutScoreById(Long id);
     Optional<GameResult> findByUserId(Long userId);
 
 
