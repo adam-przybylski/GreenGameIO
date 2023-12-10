@@ -24,7 +24,7 @@ public class UserService {
 
     public boolean deleteUser(String username) {
         User user = userRepository.findByUsername(username).orElseThrow();
-        return userRepository.save(user);
+        return userRepository.deleteByUsername(username);
     }
 
     public List<User> getUsers() {
