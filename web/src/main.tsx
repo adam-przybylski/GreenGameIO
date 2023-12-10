@@ -8,7 +8,10 @@ import {
 import Layout from "./pages/Layout";
 import { ProtectedRoutes, UnprotectedRoutes } from "./routes";
 import AuthRouteGuard from "./pages/AuthRouteGuard";
+import LoginPage from "./pages/login";
+import RegisterPage from "./pages/register";
 import "./index.css";
+import AuthenticationLayout from "./pages/AuthenticationLayout";
 
 const router = createBrowserRouter([
   {
@@ -18,6 +21,14 @@ const router = createBrowserRouter([
       ...UnprotectedRoutes,
       { path: "/", Component: AuthRouteGuard, children: ProtectedRoutes },
     ],
+  },
+  {
+    path: "/",
+    Component: AuthenticationLayout,
+    children: [
+      { path: "/register", Component: RegisterPage },
+      { path: "/login", Component: LoginPage },
+    ]
   },
 ] satisfies RouteObject[]);
 
