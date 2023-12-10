@@ -6,7 +6,7 @@ import Button from "../../components/Button";
 
 const Notifications: FC = () => {
   const [data, setData] = useState<Notification[]>([]);
-  const [renderModal, setRenderModal] = useState<Notification | null>(null);
+  const [notificationToEdit, setNotificationToEdit] = useState<Notification>();
 
   const getNotifications = () => {
     api.get("/notifications").then((res) => {
@@ -31,14 +31,17 @@ const Notifications: FC = () => {
             <div className="basis-3/12 text-center">{not.title}</div>
             <div className="basis-full">{not.content}</div>
             <div className="basis-2/12 text-center">
-              <Button label="Edit" onClick={() => setRenderModal(not)} />
+              <Button label="Edit" onClick={() => setNotificationToEdit(not)} />
             </div>
           </div>
         ))}
-        {renderModal !== null && (
+        {notificationToEdit && (
           <NotificationModal
-            notification={renderModal}
-            reset={() => setRenderModal(null)}
+            notification={notificationToEdit}
+            reset={() => {
+              setNotificationToEdit(undefined);
+              getNotifications();
+            }}
           />
         )}
       </div>

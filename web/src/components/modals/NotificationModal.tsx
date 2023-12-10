@@ -27,6 +27,8 @@ const NotificationModal: FC<Props> = ({ notification, reset }) => {
     api.put("/notifications", values).catch((error) => {
       console.log(error);
     });
+    setIsOpen(false);
+    reset();
   });
 
   return (
