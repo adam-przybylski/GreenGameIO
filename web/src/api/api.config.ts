@@ -1,4 +1,5 @@
 import axios from 'axios';
+// import { jwtDecode } from 'jwt-decode';
 
 export const getAuthToken = () => {
     return window.localStorage.getItem('auth_token');
@@ -17,8 +18,14 @@ export const api = axios.create({
 
 api.interceptors.request.use(
     function (config) {
-        if (getAuthToken() != null && getAuthToken() != "null") {
-            config.headers.Authorization = `Bearer ${getAuthToken()}`;
+        const token = getAuthToken();
+        if (token != null && token != "null") {
+            // const decodedToken = jwtDecode(token);
+            // const date = new Date();
+            // if (decodedToken.exp !== undefined && decodedToken.exp * 1000 < date.getTime()) {
+            //     window.localStorage.removeItem("auth_token");
+            // }
+            config.headers.Authorization = `Bearer ${token}`;
         }
         return config;
     },
