@@ -4,9 +4,7 @@ import io.greengame.greengameio.entity.Notification;
 import io.greengame.greengameio.services.NotificationService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -18,7 +16,22 @@ public class NotificationController {
     private final NotificationService notificationService;
 
     @GetMapping
-    List<Notification> getNotifications() {
+    List<Notification> get() {
         return notificationService.get();
+    }
+
+    @PostMapping
+    Notification create(@RequestBody Notification notification) {
+        return notificationService.create(notification);
+    }
+
+    @PutMapping
+    Notification update(@RequestBody Notification notification) {
+        return notificationService.update(notification);
+    }
+
+    @DeleteMapping("/{id}")
+    void delete(@PathVariable Long id) {
+        notificationService.delete(id);
     }
 }

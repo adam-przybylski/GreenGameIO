@@ -1,7 +1,9 @@
 package io.greengame.greengameio;
 
+import io.greengame.greengameio.entity.Notification;
 import io.greengame.greengameio.entity.User;
 import io.greengame.greengameio.entity.UserType;
+import io.greengame.greengameio.repository.NotificationRepository;
 import io.greengame.greengameio.repository.UserRepository;
 import io.greengame.greengameio.services.UserService;
 import org.springframework.boot.CommandLineRunner;
@@ -17,11 +19,14 @@ public class GreenGameIoApplication {
 	}
 
 	@Bean
-	CommandLineRunner commandLineRunner(UserRepository userRepository) {
+	CommandLineRunner commandLineRunner(UserRepository userRepository, NotificationRepository notificationRepository) {
 		return args -> {
 			//password is password
 				userRepository.save(new User(1L, "admin", "$2b$12$6J4h6z.Er73Ud7zWhUT4yueCCFl2xCLkUZGHi8JtJYYwxp3NHtbBK", "admin@email.com", UserType.ADMINISTRATOR));
 				userRepository.save(new User(2L, "user", "$2b$12$6J4h6z.Er73Ud7zWhUT4yueCCFl2xCLkUZGHi8JtJYYwxp3NHtbBK", "user@email.com", UserType.USER));
+				notificationRepository.save(new Notification("Title1", "Content1"));
+				notificationRepository.save(new Notification("Title2", "Content2"));
+				notificationRepository.save(new Notification("Title3", "Content3"));
 		};
 	}
 
