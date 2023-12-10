@@ -3,17 +3,13 @@ package io.greengame.greengameio.friendmodule.managers;
 import io.greengame.greengameio.friendmodule.exceptions.ErrorMessages;
 import io.greengame.greengameio.friendmodule.exceptions.IllegalOperationException;
 import io.greengame.greengameio.friendmodule.exceptions.NotFoundException;
-import io.greengame.greengameio.friendmodule.model.AbstractChatHolder;
 import io.greengame.greengameio.friendmodule.model.Friend;
-import io.greengame.greengameio.friendmodule.model.Message;
 import io.greengame.greengameio.friendmodule.repositories.AbstractChatHolderRepository;
 import io.greengame.greengameio.friendmodule.repositories.UserFMRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.time.LocalDateTime;
 
 @Component
 @RequiredArgsConstructor
@@ -45,8 +41,9 @@ public class FriendManager {
         if(!receiver.getFriendRequests().contains(senderId)) {
             throw new IllegalOperationException(ErrorMessages.BadRequestErrorMessages.ILLEGAL_OPERATION);
         }
+        //dozategowania
         Friend friend = new Friend();
-        friend = abstractChatHolderRepository.save(friend);
+        abstractChatHolderRepository.save(friend);
         receiver.getFriendRequests().remove(senderId);
         receiver.getFriends().add(friend.getId());
         sender.getFriends().add(friend.getId());
@@ -73,32 +70,5 @@ public class FriendManager {
         abstractChatHolderRepository.delete(friend);
         userFMRepository.save(receiver);
         userFMRepository.save(sender);
-    }
-    public Message sendMessage(String chatID, Long senderId, String messageContent) {
-        AbstractChatHolder abstractChatHolder = abstractChatHolderRepository.findById(chatID)
-                .orElseThrow(() -> new NotFoundException(ErrorMessages.NotFoundErrorMessages.CHAT_NOT_FOUND));
-        checkConditions(chatID, senderId);
-        Message message = new Message();
-        message.setSenderID(senderId);
-        message.setContent(messageContent);
-        message.setTimestamp(LocalDateTime.now());
-        abstractChatHolder.getChat().add(message);
-        abstractChatHolderRepository.save(abstractChatHolder);
-        return message;
-    }
-    private void checkConditions(String chatID, Long userID) {
-        userFMRepository.findById(userID).ifPresentOrElse(
-                userFM -> {
-                    if(!userFM.getFriends().contains(chatID)) {
-                        throw new IllegalOperationException(ErrorMessages.BadRequestErrorMessages.ILLEGAL_OPERATION);
-                    }
-                    if(!userFM.getGroups().contains(chatID)) {
-                        throw new IllegalOperationException(ErrorMessages.BadRequestErrorMessages.ILLEGAL_OPERATION);
-                    }
-                },
-                () -> {
-                    throw new NotFoundException(ErrorMessages.NotFoundErrorMessages.USER_NOT_FOUND);
-                }
-        );
     }
 }
