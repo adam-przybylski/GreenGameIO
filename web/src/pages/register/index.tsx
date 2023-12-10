@@ -2,19 +2,14 @@ import { FC } from "react";
 import { FormProvider, useForm } from "react-hook-form";
 import Input from "../../components/fields/Input";
 import Button from "../../components/Button";
-
-type Email = string;
-
-interface RegisterSchema {
-  email: Email;
-  login: string;
-  password: string;
-}
+import { RegisterRequest } from "../../types/registerRequest";
+import { api } from "../../api/api.config.ts";
+import { useNavigate } from "react-router-dom";
 
 
 const RegisterPage: FC = () => {
 
-  const methods = useForm<RegisterSchema>({
+  const methods = useForm<RegisterRequest>({
     values: {
       email: "",
       login: "",
@@ -23,9 +18,17 @@ const RegisterPage: FC = () => {
   });
 
   const { handleSubmit } = methods;
+  const navigation = useNavigate();
 
   const onSubmit = handleSubmit((values) => {
-    console.log(values);
+    api.post('/authentication/register', values)
+      .then(response => {
+        console.log(response);
+        navigation("/login");
+      })
+      .catch(error => {
+        console.error(error);
+      })
   });
 
   return (
