@@ -18,11 +18,13 @@ public class UserService {
     private final UserRepository userRepository;
 
     public User createUser(User user) {
-        return userRepository.save(user);
+        User user1 = userRepository.save(user);
+        return user1;
     }
 
     public boolean deleteUser(String username) {
-        return userRepository.deleteByUsername(username);
+        User user = userRepository.findByUsername(username).orElseThrow();
+        return userRepository.save(user);
     }
 
     public List<User> getUsers() {
