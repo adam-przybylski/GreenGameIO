@@ -2,15 +2,12 @@ import { FC } from "react";
 import { FormProvider, useForm } from "react-hook-form";
 import Input from "../../components/fields/Input";
 import Button from "../../components/Button";
-import {request, setAuthHeader} from "../../api/api.config.ts";
-
-interface LoginSchema {
-  login: string;
-  password: string;
-}
+import { api, setAuthHeader } from "../../api/api.config.ts";
+import { LoginRequest } from "../../types/loginRequest.ts";
+import { useNavigate } from "react-router-dom";
 
 const LoginPage: FC = () => {
-  const methods = useForm<LoginSchema>({
+  const methods = useForm<LoginRequest>({
     values: {
       login: "",
       password: "",
@@ -18,18 +15,19 @@ const LoginPage: FC = () => {
   });
 
   const { handleSubmit } = methods;
+  const navigation = useNavigate();
 
   const onSubmit = handleSubmit((values) => {
 
-    request("POST", "api/v1/authentication/login", values).then(
-        (response) => {
-          setAuthHeader(response.data.token);
-        }).catch(
-        (error) => {
-          setAuthHeader("");
-          console.log(error);
-        });
-    console.log();
+    api.post('/authentication/login', values)
+      .then(response => {
+        setAuthHeader(response.data.token);
+        navigation("/");
+      })
+      .catch(error => {
+        setAuthHeader("");
+        console.error(error);
+      })
   });
 
   return (
