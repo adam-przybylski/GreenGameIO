@@ -19,8 +19,6 @@ services:
     restart: always
     ports:
       - 8080:8080
-networks:
-  mongors-network:
-    driver: bridge
+
 volumes:
   pg:
