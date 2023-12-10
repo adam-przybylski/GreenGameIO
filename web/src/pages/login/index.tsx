@@ -2,6 +2,7 @@ import { FC } from "react";
 import { FormProvider, useForm } from "react-hook-form";
 import Input from "../../components/fields/Input";
 import Button from "../../components/Button";
+import {request, setAuthHeader} from "../../api/api.config.ts";
 
 interface LoginSchema {
   login: string;
@@ -19,7 +20,16 @@ const LoginPage: FC = () => {
   const { handleSubmit } = methods;
 
   const onSubmit = handleSubmit((values) => {
-    console.log(values);
+
+    request("POST", "api/v1/authentication/login", values).then(
+        (response) => {
+          setAuthHeader(response.data.token);
+        }).catch(
+        (error) => {
+          setAuthHeader("");
+          console.log(error);
+        });
+    console.log();
   });
 
   return (
