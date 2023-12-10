@@ -4,6 +4,10 @@ import io.greengame.greengameio.dtos.LogInDto;
 import io.greengame.greengameio.dtos.SignUpDto;
 import io.greengame.greengameio.dtos.UserDto;
 import io.greengame.greengameio.dtos.UserMapper;
+import io.greengame.greengameio.exceptions.InvalidPasswordException;
+import io.greengame.greengameio.exceptions.LoginAlreadyExistsException;
+import io.greengame.greengameio.exceptions.Messages;
+import io.greengame.greengameio.exceptions.UnknownUserException;
 import io.greengame.greengameio.repository.UserRepository;
 import io.greengame.greengameio.entity.User;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -34,7 +38,7 @@ public class AuthenticationService {
         Optional<User> optionalUser = userRepository.findByUsername(userDto.getLogin());
 
         if (optionalUser.isPresent()) {
-            throw new RuntimeException("Login already exists");
+            throw new LoginAlreadyExistsException(Messages.LOGIN_ALREADY_EXISTS);
         }
 
         User user = userMapper.signUpToUser(userDto);
@@ -47,11 +51,11 @@ public class AuthenticationService {
 
     public  UserDto loginUser(LogInDto logInDto) {
         User user = userRepository.findByUsername(logInDto.getLogin())
-                .orElseThrow(() -> new RuntimeException("Unknown user"));
+                .orElseThrow(() -> new UnknownUserException(Messages.UNKNOWN_USER));
 
         if (passwordEncoder.matches(CharBuffer.wrap(logInDto.getPassword()), user.getPassword())) {
             return userMapper.toUserDto(user);
         }
-        throw new RuntimeException("Invalid password");
+        throw new InvalidPasswordException(Messages.INVALID_PASSWORD);
     }
 }

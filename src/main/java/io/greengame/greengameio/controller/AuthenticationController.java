@@ -23,7 +23,6 @@ public class AuthenticationController {
     @PostMapping("/register")
     public ResponseEntity<UserDto> registerUser(@RequestBody SignUpDto user) {
         UserDto userDto = authenticationService.registerUser(user);
-        userDto.setToken(userAuthProvider.createToken(userDto.getLogin()));
         return ResponseEntity.status(HttpStatus.CREATED).body(userDto);
     }
 
