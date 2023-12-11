@@ -28,4 +28,9 @@ public class GameResultController {
         return gameResultService.updateLightsOutResult(userId, lightsOutScore);
     }
 
+    @PostMapping("updateUserXP/{userId},{xp}")
+    void updateUserXP(@PathVariable Long userId,@PathVariable float xp) {
+        gameResultService.updateUserXP(userId, xp);
+    }
+
 }
