@@ -2,9 +2,11 @@ import { FC } from "react";
 import { FormProvider, useForm } from "react-hook-form";
 import Input from "../../components/fields/Input";
 import Button from "../../components/Button";
-import { api, setAuthHeader } from "../../api/api.config.ts";
+import {api, setAuthHeader} from "../../api/api.config.ts";
 import { LoginRequest } from "../../types/loginRequest.ts";
 import { useNavigate } from "react-router-dom";
+import {useUserContext} from "../../context/userContext.tsx";
+// import {AccountType} from "../../types/accountType.ts";
 
 const LoginPage: FC = () => {
   const methods = useForm<LoginRequest>({
@@ -13,7 +15,7 @@ const LoginPage: FC = () => {
       password: "",
     },
   });
-
+  const {setAccount} = useUserContext();
   const { handleSubmit } = methods;
   const navigation = useNavigate();
 
@@ -22,6 +24,8 @@ const LoginPage: FC = () => {
     api.post('/authentication/login', values)
       .then(response => {
         setAuthHeader(response.data.token);
+        setAccount({id:response.data.id, username:response.data.login, email: response.data.email,
+                         type: response.data.userType});
         navigation("/");
       })
       .catch(error => {
