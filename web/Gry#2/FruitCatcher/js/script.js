@@ -1,16 +1,16 @@
 //For the time being trying to use view port size instead of pixel to see if it scales correctly
-const PLAYER_WIDTH = 100;
+const PLAYER_WIDTH = 120;
 const PLAYER_HEIGHT = 100;
 const BOARD_WIDTH=1000;
 const BOARD_HEIGHT=600;
-const ITEM_WIDTH=20;
-const ITEM_HEIGHT=20;
+const ITEM_WIDTH=50;
+const ITEM_HEIGHT=50;
 class Player{
     // fields
     // positionX, positionY, PlayerStyleHandle, doMoveLeft, doMoveRight
     constructor(position) {
-        this.postionY = 500;
-        this.postionX = position;
+        this.positionY = 500;
+        this.positionX = position;
         this.PlayerStyleHandle = document.getElementById("player").style;
         document.addEventListener("keydown", (event)=> {
             if (event.key === "ArrowRight" ) { // Moving right
@@ -37,27 +37,29 @@ class Player{
     //delta - how much to move a player left or right
     move(){
         let delta = 0;
-        if(this.doMoveLeft) delta = -7;
-        else if(this.doMoveRight) delta+=7;
-        if(this.postionX+delta > 0 && this.postionX+PLAYER_WIDTH+delta<BOARD_WIDTH && delta !== 0) {
-            this.postionX += delta;
-            this.PlayerStyleHandle.setProperty("left",this.postionX + "px");
+        if(this.doMoveLeft) delta = -12;
+        else if(this.doMoveRight) delta+=12;
+        if(this.positionX+delta > 0 && this.positionX+PLAYER_WIDTH+delta<BOARD_WIDTH && delta !== 0) {
+            this.positionX += delta;
+            this.PlayerStyleHandle.setProperty("left",this.positionX + "px");
         }
     }
 }
 
 class FruitCatcherGame{
     //fields
-    //lives, player, fpsInterval, elapsed, framesCycle, itemSpawnFrames, items, score
+    //lives, player, fpsInterval, elapsed, framesCycle, itemSpawnFrames, items, score, scoreHandle, livesHandle
     constructor() {
         this.lives = 3;
         this.player = new Player((BOARD_WIDTH-PLAYER_WIDTH)/2);
-        this.fpsInterval = 1000 / 60;
+        this.fpsInterval = 1000 / 55;
         this.then = Date.now();
         this.framesCycle = -1;
         this.itemSpawnFrames=50;
         this.items = [];
         this.score = 0;
+        this.scoreHandle = document.getElementById("score");
+        this.livesHandle = document.getElementById("lives");
     }
 
     gameLoop(){
@@ -79,11 +81,17 @@ class FruitCatcherGame{
 
             this.items.forEach((item) => {
                 if(item.move()) {
-                    if(item.isGood) this.lives--;
+                    item.destroy();
                     this.items = this.items.filter((element) => {return element.id !== item.id;});
+                    if(item.isGood) {
+                        this.lives--;
+                        this.livesHandle.innerText=this.lives
+                        if(this.lives===0){this.endGame();}
+                    }
                 }
                 if(this.checkCollisions(item)){
                     item.isGood?this.changeScore(+100):this.changeScore(-100);
+                    item.destroy();
                     this.items = this.items.filter((element) => {return element.id !== item.id;});
                 }
             });
@@ -92,14 +100,33 @@ class FruitCatcherGame{
 
     //returns true if collision happened
     checkCollisions(item){
-        return ((item.postionX > this.player.postionX && item.postionX < this.player.postionX + PLAYER_WIDTH) ||
-                (item.postionX + ITEM_WIDTH > this.player.postionX && item.postionX + ITEM_WIDTH < this.player.postionX + PLAYER_WIDTH)) &&
-            ((item.positionY > this.player.postionY && item.positionY < this.player.postionY + PLAYER_HEIGHT) ||
-                (item.positionY + ITEM_HEIGHT > this.player.postionY && item.positionY + ITEM_HEIGHT < this.player.postionY + PLAYER_HEIGHT));
+        let xFirstPoint = (item.positionX > this.player.positionX) && (item.positionX < this.player.positionX + PLAYER_WIDTH);
+        let xSecondPoint = (item.positionX + ITEM_WIDTH > this.player.positionX) && (item.positionX + ITEM_WIDTH < this.player.positionX + PLAYER_WIDTH);
+        let yFirstPoint = (item.positionY > this.player.positionY) && (item.positionY < this.player.positionY + PLAYER_HEIGHT);
+        let ySecondPoint = (item.positionY + ITEM_HEIGHT > this.player.positionY) && (item.positionY + ITEM_HEIGHT < this.player.positionY + PLAYER_HEIGHT);
+        return (xFirstPoint || xSecondPoint) && (yFirstPoint || ySecondPoint);
     }
 
     changeScore(amount){
-        this.score = amount;
+        this.score += amount;
+        this.scoreHandle.innerText = this.score;
+    }
+
+    endGame(){
+        //TODO save to database popup
+        alert("You loose!");
+        this.resetGameState();
+    }
+
+    resetGameState(){
+        this.scoreHandle.innerText=0;
+        this.lives = 3;
+        this.livesHandle.innerText = this.lives;
+        this.player.positionX = (BOARD_WIDTH-PLAYER_WIDTH)/2;
+        this.items.forEach((item) => item.destroy());
+        this.items = [];
+        this.player.doMoveRight = false;
+        this.player.doMoveLeft = false;
     }
 }
 
@@ -116,27 +143,26 @@ class Item{
     //id,positionX, positionY, type, isGood, itemHandle
     constructor() {
         this.id = Date.now();
-        this.positionX = Math.floor(Math.random() * BOARD_WIDTH-ITEM_WIDTH);
+        this.positionX = Math.abs(Math.floor(Math.random() * BOARD_WIDTH-ITEM_WIDTH));
         this.positionY = -ITEM_HEIGHT;
         //to determine the class of an item to use different images
-        this.type = Math.floor(Math.random() * 5);
+        this.type = Math.floor(Math.random() * 6);
         //based od item type, determines if item is good or bad
         this.isGood = this.type <= 2;
 
         this.itemHandle = document.createElement("div");
         this.itemHandle.className = this.type.toString()+" item";
         this.itemStyleHandle = this.itemHandle.style;
-        this.itemStyleHandle.setProperty("top",this.positionY+" px");
-        this.itemStyleHandle.setProperty("left",this.positionX+" px");
+        this.itemStyleHandle.setProperty("top",this.positionY + "px");
+        this.itemStyleHandle.setProperty("left",this.positionX + "px");
         document.getElementById("board").appendChild(this.itemHandle);
     }
 
     //returns true if item should be removed
     //delta - how much to move an item
     move(){
-        let delta = 5;
-        if(this.positionY+delta+ITEM_HEIGHT>BOARD_HEIGHT){
-            this.destroy();
+        let delta = 3;
+        if(this.positionY+delta+ITEM_HEIGHT>BOARD_HEIGHT){;
             return true;
         }else{
             this.positionY+=delta;
