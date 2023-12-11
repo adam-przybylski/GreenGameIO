@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @Validated
-@RequestMapping("/api/v1/games1")
+@RequestMapping("/api/v1/games")
 @RequiredArgsConstructor
 public class GameResultController {
 
