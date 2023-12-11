@@ -28,9 +28,14 @@ public class GameResultController {
         return gameResultService.updateLightsOutResult(userId, lightsOutScore);
     }
 
+    @GetMapping("/fruitCatcher/{userId}")
+    int getFruitCatcherScoreByUserId(@PathVariable Long userId) {
+        return gameResultService.getFruitCatcherScoreByUserId(userId);
+    }
+
     @PostMapping("fruitCatcher/{userId}/{fruitCatcherScore}")
     GameResult updateFruitCatcherResult(@PathVariable Long userId,@PathVariable int fruitCatcherScore) {
-        return gameResultService.updateLightsOutResult(userId, fruitCatcherScore);
+        return gameResultService.updateFruitCatcherResult(userId, fruitCatcherScore);
     }
 
     @PostMapping("updateUserXP/{userId}/{xp}")

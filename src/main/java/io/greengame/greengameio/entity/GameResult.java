@@ -30,6 +30,6 @@ public class GameResult {
     @Column(name = "lights_out_score")
     private int lightsOutScore;
 
-    @Column(name = "fruit_catcher")
+    @Column(name = "fruit_catcher_score")
     private int fruitCatcher;
 }

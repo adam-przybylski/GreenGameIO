@@ -84,6 +84,10 @@ public class GameResultService {
         }
     }
 
+    public int getFruitCatcherScoreByUserId(Long userId) {
+        return gameResultRepository.findFruitCatcherScoreByUserId(userId);
+    }
+
     public GameResult updateFruitCatcherResult(Long userId, int score) {
         Optional<GameResult> optionalGameResult = gameResultRepository.findByUserId(userId);
         if (optionalGameResult.isPresent()) {
