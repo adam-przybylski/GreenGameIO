@@ -58,7 +58,7 @@ public class GameResultService {
             return gameResult;
         } else {
             GameResult newGameResult = new GameResult();
-            newGameResult.setId(userId);
+            newGameResult.setUserId(userId);
             newGameResult.setSnakeScore(score);
             gameResultRepository.save(newGameResult);
             return newGameResult;
@@ -77,7 +77,7 @@ public class GameResultService {
             return gameResult;
         } else {
             GameResult newGameResult = new GameResult();
-            newGameResult.setId(userId);
+            newGameResult.setUserId(userId);
             newGameResult.setLightsOutScore(score);
             gameResultRepository.save(newGameResult);
             return newGameResult;
