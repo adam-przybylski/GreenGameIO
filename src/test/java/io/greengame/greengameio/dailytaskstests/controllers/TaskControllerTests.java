@@ -25,7 +25,8 @@ import static org.hamcrest.Matchers.*;
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
 @ActiveProfiles("test")
 public class TaskControllerTests {
-    private final static String BASE_URI = "http://localhost/api/v1/tasks";
+    private final static String BASE_URI = "http://localhost/api/v1";
+    private static String jwtToken;
 
     @LocalServerPort
     private int port;
@@ -34,16 +35,25 @@ public class TaskControllerTests {
     public void configureRestAssured() {
         RestAssured.baseURI = BASE_URI;
         RestAssured.port = port;
+
+        jwtToken = given()
+                .contentType(ContentType.JSON)
+                .body("{ \"login\": \"admin\", \"password\": \"password\" }")
+                .when()
+                .post("/authentication/login")
+                .then()
+                .extract()
+                .path("token");
     }
 
     @Test
     @DisplayName("Test get() should return HTTP 200 OK and correct amount of data")
     public void test_Get_ShouldReturn_OkHttpStatusAndCorrectAmountOfData() {
         given()
-                .auth().basic("admin", "password")
+                .auth().oauth2(jwtToken)
                 .contentType(ContentType.JSON)
                 .when()
-                .get()
+                .get("/tasks")
                 .then()
                 .assertThat()
                 .contentType(ContentType.JSON)
@@ -59,11 +69,11 @@ public class TaskControllerTests {
         Task task = testTasks.get(0);
 
         given()
-                .auth().basic("admin", "password")
+                .auth().oauth2(jwtToken)
                 .contentType(ContentType.JSON)
                 .pathParam("id", task.getId())
                 .when()
-                .get("/{id}")
+                .get("/tasks/{id}")
                 .then()
                 .assertThat()
                 .statusCode(HttpStatus.OK.value())
@@ -80,11 +90,11 @@ public class TaskControllerTests {
         Long randomId = ThreadLocalRandom.current().nextLong(Long.MAX_VALUE);
 
         given()
-                .auth().basic("admin", "password")
+                .auth().oauth2(jwtToken)
                 .contentType(ContentType.JSON)
                 .pathParam("id", randomId)
                 .when()
-                .get("/{id}")
+                .get("/tasks/{id}")
                 .then()
                 .assertThat()
                 .statusCode(HttpStatus.NOT_FOUND.value());
@@ -96,11 +106,11 @@ public class TaskControllerTests {
         Task testTask = new Task(null,"Test Task", "Sample Description", 10, true);
 
         given()
-            .auth().basic("admin", "password")
+            .auth().oauth2(jwtToken)
             .contentType(ContentType.JSON)
             .body(testTask)
             .when()
-            .post()
+            .post("/tasks")
             .then()
             .assertThat()
             .statusCode(HttpStatus.CREATED.value())
@@ -117,11 +127,11 @@ public class TaskControllerTests {
         Task testTask = new Task(null,"Test Task", "", -10, true);
 
         given()
-                .auth().basic("admin", "password")
+                .auth().oauth2(jwtToken)
                 .contentType(ContentType.JSON)
                 .body(testTask)
                 .when()
-                .post()
+                .post("/tasks")
                 .then()
                 .assertThat()
                 .statusCode(HttpStatus.BAD_REQUEST.value());
@@ -133,11 +143,11 @@ public class TaskControllerTests {
         Task testTask = new Task(null,"Sample Task", "Sample Description", 10, true);
 
         given()
-                .auth().basic("admin", "password")
+                .auth().oauth2(jwtToken)
                 .contentType(ContentType.JSON)
                 .body(testTask)
                 .when()
-                .post()
+                .post("/tasks")
                 .then()
                 .assertThat()
                 .statusCode(HttpStatus.BAD_REQUEST.value());
@@ -159,12 +169,12 @@ public class TaskControllerTests {
                 .build();
 
         given()
-                .auth().basic("admin", "password")
+                .auth().oauth2(jwtToken)
                 .contentType(ContentType.JSON)
                 .pathParam("id", task.getId())
                 .body(taskToRequest)
                 .when()
-                .put("/{id}")
+                .put("/tasks/{id}")
                 .then()
                 .assertThat()
                 .statusCode(HttpStatus.OK.value())
@@ -191,12 +201,12 @@ public class TaskControllerTests {
                 .build();
 
         given()
-                .auth().basic("admin", "password")
+                .auth().oauth2(jwtToken)
                 .contentType(ContentType.JSON)
                 .pathParam("id", task.getId())
                 .body(taskToRequest)
                 .when()
-                .put("/{id}")
+                .put("/tasks/{id}")
                 .then()
                 .assertThat()
                 .statusCode(HttpStatus.BAD_REQUEST.value());
@@ -219,12 +229,12 @@ public class TaskControllerTests {
                 .build();
 
         given()
-                .auth().basic("admin", "password")
+                .auth().oauth2(jwtToken)
                 .contentType(ContentType.JSON)
                 .pathParam("id", randomId)
                 .body(taskToRequest)
                 .when()
-                .put("/{id}")
+                .put("/tasks/{id}")
                 .then()
                 .assertThat()
                 .statusCode(HttpStatus.NOT_FOUND.value());
@@ -237,31 +247,31 @@ public class TaskControllerTests {
         Task task = testTasks.get(0);
 
         given()
-                .auth().basic("admin", "password")
+                .auth().oauth2(jwtToken)
                 .contentType(ContentType.JSON)
                 .pathParam("id", task.getId())
                 .when()
-                .get("/{id}")
+                .get("/tasks/{id}")
                 .then()
                 .assertThat()
                 .statusCode(HttpStatus.OK.value());
 
         given()
-                .auth().basic("admin", "password")
+                .auth().oauth2(jwtToken)
                 .contentType(ContentType.JSON)
                 .pathParam("id", task.getId())
                 .when()
-                .delete("/{id}")
+                .delete("/tasks/{id}")
                 .then()
                 .assertThat()
                 .statusCode(HttpStatus.NO_CONTENT.value());
 
         given()
-                .auth().basic("admin", "password")
+                .auth().oauth2(jwtToken)
                 .contentType(ContentType.JSON)
                 .pathParam("id", task.getId())
                 .when()
-                .get("/{id}")
+                .get("/tasks/{id}")
                 .then()
                 .assertThat()
                 .statusCode(HttpStatus.NOT_FOUND.value());
