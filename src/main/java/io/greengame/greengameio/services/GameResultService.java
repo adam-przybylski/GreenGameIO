@@ -21,14 +21,14 @@ public class GameResultService {
         return gameResultRepository.findXpByUserId(userId);
     }
 
-    public void updateUserXP(Long userId,float xp) {
-        Optional<GameResult> optionalGameResult = gameResultRepository.findById(userId);
+    public void updateUserXP(Long userId,double xp) {
+        Optional<GameResult> optionalGameResult = gameResultRepository.findByUserId(userId);
         if (optionalGameResult.isPresent()) {
             GameResult gameResult = optionalGameResult.get();
-            double previousXp = optionalGameResult.get().getXp();
+            double previousXp = gameResult.getXp();
             double actualXp = previousXp + xp;
-            optionalGameResult.get().setXp(actualXp);
-            gameResultRepository.save(optionalGameResult.get());
+            gameResult.setXp(actualXp);
+            gameResultRepository.save(gameResult);
         } else {
             GameResult newGameResult = new GameResult();
             newGameResult.setId(userId);
@@ -47,7 +47,7 @@ public class GameResultService {
 
 
     public GameResult updateSnakeResult(Long userId, int score) {
-        Optional<GameResult> optionalGameResult = gameResultRepository.findById(userId);
+        Optional<GameResult> optionalGameResult = gameResultRepository.findByUserId(userId);
         if (optionalGameResult.isPresent()) {
             GameResult gameResult = optionalGameResult.get();
             if(gameResult.getSnakeScore() < score){
@@ -66,7 +66,7 @@ public class GameResultService {
     }
 
     public GameResult updateLightsOutResult(Long userId, int score) {
-        Optional<GameResult> optionalGameResult = gameResultRepository.findById(userId);
+        Optional<GameResult> optionalGameResult = gameResultRepository.findByUserId(userId);
         if (optionalGameResult.isPresent()) {
             GameResult gameResult = optionalGameResult.get();
             if(gameResult.getLightsOutScore() < score){
