@@ -9,13 +9,13 @@ const Notifications: FC = () => {
   const [notificationToEdit, setNotificationToEdit] = useState<Notification>();
   const [notificationToAdd, setNotificationToAdd] = useState<boolean>(false);
 
-  const getNotifications = () => {
+  const handleGet = () => {
     api.get("/notifications").then((res) => {
       setData(res.data);
     });
   };
 
-  useLayoutEffect(() => getNotifications());
+  useLayoutEffect(() => handleGet());
 
   const handleEdit = (notificaiton: Notification) => {
     api.put("/notifications", notificaiton).catch((error) => {
