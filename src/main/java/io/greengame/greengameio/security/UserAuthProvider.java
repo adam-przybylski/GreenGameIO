@@ -50,4 +50,10 @@ public class UserAuthProvider {
         UserDto userDto = authenticationService.findByLogin(decodedJWT.getSubject());
         return new UsernamePasswordAuthenticationToken(userDto, null, Collections.singleton(new SimpleGrantedAuthority("ROLE_" + userDto.getUserType().name())));
     }
+
+    public String getUserLogin(String token) {
+        JWTVerifier verifier = JWT.require(Algorithm.HMAC256(secretKey)).build();
+        DecodedJWT decodedJWT = verifier.verify(token);
+        return decodedJWT.getSubject();
+    }
 }
