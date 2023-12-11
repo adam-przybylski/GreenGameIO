@@ -1,6 +1,5 @@
-import {ReactNode, createContext, useContext, useState, FC} from "react";
-import {AccountType} from "../types/accountType.ts";
-
+import { ReactNode, createContext, useContext, useState, FC, useEffect } from "react";
+import { AccountType } from "../types/accountType.ts";
 
 
 interface UserState {
@@ -14,16 +13,17 @@ interface UserContextProviderProps {
   children: ReactNode;
 }
 
-const UserContextProvider : FC<UserContextProviderProps> = ({ children } : {children: ReactNode}) => {
-  const [account, setAccount] = useState<AccountType | null>(null)
+const UserContextProvider: FC<UserContextProviderProps> = ({ children }: { children: ReactNode }) => {
+  const [account, setAccount] = useState<AccountType | null>(() => {
+    const storedAccount = localStorage.getItem("account");
+    return storedAccount ? JSON.parse(storedAccount) : null;
+  })
 
-  // useEffect(() => {
-  //   if (account?.token) {
-  //     localStorage.setItem('token', JSON.stringify(account.token))
-  //   }
-  // }, [account])
+  useEffect(() => {
+    localStorage.setItem("account", JSON.stringify(account));
+  }, [account]);
 
-  return <UserContext.Provider value={{account, setAccount}}>{children}</UserContext.Provider>;
+  return <UserContext.Provider value={{ account, setAccount }}>{children}</UserContext.Provider>;
 };
 
 export const useUserContext = () => {
