@@ -13,8 +13,8 @@ public interface GameResultRepository extends JpaRepository<GameResult, Long> {
 
     @Query("SELECT gr.xp FROM GameResult gr WHERE gr.userId = ?1")
     double findXpByUserId(Long userId);
-    int findSnakeScoreById(Long id);
-    int findLightOutScoreById(Long id );
+    int findSnakeScoreByUserId(Long userId);
+    int findLightOutScoreByUserId(Long userId);
     Optional<GameResult> findByUserId(Long userId);
 
 
