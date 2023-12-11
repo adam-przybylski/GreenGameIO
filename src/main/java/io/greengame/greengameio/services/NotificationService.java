@@ -11,30 +11,30 @@ import java.util.Optional;
 @Service
 @RequiredArgsConstructor
 public class NotificationService {
-    private final NotificationRepository notificationRepository;
+    private final NotificationRepository repository;
 
     public List<Notification> get() {
-        return notificationRepository.findAll();
+        return repository.findAll();
     }
 
     public Notification create(Notification notification) {
-        return notificationRepository.save(notification);
+        return repository.save(notification);
     }
 
     public Notification update(Notification entity) {
-        Optional<Notification> result = notificationRepository.findById(entity.getId());
+        Optional<Notification> result = repository.findById(entity.getId());
         if (result.isPresent()) {
             Notification notification = result.get();
             notification.setContent(entity.getContent());
             notification.setTitle(entity.getTitle());
-            notificationRepository.saveAndFlush(notification);
+            repository.saveAndFlush(notification);
         }
 
-        return notificationRepository.findById(entity.getId()).orElse(null);
+        return repository.findById(entity.getId()).orElse(null);
     }
 
     public void delete(Long id) {
-        Notification result = notificationRepository.findById(id).orElseThrow();
-        notificationRepository.delete(result);
+        Notification result = repository.findById(id).orElseThrow();
+        repository.delete(result);
     }
 }

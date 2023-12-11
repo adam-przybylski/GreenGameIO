@@ -16,22 +16,22 @@ public class NotificationController {
     private final NotificationService notificationService;
 
     @GetMapping
-    List<Notification> get() {
+    public List<Notification> get() {
         return notificationService.get();
     }
 
     @PostMapping
-    Notification create(@RequestBody Notification notification) {
+    public Notification create(@RequestBody Notification notification) {
         return notificationService.create(notification);
     }
 
     @PutMapping
-    Notification update(@RequestBody Notification notification) {
+    public Notification update(@RequestBody Notification notification) {
         return notificationService.update(notification);
     }
 
     @DeleteMapping("/{id}")
-    void delete(@PathVariable Long id) {
+    public void delete(@PathVariable Long id) {
         notificationService.delete(id);
     }
 }
