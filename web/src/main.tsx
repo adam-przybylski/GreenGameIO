@@ -12,6 +12,9 @@ import LoginPage from "./pages/login";
 import RegisterPage from "./pages/register";
 import "./index.css";
 import AuthenticationLayout from "./pages/AuthenticationLayout";
+import AdminLayout from "./pages/AdminLayout";
+import AdminMain from "./pages/admin/mainAdmin";
+import AdminUsers from "./pages/admin/usersAdmin";
 
 const router = createBrowserRouter([
   {
@@ -28,7 +31,15 @@ const router = createBrowserRouter([
     children: [
       { path: "/register", Component: RegisterPage },
       { path: "/login", Component: LoginPage },
-    ]
+    ],
+  },
+  {
+    path: "/",
+    Component: AdminLayout,
+    children: [
+      { path: "/admin", Component: AdminMain },
+      { path: "/admin/users", Component: AdminUsers },
+    ],
   },
 ] satisfies RouteObject[]);
 
