@@ -87,6 +87,14 @@ public class TaskServiceTests {
     }
 
     @Test
+    @DisplayName("Test create() should throw TaskValidationException for Task entity with non unique name")
+    public void test_Create_ShouldThrow_TaskValidationException_ForTaskEntityWithNonUniqueName() {
+        Task testTask = new Task(null,"Sample Task", "Sample Description", 10, true);
+
+        assertThrows(TaskValidationException.class, () -> taskService.create(testTask));
+    }
+
+    @Test
     @DisplayName("Test delete() should remove Task entity from repository for correct id")
     public void test_Delete_ShouldRemove_TaskEntityFromRepository_ForCorrectId() {
         assertDoesNotThrow(() -> taskService.getById(sampleTask.getId()));

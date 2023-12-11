@@ -6,6 +6,7 @@ import io.greengame.greengameio.exceptions.TaskValidationException;
 import io.greengame.greengameio.repository.TaskRepository;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 import org.springframework.validation.*;
 
@@ -26,7 +27,11 @@ public class TaskService {
             throw new TaskValidationException("Task validation failed: " + errors.getAllErrors());
         }
 
-        return taskRepository.save(task);
+        try {
+            return taskRepository.save(task);
+        } catch (DataIntegrityViolationException e) {
+            throw new TaskValidationException("Task with the same name already exists. " + e.getMessage());
+        }
     }
 
     public void delete(Long id) {
