@@ -2,11 +2,11 @@ import axios from 'axios';
 // import { jwtDecode } from 'jwt-decode';
 
 export const getAuthToken = () => {
-    return window.localStorage.getItem('auth_token');
+    return window.localStorage.getItem('token');
 };
 
 export const setAuthHeader = (token: string) => {
-    window.localStorage.setItem('auth_token', token);
+    window.localStorage.setItem('token', token);
 };
 
 export const api = axios.create({
