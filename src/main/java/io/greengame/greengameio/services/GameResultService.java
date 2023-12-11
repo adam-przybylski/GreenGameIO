@@ -5,6 +5,8 @@ import io.greengame.greengameio.repository.GameResultRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.Optional;
+
 @Service
 @RequiredArgsConstructor
 public class GameResultService {
@@ -15,18 +17,89 @@ public class GameResultService {
         return gameResultRepository.save(gameResult);
     }
 
-    public int getXpByUserId(Long userId) {
+    public double  getXpByUserId(Long userId) {
         return gameResultRepository.findXpByUserId(userId);
     }
 
-    public GameResult updateGameResult(Long userId, GameResult gameResult) {
+    public void updateUserXP(Long userId,double xp) {
+        Optional<GameResult> optionalGameResult = gameResultRepository.findByUserId(userId);
+        if (optionalGameResult.isPresent()) {
+            GameResult gameResult = optionalGameResult.get();
+            double previousXp = gameResult.getXp();
+            double actualXp = previousXp + xp;
+            gameResult.setXp(actualXp);
+            gameResultRepository.save(gameResult);
+        } else {
+            GameResult newGameResult = new GameResult();
+            newGameResult.setId(userId);
+            newGameResult.setXp(xp);
+            gameResultRepository.save(newGameResult);
+        }
+    }
+   /* public GameResult updateGameResult(Long userId, GameResult gameResult) {
         GameResult gameResult1 = gameResultRepository.findByUserId(userId).orElseThrow(() -> new RuntimeException("GameResult not found."));
         gameResult1.setUserId(gameResult.getUserId());
         gameResult1.setSnakeScore(gameResult.getSnakeScore());
         gameResult1.setLightsOutScore(gameResult.getLightsOutScore());
         gameResult1.setXp(gameResult.getXp());
         return gameResultRepository.save(gameResult1);
+    }*/
+
+
+    public GameResult updateSnakeResult(Long userId, int score) {
+        Optional<GameResult> optionalGameResult = gameResultRepository.findByUserId(userId);
+        if (optionalGameResult.isPresent()) {
+            GameResult gameResult = optionalGameResult.get();
+            if(gameResult.getSnakeScore() < score){
+                gameResult.setSnakeScore(score);
+                gameResultRepository.save(gameResult);
+                return gameResult;
+            }
+            return gameResult;
+        } else {
+            GameResult newGameResult = new GameResult();
+            newGameResult.setId(userId);
+            newGameResult.setSnakeScore(score);
+            gameResultRepository.save(newGameResult);
+            return newGameResult;
+        }
     }
 
+    public GameResult updateLightsOutResult(Long userId, int score) {
+        Optional<GameResult> optionalGameResult = gameResultRepository.findByUserId(userId);
+        if (optionalGameResult.isPresent()) {
+            GameResult gameResult = optionalGameResult.get();
+            if(gameResult.getLightsOutScore() < score){
+                gameResult.setLightsOutScore(score);
+                gameResultRepository.save(gameResult);
+                return gameResult;
+            }
+            return gameResult;
+        } else {
+            GameResult newGameResult = new GameResult();
+            newGameResult.setId(userId);
+            newGameResult.setLightsOutScore(score);
+            gameResultRepository.save(newGameResult);
+            return newGameResult;
+        }
+    }
 
+    public GameResult updateFruitCatcherResult(Long userId, int score) {
+        Optional<GameResult> optionalGameResult = gameResultRepository.findByUserId(userId);
+        if (optionalGameResult.isPresent()) {
+            GameResult gameResult = optionalGameResult.get();
+            if(gameResult.getFruitCatcher() < score){
+                gameResult.setFruitCatcher(score);
+                gameResultRepository.save(gameResult);
+                return gameResult;
+            }
+            return gameResult;
+        } else {
+            GameResult newGameResult = new GameResult();
+            newGameResult.setUserId(userId);
+            newGameResult.setFruitCatcher(score);
+            gameResultRepository.save(newGameResult);
+            return newGameResult;
+        }
+    }
 }

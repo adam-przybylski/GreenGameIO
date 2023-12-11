@@ -15,13 +15,27 @@ public class GameResultController {
     private final GameResultService gameResultService;
 
     @GetMapping("/xp/{userId}")
-    int getXpByUserId(@PathVariable Long userId) {
+    double getXpByUserId(@PathVariable Long userId) {
         return gameResultService.getXpByUserId(userId);
     }
 
-    @PostMapping("/id/{userId}")
-    GameResult updateGameResult(@PathVariable Long userId, @RequestBody GameResult gameResult) {
-        return gameResultService.updateGameResult(userId, gameResult);
+    @PostMapping("snake/{userId}/{snakeScore}")
+    GameResult updateSnakeResult(@PathVariable Long userId, @PathVariable int snakeScore) {
+        return gameResultService.updateSnakeResult(userId, snakeScore);
+    }
+    @PostMapping("lightsOut/{userId}/{lightsOutScore}")
+    GameResult updateLightsOutResult(@PathVariable Long userId,@PathVariable int lightsOutScore) {
+        return gameResultService.updateLightsOutResult(userId, lightsOutScore);
+    }
+
+    @PostMapping("fruitCatcher/{userId}/{fruitCatcherScore}")
+    GameResult updateFruitCatcherResult(@PathVariable Long userId,@PathVariable int fruitCatcherScore) {
+        return gameResultService.updateLightsOutResult(userId, fruitCatcherScore);
+    }
+
+    @PostMapping("updateUserXP/{userId}/{xp}")
+    void updateUserXP(@PathVariable Long userId,@PathVariable float xp) {
+        gameResultService.updateUserXP(userId, xp);
     }
 
 }
