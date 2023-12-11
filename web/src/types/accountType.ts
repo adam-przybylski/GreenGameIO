@@ -1,6 +1,6 @@
 
 export enum AccountTypeEnum {
-    ADMIN = 'ADMINNISTRATOR',
+    ADMIN = 'ADMINISTRATOR',
     USER = 'USER',
 }
 export interface AccountType {
