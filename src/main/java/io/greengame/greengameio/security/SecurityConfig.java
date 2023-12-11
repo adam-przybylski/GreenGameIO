@@ -19,7 +19,9 @@ public class SecurityConfig {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http.authorizeHttpRequests((requests) -> { requests
                         .requestMatchers("/api/v1/users").hasAnyAuthority("ROLE_USER", "ROLE_ADMINISTRATOR")
-                .requestMatchers("/api/v1/authentication").permitAll();
+                        .requestMatchers("/api/v1/authentication").permitAll()
+                        .requestMatchers("/api/v1/tasks").hasAuthority("ROLE_ADMINISTRATOR");
+
         })
                 .httpBasic(Customizer.withDefaults())
                 .formLogin(Customizer.withDefaults());
