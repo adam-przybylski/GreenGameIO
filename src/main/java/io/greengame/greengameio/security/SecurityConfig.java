@@ -20,8 +20,13 @@ public class SecurityConfig {
         http.authorizeHttpRequests((requests) -> { requests
                         .requestMatchers("/api/v1/users").hasAnyAuthority("ROLE_USER", "ROLE_ADMINISTRATOR")
                         .requestMatchers("/api/v1/games1/**").hasAnyAuthority("ROLE_USER", "ROLE_ADMINISTRATOR")
+<<<<<<< HEAD
                         .requestMatchers("/api/v1/authentication").permitAll();
                 })
+=======
+                .requestMatchers("/api/v1/authentication").permitAll();
+        })
+>>>>>>> Gry#1
                 .httpBasic(Customizer.withDefaults())
                 .formLogin(Customizer.withDefaults());
         http.csrf(AbstractHttpConfigurer::disable);

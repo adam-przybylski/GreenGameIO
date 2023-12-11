@@ -107,8 +107,49 @@ function endGame() {
     clearInterval(gameInterval);
     ended = true;
     showGameOverModal(points)
-    //TODO tu wysylaj do bazy danych xp i punkty jesli sa najwyzsze     calculateXPfromPoints(points)
+    const xpEarned = calculateXPfromPoints(points);
+
+    updateXPInDatabase(1, xpEarned); //TODO userId
+    updateLightsOutResult(1, points); //TODO userId
     resetGame();
+}
+
+function updateXPInDatabase(userId, xp) {
+    const url = `api/v1/games1/updateUserXP/${userId}/${xp}`;
+
+    fetch(url, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+    })
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Network response was not ok');
+            }
+        })
+        .catch(error => {
+            console.error('There was a problem with the fetch operation:', error);
+        });
+}
+
+function updateLightsOutResult(userId, score) {
+    const url = `api/v1/games1/lightsOut/${userId}/${score}`;
+
+    fetch(url, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+    })
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Network response was not ok');
+            }
+        })
+        .catch(error => {
+            console.error('There was a problem with the fetch operation:', error);
+        });
 }
 
 function showGameOverModal(points) {

@@ -19,10 +19,16 @@ public class GameResultController {
         return gameResultService.getXpByUserId(userId);
     }
 
+    @PostMapping("updateUserXP/{userId}/{xp}")
+    void updateUserXP(@PathVariable Long userId,@PathVariable float xp) {
+        gameResultService.updateUserXP(userId, xp);
+    }
+
     @PostMapping("snake/{userId}/{snakeScore}")
     GameResult updateSnakeResult(@PathVariable Long userId, @PathVariable int snakeScore) {
         return gameResultService.updateSnakeResult(userId, snakeScore);
     }
+
     @PostMapping("lightsOut/{userId}/{lightsOutScore}")
     GameResult updateLightsOutResult(@PathVariable Long userId,@PathVariable int lightsOutScore) {
         return gameResultService.updateLightsOutResult(userId, lightsOutScore);
@@ -36,11 +42,6 @@ public class GameResultController {
     @PostMapping("fruitCatcher/{userId}/{fruitCatcherScore}")
     GameResult updateFruitCatcherResult(@PathVariable Long userId,@PathVariable int fruitCatcherScore) {
         return gameResultService.updateFruitCatcherResult(userId, fruitCatcherScore);
-    }
-
-    @PostMapping("updateUserXP/{userId}/{xp}")
-    void updateUserXP(@PathVariable Long userId,@PathVariable float xp) {
-        gameResultService.updateUserXP(userId, xp);
     }
 
 }
