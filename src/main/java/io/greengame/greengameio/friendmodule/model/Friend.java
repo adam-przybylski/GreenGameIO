@@ -8,5 +8,5 @@ import java.util.List;
 @Data
 @Document
 public class Friend extends AbstractChatHolder {
-    private Long friendId;
+
 }

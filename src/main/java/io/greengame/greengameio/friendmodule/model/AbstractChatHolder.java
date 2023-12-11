@@ -6,7 +6,9 @@ import lombok.Setter;
 import lombok.ToString;
 import org.springframework.data.annotation.Id;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Getter
 @Setter
@@ -15,5 +17,6 @@ import java.util.List;
 public abstract class AbstractChatHolder {
     @Id
     private String id;
-    private List<Message> messages;
+    private String chatId;
+    private Map<Long,String> members = new HashMap<>();
 }

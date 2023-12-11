@@ -24,7 +24,7 @@ public class UserService {
     public User createUser(User user) {
         User user1 = userRepository.save(user);
         System.out.println(user1.toString());
-        createUserFM(user1.getId());
+        createUserFM(user1.getId(),user1.getUsername());
         return user1;
     }
 
@@ -58,7 +58,7 @@ public class UserService {
         user1.setType(user.getType());
         return userRepository.save(user1);
     }
-    private void createUserFM(Long id) {
+    private void createUserFM(Long id,String username) {
         UserFM userFM = new UserFM();
         userFM.setId(id);
         userFMRepository.save(userFM);
