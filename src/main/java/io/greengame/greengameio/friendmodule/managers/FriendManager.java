@@ -1,11 +1,13 @@
 package io.greengame.greengameio.friendmodule.managers;
 
+import io.greengame.greengameio.friendmodule.dto.GroupUpdateDTO;
 import io.greengame.greengameio.friendmodule.exceptions.ErrorMessages;
 import io.greengame.greengameio.friendmodule.exceptions.IllegalOperationException;
 import io.greengame.greengameio.friendmodule.exceptions.NotFoundException;
 import io.greengame.greengameio.friendmodule.model.Chat;
 import io.greengame.greengameio.friendmodule.model.Friend;
 import io.greengame.greengameio.friendmodule.model.Group;
+import io.greengame.greengameio.friendmodule.model.UserFM;
 import io.greengame.greengameio.friendmodule.repositories.AbstractChatHolderRepository;
 import io.greengame.greengameio.friendmodule.repositories.ChatRepository;
 import io.greengame.greengameio.friendmodule.repositories.UserFMRepository;
@@ -24,6 +26,10 @@ public class FriendManager {
     private final AbstractChatHolderRepository abstractChatHolderRepository;
     private final UserFMRepository userFMRepository;
     private final ChatRepository chatRepository;
+
+    public List<UserFM> findAllUserFMs() {
+        return userFMRepository.findAll();
+    }
 
     public void sendFriendRequest(Long senderId, Long receiverId)  {
         var sender = userFMRepository.findById(senderId)
@@ -85,7 +91,7 @@ public class FriendManager {
         userFMRepository.save(receiver);
         userFMRepository.save(sender);
     }
-    public List<Friend> findFriends(Long id) {
+    public List<Friend> findAllFriends(Long id) {
         var user = userFMRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException(ErrorMessages.NotFoundErrorMessages.USER_NOT_FOUND));
         return abstractChatHolderRepository
@@ -94,7 +100,7 @@ public class FriendManager {
                 .map(friend -> (Friend) friend)
                 .toList();
     }
-    public List<Group> findGroups(Long id) {
+    public List<Group> findAllGroups(Long id) {
         var user = userFMRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException(ErrorMessages.NotFoundErrorMessages.USER_NOT_FOUND));
         return abstractChatHolderRepository
@@ -103,9 +109,86 @@ public class FriendManager {
                 .map(group -> (Group) group)
                 .toList();
     }
-    public Map<Long, String> findFriendRequests(Long id) {
+    public Map<Long, String> findAllFriendRequests(Long id) {
         var user = userFMRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException(ErrorMessages.NotFoundErrorMessages.USER_NOT_FOUND));
         return user.getFriendRequests();
+    }
+    public Group createGroup(Long userId, GroupUpdateDTO groupUpdateDTO) {
+        var user = userFMRepository.findById(userId)
+                .orElseThrow(() -> new NotFoundException(ErrorMessages.NotFoundErrorMessages.USER_NOT_FOUND));
+        Group group = new Group();
+        group.setName(groupUpdateDTO.name());
+        group.getMembers().put(user.getId(),user.getUsername());
+        group.setDescription(groupUpdateDTO.description());
+        group.setOwnerId(user.getId());
+        group = abstractChatHolderRepository.save(group);
+        user.getGroups().add(group.getId());
+        userFMRepository.save(user);
+        return group;
+    }
+    public Group updateGroup(Long ownerId, String id, GroupUpdateDTO groupUpdateDTO) {
+        var group = (Group) abstractChatHolderRepository.findById(id)
+                .orElseThrow(() -> new NotFoundException(ErrorMessages.NotFoundErrorMessages.GROUP_NOT_FOUND));
+        if(group.getOwnerId() != ownerId) {
+            throw new IllegalOperationException(ErrorMessages.BadRequestErrorMessages.ILLEGAL_OPERATION);
+        }
+        if(groupUpdateDTO.name() != null) {
+            group.setName(groupUpdateDTO.name());
+        }
+        if(groupUpdateDTO.description() != null) {
+            group.setDescription(groupUpdateDTO.description());
+        }
+        if(groupUpdateDTO.ownerId() != 0) {
+            group.setOwnerId(groupUpdateDTO.ownerId());
+        }
+        return abstractChatHolderRepository.save(group);
+    }
+    public void deleteGroup(Long ownerId, String id) {
+        var group = (Group) abstractChatHolderRepository.findById(id)
+                .orElseThrow(() -> new NotFoundException(ErrorMessages.NotFoundErrorMessages.GROUP_NOT_FOUND));
+        if(group.getOwnerId() != ownerId) {
+            throw new IllegalOperationException(ErrorMessages.BadRequestErrorMessages.ILLEGAL_OPERATION);
+        }
+        group.getMembers().forEach((memberId,username) -> {
+            var member = userFMRepository.findById(memberId)
+                    .orElseThrow(() -> new NotFoundException(ErrorMessages.NotFoundErrorMessages.USER_NOT_FOUND));
+            member.getGroups().remove(group.getId());
+            userFMRepository.save(member);
+        });
+        abstractChatHolderRepository.deleteById(id);
+    }
+    public Group addGroupMember(Long ownerId, String id, Long memberId) {
+        var group = (Group) abstractChatHolderRepository.findById(id)
+                .orElseThrow(() -> new NotFoundException(ErrorMessages.NotFoundErrorMessages.GROUP_NOT_FOUND));
+        var member = userFMRepository.findById(memberId)
+                .orElseThrow(() -> new NotFoundException(ErrorMessages.NotFoundErrorMessages.USER_NOT_FOUND));
+        if(group.getOwnerId() != ownerId) {
+            throw new IllegalOperationException(ErrorMessages.BadRequestErrorMessages.ILLEGAL_OPERATION);
+        }
+        group.getMembers().put(member.getId(),member.getUsername());
+        member.getGroups().add(group.getId());
+        abstractChatHolderRepository.save(group);
+        userFMRepository.save(member);
+        return group;
+    }
+    public Group removeGroupMember(Long ownerId, String id, Long memberId) {
+        var group = (Group) abstractChatHolderRepository.findById(id)
+                .orElseThrow(() -> new NotFoundException(ErrorMessages.NotFoundErrorMessages.GROUP_NOT_FOUND));
+        var member = userFMRepository.findById(memberId)
+                .orElseThrow(() -> new NotFoundException(ErrorMessages.NotFoundErrorMessages.USER_NOT_FOUND));
+        if(group.getOwnerId() != ownerId) {
+            throw new IllegalOperationException(ErrorMessages.BadRequestErrorMessages.ILLEGAL_OPERATION);
+        }
+        if(!group.getMembers().containsKey(memberId)) {
+            group.getMembers().remove(member.getId());
+            group.setOwnerId(group.getMembers().keySet().stream().findFirst().get());
+        } else {
+            group.getMembers().remove(member.getId());
+        }
+        member.getGroups().remove(group.getId());
+        abstractChatHolderRepository.save(group);
+        userFMRepository.save(member);
+        return group;
     }
 }
