@@ -50,7 +50,7 @@ public class SecurityConfig {
                 HttpHeaders.AUTHORIZATION,
                 HttpHeaders.CONTENT_TYPE,
                 HttpHeaders.ACCEPT));
-        configuration.setAllowedMethods(Arrays.asList("GET","POST","PUT"));
+        configuration.setAllowedMethods(Arrays.asList("GET","POST","PUT", "DELETE"));
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", configuration);
         return source;
