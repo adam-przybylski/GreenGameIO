@@ -17,8 +17,6 @@ import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.data.mongodb.repository.config.EnableMongoRepositories;
 
 @SpringBootApplication
-@EnableJpaRepositories(basePackages = "io.greengame.greengameio.repository")
-@EnableMongoRepositories(basePackages = "io.greengame.greengameio.friendmodule.repositories")
 public class GreenGameIoApplication {
 
 	public static void main(String[] args) {
@@ -31,6 +29,7 @@ public class GreenGameIoApplication {
 			//password is password
 				userService.createUser(new User( "admin", "$2b$12$6J4h6z.Er73Ud7zWhUT4yueCCFl2xCLkUZGHi8JtJYYwxp3NHtbBK", "admin@email.com", UserType.ADMINISTRATOR));
 				userService.createUser(new User( "user", "$2b$12$6J4h6z.Er73Ud7zWhUT4yueCCFl2xCLkUZGHi8JtJYYwxp3NHtbBK", "user@email.com", UserType.USER));
+			userService.createUser(new User( "user11", "$2b$12$6J4h6z.Er73Ud7zWhUT4yueCCFl2xCLkUZGHi8JtJYYwxp3NHtbBK", "user11@email.com", UserType.USER));
 		};
 	}
 

@@ -4,12 +4,15 @@ import io.greengame.greengameio.friendmodule.exceptions.ErrorMessages;
 import io.greengame.greengameio.friendmodule.exceptions.IllegalOperationException;
 import io.greengame.greengameio.friendmodule.exceptions.NotFoundException;
 import io.greengame.greengameio.friendmodule.model.Friend;
+import io.greengame.greengameio.friendmodule.model.Group;
 import io.greengame.greengameio.friendmodule.repositories.AbstractChatHolderRepository;
 import io.greengame.greengameio.friendmodule.repositories.UserFMRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
 
 @Component
 @RequiredArgsConstructor
@@ -70,5 +73,28 @@ public class FriendManager {
         abstractChatHolderRepository.delete(friend);
         userFMRepository.save(receiver);
         userFMRepository.save(sender);
+    }
+    public List<Friend> findFriends(Long id) {
+        var user = userFMRepository.findById(id)
+                .orElseThrow(() -> new NotFoundException(ErrorMessages.NotFoundErrorMessages.USER_NOT_FOUND));
+        return abstractChatHolderRepository
+                .findAllById(user.getFriends())
+                .stream()
+                .map(friend -> (Friend) friend)
+                .toList();
+    }
+    public List<Group> findGroups(Long id) {
+        var user = userFMRepository.findById(id)
+                .orElseThrow(() -> new NotFoundException(ErrorMessages.NotFoundErrorMessages.USER_NOT_FOUND));
+        return abstractChatHolderRepository
+                .findAllById(user.getGroups())
+                .stream()
+                .map(group -> (Group) group)
+                .toList();
+    }
+    public List<Long> findFriendRequests(Long id) {
+        var user = userFMRepository.findById(id)
+                .orElseThrow(() -> new NotFoundException(ErrorMessages.NotFoundErrorMessages.USER_NOT_FOUND));
+        return user.getFriendRequests();
     }
 }
