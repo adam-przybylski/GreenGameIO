@@ -10,7 +10,7 @@ import java.util.ArrayList;
 @Document
 public class UserFM {
     private Long id;
-    private ArrayList<String> friends;
-    private ArrayList<String> groups;
-    private ArrayList<Long> friendRequests;
+    private ArrayList<String> friends = new ArrayList<>();
+    private ArrayList<String> groups = new ArrayList<>();
+    private ArrayList<Long> friendRequests = new ArrayList<>();
 }
