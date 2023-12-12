@@ -18,9 +18,9 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http.authorizeHttpRequests((requests) -> { requests
-                        .requestMatchers("/api/v1/users").hasAnyAuthority("ROLE_USER", "ROLE_ADMINISTRATOR")
+                        .requestMatchers("/api/v1/users/**").hasAnyAuthority("ROLE_USER", "ROLE_ADMINISTRATOR")
                         .requestMatchers("/api/v1/quizzes/**").hasAnyAuthority("ROLE_USER", "ROLE_ADMINISTRATOR")
-                .requestMatchers("/api/v1/authentication").permitAll();
+                .requestMatchers("/api/v1/authentication/**").permitAll();
         })
                 .httpBasic(Customizer.withDefaults())
                 .formLogin(Customizer.withDefaults());
