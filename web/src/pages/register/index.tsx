@@ -2,13 +2,16 @@ import { FC } from "react";
 import { FormProvider, useForm } from "react-hook-form";
 import Input from "../../components/fields/Input";
 import Button from "../../components/Button";
-import { api, setAuthHeader } from "../../api/api.config.ts";
-import { LoginRequest } from "../../types/loginRequest.ts";
+import { RegisterRequest } from "../../types/registerRequest";
+import { api } from "../../api/api.config.ts";
 import { useNavigate } from "react-router-dom";
 
-const LoginPage: FC = () => {
-  const methods = useForm<LoginRequest>({
+
+const RegisterPage: FC = () => {
+
+  const methods = useForm<RegisterRequest>({
     values: {
+      email: "",
       login: "",
       password: "",
     },
@@ -18,34 +21,33 @@ const LoginPage: FC = () => {
   const navigation = useNavigate();
 
   const onSubmit = handleSubmit((values) => {
-
-    api.post('/authentication/login', values)
+    api.post('/authentication/register', values)
       .then(response => {
-        setAuthHeader(response.data.token);
-        navigation("/");
+        console.log(response);
+        navigation("/login");
       })
       .catch(error => {
-        setAuthHeader("");
         console.error(error);
       })
   });
 
   return (
     <>
-      <p className="font-sans text-xl italic font-medium mt-7 text-center">Logowanie</p>
+      <p className="font-sans text-xl italic font-medium mt-1 text-center">Rejestracja</p>
       <div className="flex justify-center">
         <FormProvider {...methods}>
           <form onSubmit={onSubmit} className="pt-[50px] w-[60%]">
+            <Input label="Email: " type="email" placeholder="Podaj email" name="email" />
             <Input label="Login: " placeholder="Podaj login" name="login" />
             <Input label="Hasło: " placeholder="Podaj hasło" name="password" type="password" />
             <div className="flex justify-center">
-              <Button type="submit" label="Zaloguj się" className="bg-nice-green w-full mt-6 h-9 rounded-md font-medium" />
+              <Button type="submit" label="Zarejestruj się" className="bg-nice-green w-full mt-6 h-9 rounded-md font-medium" />
             </div>
           </form>
         </FormProvider>
       </div>
     </>
   );
-};
+}
 
-export default LoginPage;
+export default RegisterPage;
