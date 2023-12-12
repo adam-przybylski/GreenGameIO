@@ -1,23 +1,52 @@
-import { FC, useEffect } from "react";
-import { Outlet, useNavigate } from "react-router-dom";
+import { FC, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { useUserContext } from "../../context/userContext";
+import { AccountTypeEnum } from "../../types/accountType";
+import AdministrationNav from "../../components/AdministrationNav";
+import SubPanel from "../../components/SubPanel";
+import AdminUsers from "./usersAdmin";
+import AdminTasks from "./tasksAdmin";
+
+
+const panels = {
+  users: <AdminUsers />,
+  tasks: <AdminTasks />,
+  quizes: <AdminTasks />,
+} as const;
+
+export type Panel = keyof typeof panels;
 
 const AdminLayout: FC = () => {
-  const { accountType } = useUserContext();
-  const navigate = useNavigate();
+  const { account } = useUserContext();
+  const navigation = useNavigate();
+  const [panel, setPanel] = useState<Panel>("users");
 
-  useEffect(() => {
-    if (accountType !== "Admin") {
-      navigate("/");
-    }
-  }, [accountType, navigate]);
+  if (account?.type !== AccountTypeEnum.ADMIN) {
+    navigation("/");
+    return;
+  }
+
+  const handleSubPanelClick = (event: React.MouseEvent<HTMLDivElement>, message: Panel) => {
+    setPanel(message);
+  }
 
   return (
-    <main className="h-screen flex justify-center items-center bg-nice-green">
-      <div className="w-2/3 min-h-5/6 bg-white rounded-lg grid grid-cols-3 place-items-center">
-        <Outlet />
-      </div>
-    </main>
+    <>
+      <AdministrationNav>
+        <SubPanel onClick={handleSubPanelClick} message="users">
+          <p>Użytkownicy</p>
+        </SubPanel>
+        <SubPanel onClick={handleSubPanelClick} message="quizes">
+          <p>Quizy</p>
+        </SubPanel>
+        <SubPanel onClick={handleSubPanelClick} message="tasks">
+          <p>Zadania codzienne</p>
+        </SubPanel>
+      </AdministrationNav>
+      <main>
+        {panels[panel]}
+      </main>
+    </>
   );
 };
 

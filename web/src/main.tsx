@@ -12,8 +12,8 @@ import LoginPage from "./pages/login";
 import RegisterPage from "./pages/register";
 import "./index.css";
 import AuthenticationLayout from "./pages/AuthenticationLayout";
-import UserContextProvider from "./context/userContext";
 import AdminLayout from "./pages/admin/AdminLayout";
+import UserContextProvider from "./context/userContext";
 
 const router = createBrowserRouter([
   {
