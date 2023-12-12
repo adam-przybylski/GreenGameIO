@@ -36,19 +36,25 @@ const LoginPage: FC = () => {
         navigation("/");
       })
       .catch(error => {
-        setAuthHeader("");
         console.error(error);
       })
   });
 
+  const handleClick = () => {
+    navigation("/register")
+  }
+
   return (
     <>
-      <p className="font-sans text-xl italic font-medium mt-7 text-center">Logowanie</p>
+      <p className="font-sans text-xl italic font-medium mt-28 text-center">Logowanie</p>
       <div className="flex justify-center">
         <FormProvider {...methods}>
           <form onSubmit={onSubmit} className="pt-[50px] w-[60%]">
             <Input label="Login: " placeholder="Podaj login" name="login" />
             <Input label="Hasło: " placeholder="Podaj hasło" name="password" type="password" />
+            <div onClick={handleClick} className="hover:cursor-pointer">
+              <p>Zarejestruj się</p>
+            </div>
             <div className="flex justify-center">
               <Button type="submit" label="Zaloguj się" className="bg-nice-green w-full mt-6 h-9 rounded-md font-medium" />
             </div>

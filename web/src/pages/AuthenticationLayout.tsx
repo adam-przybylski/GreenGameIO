@@ -21,7 +21,7 @@ const AuthenticationLayout: FC = () => {
                     <p className="font-sans text-3xl italic font-medium mt-7 text-center">GreenGameIO</p>
                 </div>
 
-                <div className="bg-white h-[100%] w-[60%] pt-40">
+                <div className="bg-white h-[100%] w-[60%]">
                     <Outlet />
                 </div>
             </div>

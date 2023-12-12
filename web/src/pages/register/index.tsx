@@ -33,7 +33,7 @@ const RegisterPage: FC = () => {
 
   return (
     <>
-      <p className="font-sans text-xl italic font-medium mt-1 text-center">Rejestracja</p>
+      <p className="font-sans text-xl italic font-medium mt-20 text-center">Rejestracja</p>
       <div className="flex justify-center">
         <FormProvider {...methods}>
           <form onSubmit={onSubmit} className="pt-[50px] w-[60%]">
