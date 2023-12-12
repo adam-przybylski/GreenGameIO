@@ -3,6 +3,7 @@ package io.greengame.greengameio.services;
 import io.greengame.greengameio.entity.HiScore;
 import io.greengame.greengameio.entity.Quiz;
 import io.greengame.greengameio.entity.User;
+import io.greengame.greengameio.exceptions.hiScore.HiScoreNotFoundException;
 import io.greengame.greengameio.repository.HiScoreRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -38,9 +39,7 @@ public class HiScoreService {
     // Update
 
     public void updateHiScore(HiScore hiScore) {
-        HiScore hiScoreFromDB = hiScoreRepository.findById(hiScore.getHiScoreID()).orElseThrow(() -> new RuntimeException("High score with given ID could not be found in the database."));
-        hiScoreFromDB.setHiScore(hiScore.getHiScore());
-        hiScoreRepository.save(hiScoreFromDB);
+        hiScoreRepository.save(hiScore);
     }
 
     // Delete

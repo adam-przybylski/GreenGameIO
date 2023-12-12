@@ -1,12 +1,15 @@
 package io.greengame.greengameio.controller;
 
 import io.greengame.greengameio.entity.*;
+import io.greengame.greengameio.exceptions.quiz.QuizNotFoundException;
 import io.greengame.greengameio.services.*;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
+import java.net.URI;
 
 @RestController
 @Validated
@@ -22,63 +25,88 @@ public class QuizController {
     private final UserService userService;
 
     @PostMapping
-    public Quiz createQuiz(@RequestBody Quiz quiz) {
+    public ResponseEntity<?> createQuiz(@RequestBody Quiz quiz) {
         Quiz newQuiz = quizService.createQuiz(quiz);
-
         for (Question question : quiz.getListOfQuestions()) {
             questionService.createQuestion(question);
-
             for (Answer answer : question.getQuestionAnswers()) {
                 answerService.createAnswer(answer);
             }
         }
-
-        return newQuiz;
+        return ResponseEntity.created(URI.create("http://localhost:8081/api/v1/quizzes/" + newQuiz.getQuizID())).contentType(MediaType.APPLICATION_JSON).body(newQuiz);
     }
 
     @GetMapping("/id/{id}")
-    public Quiz getQuizByID(@PathVariable Long id) {
-        return quizService.getQuiz(id);
+    public ResponseEntity<?> getQuizByID(@PathVariable Long id) {
+        Quiz quiz = null;
+        try {
+            quiz = quizService.getQuiz(id);
+            return ResponseEntity.ok().contentType(MediaType.APPLICATION_JSON).body(quiz);
+        } catch (QuizNotFoundException exception) {
+            return ResponseEntity.notFound().build();
+        }
+
     }
 
-    @GetMapping("/title/{quizTitle}")
-    public Quiz getQuizByTitle(@PathVariable String quizTitle) {
-        return quizService.getQuizByQuizTitle(quizTitle);
+    @GetMapping("/title/{title}")
+    public ResponseEntity<?> getQuizByTitle(@PathVariable String title) {
+        try {
+            Quiz quiz = quizService.getQuizByQuizTitle(title);
+            return ResponseEntity.ok().contentType(MediaType.APPLICATION_JSON).body(quiz);
+        } catch (QuizNotFoundException exception) {
+            return ResponseEntity.notFound().build();
+        }
     }
 
     @PostMapping("/id/{quizID}/modify")
-    public void modifyQuiz(@PathVariable Long quizID, @RequestBody Quiz quiz) {
+    public ResponseEntity<?> modifyQuiz(@PathVariable Long quizID, @RequestBody Quiz quiz) {
         quiz.setQuizID(quizID);
         quizService.updateQuiz(quiz);
+        return ResponseEntity.noContent().build();
     }
 
     @DeleteMapping("/id/{quizID}")
-    public void deleteQuiz(@PathVariable Long quizID) {
-        quizService.deleteQuiz(quizService.getQuiz(quizID));
+    public ResponseEntity<?> deleteQuiz(@PathVariable Long quizID) {
+        try {
+            Quiz quiz = quizService.getQuiz(quizID);
+            quizService.deleteQuiz(quiz);
+            return ResponseEntity.noContent().build();
+        } catch (QuizNotFoundException exception) {
+            return ResponseEntity.badRequest().contentType(MediaType.APPLICATION_JSON).build();
+        }
     }
 
     @GetMapping("/id/{quizID}/user-id/{userID}")
-    public HiScore getHiScoreForUserInCertainQuiz(@PathVariable Long userID, @PathVariable Long quizID) {
-        User user = userService.getUserById(userID);
-        Quiz quiz = quizService.getQuiz(quizID);
-        return hiScoreService.getHighScoreByUserAndQuiz(user, quiz);
+    public ResponseEntity<?> getHiScoreForUserInCertainQuiz(@PathVariable Long userID, @PathVariable Long quizID) {
+        try {
+            User user = userService.getUserById(userID);
+            Quiz quiz = quizService.getQuiz(quizID);
+            HiScore hiScore = hiScoreService.getHighScoreByUserAndQuiz(user, quiz);
+            return ResponseEntity.ok().contentType(MediaType.APPLICATION_JSON).body(hiScore.getHiScore());
+        } catch (QuizNotFoundException exception) {
+            return ResponseEntity.badRequest().contentType(MediaType.APPLICATION_JSON).body(exception.getMessage());
+        }
     }
 
-    @GetMapping("/id/{quizID}/check")
-    public int checkQuiz(@PathVariable Long quizID, @RequestBody Quiz quiz) {
-        Quiz quizFromDB = quizService.getQuiz(quizID);
-        int numberOfCorrectAnswers = 0;
-        for (int i = 0; i < quizFromDB.getListOfQuestions().size(); i++) {
-            if (quizFromDB.getListOfQuestions().get(i).getCorrectAnswer()
-                    .equals(quiz.getListOfQuestions().get(i).getCorrectAnswer())) {
-                numberOfCorrectAnswers++;
+    @PostMapping("/id/{quizID}/check")
+    public ResponseEntity<?> checkQuiz(@PathVariable Long quizID, @RequestBody Quiz quiz) {
+        try {
+            Quiz quizFromDB = quizService.getQuiz(quizID);
+            int numberOfCorrectAnswers = 0;
+            for (int i = 0; i < quizFromDB.getListOfQuestions().size(); i++) {
+                if (quizFromDB.getListOfQuestions().get(i).getCorrectAnswer()
+                        .equals(quiz.getListOfQuestions().get(i).getCorrectAnswer())) {
+                    numberOfCorrectAnswers++;
+                }
             }
+            return ResponseEntity.ok().contentType(MediaType.APPLICATION_JSON).body(numberOfCorrectAnswers);
+        } catch (QuizNotFoundException exception) {
+            return ResponseEntity.badRequest().contentType(MediaType.APPLICATION_JSON).body(exception.getMessage());
         }
-        return numberOfCorrectAnswers;
     }
 
     @GetMapping
-    public List<Quiz> getAllQuizzes() {
-        return quizService.getAllQuizzes();
+    public ResponseEntity<?> getAllQuizzes() {
+        return ResponseEntity.ok().contentType(MediaType.APPLICATION_JSON).body(quizService.getAllQuizzes());
     }
 }

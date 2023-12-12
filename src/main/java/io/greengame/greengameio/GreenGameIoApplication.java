@@ -39,7 +39,7 @@ public class GreenGameIoApplication {
 			Answer answerNo2ForQ3 = new Answer("Fałsz");
 			Question questionNo3 = new Question("Energia słoneczna jest odnawialnym źródłem energii.", 3, List.of(answerNo1ForQ3, answerNo2ForQ3), answerNo1ForQ3);
 
-			Quiz quiz = new Quiz("Quiz testowy", 1, admin, LocalDateTime.now().minusDays(1), List.of(questionNo1, questionNo2, questionNo3));
+			Quiz quiz = new Quiz("QuizTestowy", 1, admin, LocalDateTime.now().minusDays(1), List.of(questionNo1, questionNo2, questionNo3));
 
 			answerRepository.saveAll(List.of(answerNo1ForQ1, answerNo2ForQ1,
 					answerNo1ForQ2, answerNo2ForQ2, answerNo3ForQ2, answerNo4ForQ2,

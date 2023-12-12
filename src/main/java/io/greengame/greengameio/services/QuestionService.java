@@ -1,6 +1,7 @@
 package io.greengame.greengameio.services;
 
 import io.greengame.greengameio.entity.Question;
+import io.greengame.greengameio.exceptions.question.QuestionNotFoundException;
 import io.greengame.greengameio.repository.QuestionRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -19,15 +20,13 @@ public class QuestionService {
 
     // Read
 
-    public Question getQuestion(Long questionID) {
-        return questionRepository.findById(questionID).orElseThrow(() -> new RuntimeException("Question with given ID could not be found in the database."));
+    public Question getQuestion(Long questionID) throws QuestionNotFoundException {
+        return questionRepository.findById(questionID).orElseThrow(() -> new QuestionNotFoundException("Question with given ID could not be found in the database."));
     }
 
     // Update
 
     public void updateQuestion(Question question) {
-        Question questionFromDB = questionRepository.findById(question.getQuestionID()).orElseThrow(() -> new RuntimeException("Question with given ID could not be found in the database."));
-        questionRepository.delete(questionFromDB);
         questionRepository.save(question);
     }
 

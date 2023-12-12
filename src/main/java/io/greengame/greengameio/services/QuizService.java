@@ -1,6 +1,7 @@
 package io.greengame.greengameio.services;
 
 import io.greengame.greengameio.entity.*;
+import io.greengame.greengameio.exceptions.quiz.QuizNotFoundException;
 import io.greengame.greengameio.repository.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -21,23 +22,25 @@ public class QuizService {
 
     // Read
 
-    public Quiz getQuiz(Long quizID) {
-        return quizRepository.findById(quizID).orElseThrow(() -> new RuntimeException("Quiz with given ID could not be found in the database."));
+    public Quiz getQuiz(Long quizID) throws QuizNotFoundException {
+        return quizRepository.findById(quizID).orElseThrow(() -> new QuizNotFoundException("Quiz with given ID could not be found in the database."));
     }
 
     public List<Quiz> getAllQuizzes() {
         return quizRepository.findAll();
     }
 
-    public Quiz getQuizByQuizTitle(String quizTitle) {
-        return quizRepository.getQuizByQuizTitle(quizTitle);
+    public Quiz getQuizByQuizTitle(String quizTitle) throws QuizNotFoundException {
+        Quiz quiz = quizRepository.getQuizByQuizTitle(quizTitle);
+        if (quiz == null) {
+            throw new QuizNotFoundException("Quiz with given title could not be found in the database.");
+        }
+        return quiz;
     }
 
     // Update
 
     public void updateQuiz(Quiz quiz) {
-        Quiz quizFromDatabase = quizRepository.findById(quiz.getQuizID()).orElseThrow(() -> new RuntimeException("Quiz with given ID could not be found in the database."));
-        quizRepository.delete(quizFromDatabase);
         quizRepository.save(quiz);
     }
 
