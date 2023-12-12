@@ -2,7 +2,6 @@ import { FC } from "react";
 import SubPanel from "../../../components/SubPanel";
 import { useNavigate } from "react-router-dom";
 
-
 const AdminMain: FC = () => {
 
     const navigate = useNavigate();

@@ -8,12 +8,13 @@ import AdminUsers from "./usersAdmin";
 import AdminTasks from "./tasksAdmin";
 import LogoutButton from "../../components/LogoutButton";
 import { logoutUser } from "../../api/logout";
+import AdminQuizzes from "./quizesAdmin";
 
 
 const panels = {
     users: <AdminUsers />,
     tasks: <AdminTasks />,
-    quizes: <AdminTasks />,
+    quizes: <AdminQuizzes />,
 } as const;
 
 export type Panel = keyof typeof panels;
