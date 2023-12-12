@@ -4,10 +4,7 @@ import io.greengame.greengameio.friendmodule.dto.GroupUpdateDTO;
 import io.greengame.greengameio.friendmodule.exceptions.ErrorMessages;
 import io.greengame.greengameio.friendmodule.exceptions.IllegalOperationException;
 import io.greengame.greengameio.friendmodule.exceptions.NotFoundException;
-import io.greengame.greengameio.friendmodule.model.Chat;
-import io.greengame.greengameio.friendmodule.model.Friend;
-import io.greengame.greengameio.friendmodule.model.Group;
-import io.greengame.greengameio.friendmodule.model.UserFM;
+import io.greengame.greengameio.friendmodule.model.*;
 import io.greengame.greengameio.friendmodule.repositories.AbstractChatHolderRepository;
 import io.greengame.greengameio.friendmodule.repositories.ChatRepository;
 import io.greengame.greengameio.friendmodule.repositories.UserFMRepository;
@@ -190,5 +187,16 @@ public class FriendManager {
         abstractChatHolderRepository.save(group);
         userFMRepository.save(member);
         return group;
+    }
+    public Chat getChatById(String id) {
+        return chatRepository.findById(id)
+                .orElseThrow(() -> new NotFoundException(ErrorMessages.NotFoundErrorMessages.CHAT_NOT_FOUND));
+    }
+    public Message sendMessage(String chatId, Message message) {
+        var chat = chatRepository.findById(chatId)
+                .orElseThrow(() -> new NotFoundException(ErrorMessages.NotFoundErrorMessages.CHAT_NOT_FOUND));
+        chat.getMessages().add(message);
+        chat = chatRepository.save(chat);
+        return chat.getMessages().get(chat.getMessages().size() - 1);
     }
 }
