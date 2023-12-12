@@ -4,12 +4,12 @@ import Nav from "../components/Nav";
 
 const Layout: FC = () => {
   return (
-    <div className="bg-[#212121] w-full flex flex-col items-center text-white">
-      <div className="w-2/3 flex-1 bg-transparent mb-32 py-5">
-        <Outlet />
-      </div>
-      <div className="w-full h-32 bg-[#121212] flex justify-center fixed bottom-0 left-0">
+    <div className="bg-[#212121] w-full h-screen flex items-center text-white">
+      <div className="w-32 h-full bg-[#121212] flex flex-col justify-center">
         <Nav />
+      </div>
+      <div className="flex-1 bg-transparent h-full w-full">
+        <Outlet />
       </div>
     </div>
   );

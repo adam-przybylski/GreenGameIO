@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Snake</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <div class="body">
+        <div id="scoreView">Score: 0</div>
+        <div id="gameBoard"></div>
+    </div>
+    <div class="note-header">
+        <div>
+            <img src="img/smallQuestionMark.png" alt="Question Mark">
+            <div class="note-text">Jak grać?</div>
+        </div>
+    </div>
+    <div class="note-container">
+        <div class="note-content">
+            <h1 style="margin-right: 10%; margin-left: 10%; text-align: center" >Poradnik do gry Snake</h1>
+            <ul>
+                <li>Celem gry jest zbieranie śmieci na planszy za pomocą poruszającego się węża.</li>
+                <li>Oddawaj zebrane śmieci do odpowiedniego kosza, aby zdobywać punkty</li>
+                <li>Steruj wężem za pomocą klawiszy strzałek: góra, dół, lewo, prawo</li>
+                <li>Zbieraj papiery i umieszczaj je w niebieskim koszu</li>
+                <li>Zbieraj butelki i umieszczaj je w zielonym koszu</li>
+                <li>Za każdy poprawnie umieszczony śmieć otrzymujesz punkt</li>
+                <li> Zderzenie ze ścianą lub najechanie na własny ogon kończy grę</li>
+                <li> Oddawanie śmieci do niewłaściwego kosza również prowadzi do przegranej</li>
+            </ul>
+        </div>
+    </div>
+    <div class="overlay" id="gameOverModal" style="display: none;">
+        <div class="modal-content">
+            <h5>Przegrana</h5>
+            <p>Przegrałeś!  <span id="pointsEarned"></span></p>
+        </div>
+    </div>
+    <div class="overlay" id="pauseAlertModal" style="display: none;">
+        <div class="modal-content">
+            <h5>Gra zatrzymana</h5>
+            <p>Naciśnij "Esc" ponownie żeby wznowić grę.</p>
+        </div>
+    </div>
+</body>
+<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+<script src="js/index.js"></script>
+</html>
