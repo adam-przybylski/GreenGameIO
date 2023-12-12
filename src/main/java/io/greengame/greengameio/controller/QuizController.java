@@ -6,6 +6,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @Validated
 @RequestMapping("/api/v1/quizzes")
@@ -73,5 +75,10 @@ public class QuizController {
             }
         }
         return numberOfCorrectAnswers;
+    }
+
+    @GetMapping
+    public List<Quiz> getAllQuizzes() {
+        return quizService.getAllQuizzes();
     }
 }

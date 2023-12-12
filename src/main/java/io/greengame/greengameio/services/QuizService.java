@@ -5,6 +5,8 @@ import io.greengame.greengameio.repository.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 @RequiredArgsConstructor
 public class QuizService {
@@ -21,6 +23,10 @@ public class QuizService {
 
     public Quiz getQuiz(Long quizID) {
         return quizRepository.findById(quizID).orElseThrow(() -> new RuntimeException("Quiz with given ID could not be found in the database."));
+    }
+
+    public List<Quiz> getAllQuizzes() {
+        return quizRepository.findAll();
     }
 
     public Quiz getQuizByQuizTitle(String quizTitle) {
