@@ -1,4 +1,4 @@
-import { FC, useState } from "react";
+import { FC, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useUserContext } from "../../context/userContext";
 import { AccountTypeEnum } from "../../types/accountType";
@@ -6,6 +6,8 @@ import AdministrationNav from "../../components/AdministrationNav";
 import SubPanel from "../../components/SubPanel";
 import AdminUsers from "./usersAdmin";
 import AdminTasks from "./tasksAdmin";
+import LogoutButton from "../../components/LogoutButton";
+import { logoutUser } from "../../api/logout";
 
 
 const panels = {
@@ -21,10 +23,11 @@ const AdminLayout: FC = () => {
   const navigation = useNavigate();
   const [panel, setPanel] = useState<Panel>("users");
 
-  if (account?.type !== AccountTypeEnum.ADMIN) {
-    navigation("/");
-    return;
-  }
+  useEffect(() => {
+    if (account?.type !== AccountTypeEnum.ADMIN) {
+      navigation('/');
+    }
+  }, [account, navigation]);
 
   const handleSubPanelClick = (event: React.MouseEvent<HTMLDivElement>, message: Panel) => {
     setPanel(message);
@@ -42,6 +45,7 @@ const AdminLayout: FC = () => {
         <SubPanel onClick={handleSubPanelClick} message="tasks">
           <p>Zadania codzienne</p>
         </SubPanel>
+        <LogoutButton logoutUser={logoutUser}></LogoutButton>
       </AdministrationNav>
       <main>
         {panels[panel]}
