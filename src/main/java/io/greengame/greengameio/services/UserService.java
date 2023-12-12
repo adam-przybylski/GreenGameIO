@@ -61,6 +61,7 @@ public class UserService {
     private void createUserFM(Long id,String username) {
         UserFM userFM = new UserFM();
         userFM.setId(id);
+        userFM.setUsername(username);
         userFMRepository.save(userFM);
     }
     private void deleteUserFM(Long id) {
