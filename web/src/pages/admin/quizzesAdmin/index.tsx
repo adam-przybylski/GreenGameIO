@@ -30,6 +30,9 @@ const AdminQuizzes: FC = () => {
     const [quizzes, setQuizzes] = useState<Quiz[] | null>(null);
     const [selectedQuiz, setSelectedQuiz] = useState<Quiz | null>(null);
     const [modalIsOpen, setModalIsOpen] = useState(false);
+    const [addModalIsOpen, setAddModalIsOpen] = useState(false);
+    const [editModalIsOpen, setEditModalIsOpen] = useState(false);
+    const [deleteModalIsOpen, setDeleteModalIsOpen] = useState(false);
 
     useEffect(() => {
         api.get("/quizzes")
@@ -42,60 +45,6 @@ const AdminQuizzes: FC = () => {
             });
     }, []);
 
-    /*
-    const createQuiz = async () => {
-        const quizData = {
-            quizID: 20,
-            quizTitle: "Gitara",
-            quizLength: 1,
-            quizCreator: {
-                id: 1,
-                username: "admin",
-                password: "$2b$12$6J4h6z.Er73Ud7zWhUT4yueCCFl2xCLkUZGHi8JtJYYwxp3NHtbBK",
-                email: "admin@email.com",
-                type: "ADMINISTRATOR"
-            },
-            quizOpenDate: new Date().toISOString(),
-            listOfQuestions: [
-                {
-                    questionID: 20,
-                    questionContent: "What is the capital of France?",
-                    questionNumber: 20,
-                    questionAnswers: [
-                        {
-                            answerID: 20,
-                            answerContent: "Paris",
-                        },
-                        {
-                            answerID: 21,
-                            answerContent: "Berlin",
-                        },
-                    ],
-                    correctAnswer: {
-                        answerID: 22,
-                        answerContent: "Paris",
-                    },
-                },
-            ],
-        };
-        console.log('Quiz Data:', quizData);
-        const config = {
-            headers: { Authorization: `Bearer ${getAuthToken()}` }
-        };
-        await api.post("/quizzes/", quizData, config);
-};
-*/
-/*
-        const deleteQuiz = async () => {
-            try {
-                    await api.delete("/quizzes/id/2");
-
-            } catch (error) {
-                console.error("Error deleting quiz:", error);
-            }
-        };
-
- */
 const openModal = (quiz: Quiz) => {
     setSelectedQuiz(quiz);
     setModalIsOpen(true);
@@ -122,37 +71,35 @@ return (
     <div>
         <h2 style={styles.headingStyles}>Panel zarządzania quizami</h2>
 
-        {/* Add Quiz Buttons */}
-        <div style={{marginBottom: '10px'}}>
+        <div style={{marginBottom: '10px', marginTop: '20px', textAlign: 'center'}}>
             <button
                 style={{
                     ...styles.buttonStyles,
-                    backgroundColor: '#4CAF50',
+                    backgroundColor: 'green',
                 }}
+                onClick={() => setAddModalIsOpen(true)}
             >
                 Dodaj Quiz
             </button>
-
             <button
                 style={{
                     ...styles.buttonStyles,
-                    backgroundColor: '#f44336', /* Red */
+                    backgroundColor: 'blue',
                     marginLeft: '10px',
                 }}
-            >
-                Usuń Quiz
-            </button>
-
-            <button
-                style={{
-                    ...styles.buttonStyles,
-                    backgroundColor: '#008CBA', /* Blue */
-                    marginLeft: '10px',
-                }}
-                onClick={() => {
-                }}
+                onClick={() => setEditModalIsOpen(true)}
             >
                 Edytuj Quiz
+            </button>
+            <button
+                style={{
+                    ...styles.buttonStyles,
+                    backgroundColor: 'red',
+                    marginLeft: '10px',
+                }}
+                onClick={() => setDeleteModalIsOpen(true)}
+            >
+                Usuń Quiz
             </button>
         </div>
 
@@ -220,9 +167,88 @@ return (
                 </div>
             )}
         </Modal>
+        <Modal
+            isOpen={addModalIsOpen}
+            onRequestClose={() => setAddModalIsOpen(false)}
+            contentLabel="Add Quiz"
+            style={styles.modalStyles}
+        >
+            <button
+                style={{
+                    ...styles.buttonStyles,
+                    position: 'absolute',
+                    bottom: '10px',
+                    left: '50%',
+                    transform: 'translateX(-50%)',
+                }}
+                onClick={() => setAddModalIsOpen(false)}
+            >
+                Zamknij
+            </button>
+        </Modal>
+
+        <Modal
+            isOpen={editModalIsOpen}
+            onRequestClose={() => setEditModalIsOpen(false)}
+            contentLabel="Edit Quiz"
+            style={styles.modalStyles}
+        >
+            <button
+                style={{
+                    ...styles.buttonStyles,
+                    position: 'absolute',
+                    bottom: '10px',
+                    left: '50%',
+                    transform: 'translateX(-50%)',
+                }}
+                onClick={() => setEditModalIsOpen(false)}
+            >
+                Zamknij
+            </button>
+        </Modal>
+
+        <Modal
+            isOpen={deleteModalIsOpen}
+            onRequestClose={() => setDeleteModalIsOpen(false)}
+            contentLabel="Delete Quiz"
+            style={styles.modalStyles}
+        >
+            <h2>Delete Quiz</h2>
+            <p>Select a quiz to delete:</p>
+            <ul>
+                {quizzes &&
+                    quizzes.map((quiz) => (
+                        <li key={quiz.quizID}>
+                            {quiz.quizTitle}
+                            <button
+                                style={{
+                                    ...styles.buttonStyles,
+                                    backgroundColor: 'red',
+                                    marginLeft: '10px',
+                                }}
+                                //onClick={() => handleDeleteQuiz(quiz.quizID)}
+                            >
+                                DELETE
+                            </button>
+                        </li>
+                    ))}
+            </ul>
+            <button
+                style={{
+                    ...styles.buttonStyles,
+                    position: 'absolute',
+                    bottom: '10px',
+                    left: '50%',
+                    transform: 'translateX(-50%)',
+                }}
+                onClick={() => setDeleteModalIsOpen(false)}
+            >
+                Zamknij
+            </button>
+        </Modal>
     </div>
 );
-}
+    }
 ;
 
 export default AdminQuizzes;
