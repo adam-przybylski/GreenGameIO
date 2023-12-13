@@ -83,6 +83,7 @@ public class FriendManager {
                 .orElseThrow(() -> new NotFoundException(ErrorMessages.BadRequestErrorMessages.ILLEGAL_OPERATION));
         receiver.getFriends().remove(friend.getId());
         sender.getFriends().remove(friend.getId());
+        chatRepository.deleteById(friend.getChatId());
         abstractChatHolderRepository.deleteById(friend.getId());
         userFMRepository.save(receiver);
         userFMRepository.save(sender);
@@ -152,6 +153,7 @@ public class FriendManager {
             member.getGroups().remove(group.getId());
             userFMRepository.save(member);
         });
+        chatRepository.deleteById(group.getChatId());
         abstractChatHolderRepository.deleteById(id);
     }
     public Group addGroupMember(Long ownerId, String id, Long memberId) {

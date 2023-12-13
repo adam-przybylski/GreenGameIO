@@ -27,13 +27,6 @@ import java.util.Collections;
 
 @Configuration
 public class Config  {
-//    @Bean
-//    MongoTransactionManager txManager(MongoDatabaseFactory mongoDbFactory) {
-//        return new MongoTransactionManager(mongoDbFactory);
-//    }
-
-
-
     @Bean
     public JpaTransactionManager transactionManager(EntityManagerFactory entityManagerFactory) {
         return new JpaTransactionManager(entityManagerFactory);
