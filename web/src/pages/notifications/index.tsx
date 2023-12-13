@@ -1,4 +1,4 @@
-import { FC, useLayoutEffect, useState } from "react";
+import { FC, useEffect, useState } from "react";
 import { api } from "../../api/api.config";
 import { Notification } from "../../types/Notification";
 import NotificationModal from "../../components/modals/NotificationModal";
@@ -10,27 +10,29 @@ const Notifications: FC = () => {
   const [notificationToAdd, setNotificationToAdd] = useState<boolean>(false);
 
   const handleGet = () => {
-    api.get("/notifications").then((res) => {
+    api.get("/admin/notifications").then((res) => {
       setData(res.data);
     });
   };
 
-  useLayoutEffect(() => handleGet());
+  useEffect(() => {
+    handleGet();
+  }, []);
 
   const handleEdit = (notificaiton: Notification) => {
-    api.put("/notifications", notificaiton).catch((error) => {
+    api.put("/admin/notifications", notificaiton).catch((error) => {
       console.log(error);
     });
   };
 
   const handleAdd = (notificaiton: Notification) => {
-    api.post("/notifications", notificaiton).catch((error) => {
+    api.post("/admin/notifications", notificaiton).catch((error) => {
       console.log(error);
     });
   };
 
   const handleRemove = (notificaiton: Notification) => {
-    api.delete(`/notifications/${notificaiton.id}`).catch((error) => {
+    api.delete(`/admin/notifications/${notificaiton.id}`).catch((error) => {
       console.log(error);
     });
   };
