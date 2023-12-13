@@ -2,6 +2,7 @@ package io.greengame.greengameio.friendmodule.endpoints;
 
 import io.greengame.greengameio.friendmodule.dto.GroupUpdateDTO;
 import io.greengame.greengameio.friendmodule.managers.FriendManager;
+import io.greengame.greengameio.friendmodule.model.Chat;
 import io.greengame.greengameio.friendmodule.model.Friend;
 import io.greengame.greengameio.friendmodule.model.Group;
 import io.greengame.greengameio.friendmodule.model.UserFM;
@@ -69,6 +70,10 @@ public class FriendModuleEndpoint {
     @PatchMapping("/{userId}/groups/{groupId}/remove-member")
     public void removeMemberFromGroup(@PathVariable Long userId, @PathVariable String groupId,@RequestParam Long memberId) {
         friendManager.removeGroupMember(userId, groupId, memberId);
+    }
+    @GetMapping("/chats/{chatId}")
+    public Chat findChat(@PathVariable String chatId) {
+        return friendManager.findChatById(chatId);
     }
 
 

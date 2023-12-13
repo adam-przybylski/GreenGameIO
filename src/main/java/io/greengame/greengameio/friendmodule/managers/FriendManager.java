@@ -72,9 +72,6 @@ public class FriendManager {
                 .orElseThrow(() -> new NotFoundException(ErrorMessages.NotFoundErrorMessages.USER_NOT_FOUND));
         var receiver = userFMRepository.findById(receiverId)
                 .orElseThrow(() -> new NotFoundException(ErrorMessages.NotFoundErrorMessages.USER_NOT_FOUND));
-        if(!receiver.getFriends().contains(senderId) || !sender.getFriends().contains(receiverId)) {
-            throw new IllegalOperationException(ErrorMessages.BadRequestErrorMessages.ILLEGAL_OPERATION);
-        }
         var friend = abstractChatHolderRepository.findById(receiver
                         .getFriends()
                         .stream()
@@ -188,7 +185,7 @@ public class FriendManager {
         userFMRepository.save(member);
         return group;
     }
-    public Chat getChatById(String id) {
+    public Chat findChatById(String id) {
         return chatRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException(ErrorMessages.NotFoundErrorMessages.CHAT_NOT_FOUND));
     }
