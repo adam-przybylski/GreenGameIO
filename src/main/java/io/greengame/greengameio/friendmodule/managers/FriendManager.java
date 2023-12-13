@@ -199,4 +199,7 @@ public class FriendManager {
         chat = chatRepository.save(chat);
         return chat.getMessages().get(chat.getMessages().size() - 1);
     }
+    public List<UserFM> findByUsernameContainsIgnoreCase(String username) {
+        return userFMRepository.findByUsernameContainsIgnoreCase(username);
+    }
 }

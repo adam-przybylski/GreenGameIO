@@ -21,16 +21,20 @@ public class FriendModuleEndpoint {
     public List<UserFM> findAllUserFMs() {
         return friendManager.findAllUserFMs();
     }
+    @GetMapping("/username-contains")
+    public List<UserFM> findByUsernameContainsIgnoreCase(@RequestParam String username) {
+        return friendManager.findByUsernameContainsIgnoreCase(username);
+    }
     @PatchMapping("/{userId}/send-friend-request")
-    public void sendFriendRequest(@PathVariable Long userId, Long receiverId) {
+    public void sendFriendRequest(@PathVariable Long userId, @RequestParam Long receiverId) {
         friendManager.sendFriendRequest(userId, receiverId);
     }
     @PatchMapping("/{userId}/accept-friend-request")
-    public void acceptFriendRequest(@PathVariable Long userId,Long senderId) {
+    public void acceptFriendRequest(@PathVariable Long userId,@RequestParam Long senderId) {
         friendManager.acceptFriendRequest(senderId, userId);
     }
     @PatchMapping("/{senderId}/remove-friend")
-    public void removeFriend(@PathVariable Long senderId, Long receiverId) {
+    public void removeFriend(@PathVariable Long senderId,@RequestParam Long receiverId) {
         friendManager.removeFriend(senderId, receiverId);
     }
     @GetMapping("/{userId}/get-friends")
@@ -58,11 +62,11 @@ public class FriendModuleEndpoint {
         friendManager.deleteGroup(userId, groupId);
     }
     @PatchMapping("/{userId}/groups/{groupId}/add-member")
-    public void addMemberToGroup(@PathVariable Long userId, @PathVariable String groupId, Long memberId) {
+    public void addMemberToGroup(@PathVariable Long userId, @PathVariable String groupId, @RequestParam Long memberId) {
         friendManager.addGroupMember(userId, groupId, memberId);
     }
     @PatchMapping("/{userId}/groups/{groupId}/remove-member")
-    public void removeMemberFromGroup(@PathVariable Long userId, @PathVariable String groupId, Long memberId) {
+    public void removeMemberFromGroup(@PathVariable Long userId, @PathVariable String groupId,@RequestParam Long memberId) {
         friendManager.removeGroupMember(userId, groupId, memberId);
     }
 
