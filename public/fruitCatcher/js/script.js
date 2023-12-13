@@ -62,9 +62,8 @@ class FruitCatcherGame{
         this.scoreHandle = document.getElementById("score");
         this.livesHandle = document.getElementById("lives");
         this.isGameRunning = true;
-        this.userId = 1;
+        this.userId = JSON.parse(window.localStorage.getItem("account")).id;
         this.scoreCopy = 0;
-        console.log(w)
     }
 
     gameLoop(){
