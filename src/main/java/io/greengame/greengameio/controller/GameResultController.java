@@ -20,7 +20,7 @@ public class GameResultController {
     }
 
     @PostMapping("updateUserXP/{userId}/{xp}")
-    void updateUserXP(@PathVariable Long userId,@PathVariable float xp) {
+    void updateUserXP(@PathVariable Long userId,@PathVariable double xp) {
         gameResultService.updateUserXP(userId, xp);
     }
 

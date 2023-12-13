@@ -31,7 +31,7 @@ public class GameResultService {
             gameResultRepository.save(gameResult);
         } else {
             GameResult newGameResult = new GameResult();
-            newGameResult.setId(userId);
+            newGameResult.setUserId(userId);
             newGameResult.setXp(xp);
             gameResultRepository.save(newGameResult);
         }

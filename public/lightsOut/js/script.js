@@ -109,8 +109,8 @@ function endGame() {
     showGameOverModal(points)
     const xpEarned = calculateXPfromPoints(points);
 
-    updateXPInDatabase(2, xpEarned); //TODO userId
-    updateLightsOutResult(2, points); //TODO userId
+    updateXPInDatabase(5, xpEarned); //TODO userId
+    updateLightsOutResult(5, points); //TODO userId
     resetGame();
 }
 
@@ -188,7 +188,7 @@ document.addEventListener('keydown', function (event) {
 });
 
 function calculateXPfromPoints(points) {
-    return Math.floor(points / 10);
+    return points / 5;
 }
 
 createBoard();
