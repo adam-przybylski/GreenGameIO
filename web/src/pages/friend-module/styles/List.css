@@ -10,13 +10,14 @@
     margin: 2rem;
 }
 
-#heading {
+#list > #heading {
     font-size: 64px;
     margin: 0 2rem 5rem 2rem;
     text-shadow: -2px 2px 0 #000, 
                           1px 1px 0 #000, 
                          1px -1px 0 #000, 
                         -1px -1px 0 #000;
+    box-shadow: -1px 1px 3px black;
     background-color: green;
     padding: 1rem 3rem 1rem 3rem;
     border-radius: 10rem 0 10rem 0;

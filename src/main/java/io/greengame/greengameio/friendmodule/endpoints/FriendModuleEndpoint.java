@@ -23,7 +23,7 @@ public class FriendModuleEndpoint {
     public List<UserFM> findAllUserFMs() {
         return friendManager.findAllUserFMs();
     }
-    @GetMapping("/{userId)/username-contains")
+    @GetMapping("/{userId}/username-contains")
     public List<UserFM> findByUsernameContainsIgnoreCase(@PathVariable Long userId,@RequestParam String username) {
         return friendManager.findByUsernameContainsIgnoreCase(userId,username);
     }
