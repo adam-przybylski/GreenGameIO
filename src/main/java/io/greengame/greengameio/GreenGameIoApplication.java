@@ -5,6 +5,7 @@ import io.greengame.greengameio.entity.User;
 import io.greengame.greengameio.entity.UserType;
 import io.greengame.greengameio.repository.GameResultRepository;
 import io.greengame.greengameio.repository.UserRepository;
+import io.greengame.greengameio.services.GameResultService;
 import io.greengame.greengameio.services.UserService;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
@@ -19,13 +20,20 @@ public class GreenGameIoApplication {
 	}
 
 	@Bean
-	CommandLineRunner commandLineRunner(UserRepository userRepository, GameResultRepository gameResultRepository) {
+	CommandLineRunner commandLineRunner(UserRepository userRepository, GameResultService gameResultService) {
 		return args -> {
 			//password is password
 				userRepository.save(new User(1L, "admin", "$2b$12$6J4h6z.Er73Ud7zWhUT4yueCCFl2xCLkUZGHi8JtJYYwxp3NHtbBK", "admin@email.com", UserType.ADMINISTRATOR));
 				userRepository.save(new User(2L, "user", "$2b$12$6J4h6z.Er73Ud7zWhUT4yueCCFl2xCLkUZGHi8JtJYYwxp3NHtbBK", "user@email.com", UserType.USER));
+			gameResultService.updateSnakeResult(1L,30);
+			gameResultService.updateUserXP(1L,69);
+			gameResultService.updateLightsOutResult(1L,32);
+			System.out.println(gameResultService.getLightOutScoreByUserId(1L));
+			System.out.println(gameResultService.getSnakeScoreByUserId(1L));
+			gameResultService.updateSnakeResult(1L,1000);
+			System.out.println(gameResultService.getSnakeScoreByUserId(1L));
 
-				gameResultRepository.save(gameResultRepository.save(new GameResult(11L, 12L, 10, 1, 2, 3)));
+
 		};
 	}
 

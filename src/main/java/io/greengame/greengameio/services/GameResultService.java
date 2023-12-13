@@ -36,14 +36,7 @@ public class GameResultService {
             gameResultRepository.save(newGameResult);
         }
     }
-   /* public GameResult updateGameResult(Long userId, GameResult gameResult) {
-        GameResult gameResult1 = gameResultRepository.findByUserId(userId).orElseThrow(() -> new RuntimeException("GameResult not found."));
-        gameResult1.setUserId(gameResult.getUserId());
-        gameResult1.setSnakeScore(gameResult.getSnakeScore());
-        gameResult1.setLightsOutScore(gameResult.getLightsOutScore());
-        gameResult1.setXp(gameResult.getXp());
-        return gameResultRepository.save(gameResult1);
-    }*/
+
 
 
     public GameResult updateSnakeResult(Long userId, int score) {
@@ -82,6 +75,14 @@ public class GameResultService {
             gameResultRepository.save(newGameResult);
             return newGameResult;
         }
+    }
+    public int getSnakeScoreByUserId(Long userId){
+        Optional<GameResult> optionalGameResult = gameResultRepository.findByUserId(userId);
+        return optionalGameResult.map(GameResult::getSnakeScore).orElse(0);
+    }
+    public int getLightOutScoreByUserId(Long userId){
+        Optional<GameResult> optionalGameResult = gameResultRepository.findByUserId(userId);
+        return optionalGameResult.map(GameResult::getLightsOutScore).orElse(0);
     }
 
     public int getFruitCatcherScoreByUserId(Long userId) {
