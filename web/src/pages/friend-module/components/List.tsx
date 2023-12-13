@@ -5,14 +5,8 @@ import "../styles/List.css";
 
 const List: FC = ({ friends, userID }) => {
     const [areFriendsDisplayed, setAreFriendsDisplayed] = useState(true);
-    const displayFriends = () => {
-        console.log(friends.filter(friend => friend.id == userID))
-        setAreFriendsDisplayed(true);
-    }
-    const displayGroups = () => {
-        setAreFriendsDisplayed(false);
-    }
-
+    const displayFriends = () => setAreFriendsDisplayed(true);
+    const displayGroups = () => setAreFriendsDisplayed(false);
     return (
         <div id="list">
             <h1 id="heading">Friends</h1>
@@ -28,11 +22,11 @@ const List: FC = ({ friends, userID }) => {
                 {areFriendsDisplayed && 
                 <div id="friends">
                     {friends.map((x, i) => {
-                        return <Friend friend={x}></Friend>
+                        return <Friend friend={x} userID={userID}></Friend>
                     })}
                 </div>}
                 {!areFriendsDisplayed && 
-                    <div id="friends">
+                    <div id="groups">
                         {friends.filter(friend => friend.id == userID)[0].groups.map((x, i) => {
                             return <Group group={x}></Group>
                         })}

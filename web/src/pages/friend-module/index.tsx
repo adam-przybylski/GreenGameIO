@@ -4,34 +4,14 @@ import List from "./components/List";
 import { useParams } from "react-router-dom";
 
 const FriendPage: FC = () => {
+    const [friends, setFriends] = useState([]);
     const { id } = useParams();
-    const friends = [
-        {
-            "id": 1,
-            "username": "admin",
-            "friends": [],
-            "groups": ["gra", "gas"],
-            "friendRequests": {}
-        },
-        {
-            "id": 2,
-            "username": "user",
-            "friends": [],
-            "groups": [],
-            "friendRequests": {}
-        },
-        {
-            "id": 3,
-            "username": "user11",
-            "friends": [],
-            "groups": [],
-            "friendRequests": {}
-        }
-    ];
-    const [friendsList, setFriendsList] = useState(friends);
+    useEffect(() => {
+        api.getFriends(setFriends, id);
+    }, []);
     return (
         <div>
-            <List friends={friendsList} userID={id}></List>
+            <List friends={friends} userID={id}></List>
         </div>
     );
 };

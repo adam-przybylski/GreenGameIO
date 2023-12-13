@@ -5,6 +5,7 @@ import io.greengame.greengameio.friendmodule.managers.FriendManager;
 import io.greengame.greengameio.friendmodule.model.Friend;
 import io.greengame.greengameio.friendmodule.model.Group;
 import io.greengame.greengameio.friendmodule.model.UserFM;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
