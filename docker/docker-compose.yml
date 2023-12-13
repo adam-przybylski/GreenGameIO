@@ -6,38 +6,16 @@ services:
     image: mongo:4.4
     volumes:
       - ~/mongors/data1:/data/frienddb
-      - ./rs-init.sh:/scripts/rs-init.sh
-    networks:
-      - mongors-network
     ports:
       - 27021:27017
-    links:
-      - mongo2
-      - mongo3
     restart: always
-    entrypoint: [ "/usr/bin/mongod", "--bind_ip_all", "--replSet", "dbrs" ]
-  mongo2:
-    container_name: mongo2
-    image: mongo:4.4
-    volumes:
-      - ~/mongors/data2:/data/frienddb
-    networks:
-      - mongors-network
-    ports:
-      - 27022:27017
-    restart: always
-    entrypoint: [ "/usr/bin/mongod", "--bind_ip_all", "--replSet", "dbrs" ]
-  mongo3:
-    container_name: mongo3
-    image: mongo:4.4
-    volumes:
-      - ~/mongors/data3:/data/frienddb
-    networks:
-      - mongors-network
-    ports:
-      - 27023:27017
-    restart: always
-    entrypoint: [ "/usr/bin/mongod", "--bind_ip_all", "--replSet", "dbrs" ]
+    command: >
+      /bin/bash -c "
+        /usr/bin/mongod --bind_ip_all;
+        /usr/bin/mongod --replSet;
+        /usr/bin/mongod dbrs;
+        mongo --eval 'rs.initiate()'"
+
   db:
     image: postgres:14
     restart: always
@@ -56,8 +34,5 @@ services:
     restart: always
     ports:
       - 8080:8080
-networks:
-  mongors-network:
-    driver: bridge
 volumes:
   pg:
