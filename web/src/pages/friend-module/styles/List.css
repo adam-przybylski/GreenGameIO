@@ -1,0 +1,73 @@
+* {
+    font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+}
+
+#list {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    margin: 2rem;
+}
+
+#heading {
+    font-size: 64px;
+    margin: 0 2rem 5rem 2rem;
+    text-shadow: -2px 2px 0 #000, 
+                          1px 1px 0 #000, 
+                         1px -1px 0 #000, 
+                        -1px -1px 0 #000;
+    background-color: green;
+    padding: 1rem 3rem 1rem 3rem;
+    border-radius: 10rem 0 10rem 0;
+}
+
+.button {
+    padding: 1rem 2rem 1rem 2rem;
+    background-color: green;
+    margin: 1rem;
+    box-shadow: -1px 1px 3px black;
+    border-radius: 3rem 0 3rem 0;
+    transition: 0.1s
+}
+
+.button:hover {
+    background-color: #01400c;
+}
+
+#friends-button {
+    margin: 0;
+    width: 50%;
+    border-radius: 3rem 0 0 0;
+    border: 1px solid black;
+    box-shadow: none;
+}
+
+#groups-button {
+    margin: 0;
+    width: 50%;
+    border-radius: 0 3rem 0 0;
+    border: 1px solid black;
+    box-shadow: none;
+}
+
+#content {
+    background-color: lightgreen;
+    border-radius: 3.5rem;
+    min-height: 20rem;
+    overflow: auto;
+    width: 50vw;
+}
+
+@media(max-width: 638px) {
+    #functional-buttons {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+    }
+
+    #content {
+        width: 75vw;
+    }
+}

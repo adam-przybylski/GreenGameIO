@@ -8,5 +8,5 @@ export const UnprotectedRoutes = [
   { path: "/login", Component: LoginPage },
 ] satisfies RouteObject[];
 export const ProtectedRoutes = [
-  { path: "/friends", Component: FriendPage }
+  { path: ":id/friends", Component: FriendPage }
 ] satisfies RouteObject[];
