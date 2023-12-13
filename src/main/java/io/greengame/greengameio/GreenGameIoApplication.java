@@ -25,10 +25,11 @@ public class GreenGameIoApplication {
 			//password is password
 				userRepository.save(new User(1L, "admin", "$2b$12$6J4h6z.Er73Ud7zWhUT4yueCCFl2xCLkUZGHi8JtJYYwxp3NHtbBK", "admin@email.com", UserType.ADMINISTRATOR));
 				userRepository.save(new User(2L, "user", "$2b$12$6J4h6z.Er73Ud7zWhUT4yueCCFl2xCLkUZGHi8JtJYYwxp3NHtbBK", "user@email.com", UserType.USER));
-			gameResultService.updateSnakeResult(1L,30);
+
+			gameResultService.updateSnakeResult(1L,1);
 			gameResultService.updateUserXP(1L,69);
 			gameResultService.updateLightsOutResult(1L,32);
-			gameResultService.updateSnakeResult(1L,1000);
+			gameResultService.updateSnakeResult(1L,2);
 
 
 

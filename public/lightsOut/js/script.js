@@ -109,13 +109,13 @@ function endGame() {
     showGameOverModal(points)
     const xpEarned = calculateXPfromPoints(points);
 
-    updateXPInDatabase(1, xpEarned); //TODO userId
-    updateLightsOutResult(1, points); //TODO userId
+    updateXPInDatabase(2, xpEarned); //TODO userId
+    updateLightsOutResult(2, points); //TODO userId
     resetGame();
 }
 
 function updateXPInDatabase(userId, xp) {
-    const url = `http://localhost:8081/api/v1/games1/updateUserXP/${userId}/${xp}`;
+    const url = `http://localhost:8081/api/v1/games/updateUserXP/${userId}/${xp}`;
 
     fetch(url, {
         method: 'POST',
@@ -134,7 +134,7 @@ function updateXPInDatabase(userId, xp) {
 }
 
 function updateLightsOutResult(userId, score) {
-    const url = `http://localhost:8081/api/v1/games1/lightsOut/${userId}/${score}`;
+    const url = `http://localhost:8081/api/v1/games/lightsOut/${userId}/${score}`;
 
     fetch(url, {
         method: 'POST',
