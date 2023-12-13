@@ -31,6 +31,10 @@ public class FriendModuleEndpoint {
     public void sendFriendRequest(@PathVariable Long userId, @RequestParam Long receiverId) {
         friendManager.sendFriendRequest(userId, receiverId);
     }
+    @DeleteMapping("/{userId}/remove-friend-request")
+    public void removeFriendRequest(@PathVariable Long userId, @RequestParam Long receiverId) {
+        friendManager.removeFriendRequest(userId, receiverId);
+    }
     @PatchMapping("/{userId}/accept-friend-request")
     public void acceptFriendRequest(@PathVariable Long userId,@RequestParam Long senderId) {
         friendManager.acceptFriendRequest(senderId, userId);
@@ -63,6 +67,7 @@ public class FriendModuleEndpoint {
     public void deleteGroup(@PathVariable Long userId, @PathVariable String groupId) {
         friendManager.deleteGroup(userId, groupId);
     }
+
     @PatchMapping("/{userId}/groups/{groupId}/add-member")
     public void addMemberToGroup(@PathVariable Long userId, @PathVariable String groupId, @RequestParam Long memberId) {
         friendManager.addGroupMember(userId, groupId, memberId);

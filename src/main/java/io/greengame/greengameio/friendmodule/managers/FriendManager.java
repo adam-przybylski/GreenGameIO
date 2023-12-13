@@ -88,6 +88,17 @@ public class FriendManager {
         userFMRepository.save(receiver);
         userFMRepository.save(sender);
     }
+    public void removeFriendRequest(Long senderId, Long receiverId) {
+        var sender = userFMRepository.findById(senderId)
+                .orElseThrow(() -> new NotFoundException(ErrorMessages.NotFoundErrorMessages.USER_NOT_FOUND));
+        var receiver = userFMRepository.findById(receiverId)
+                .orElseThrow(() -> new NotFoundException(ErrorMessages.NotFoundErrorMessages.USER_NOT_FOUND));
+        if(!receiver.getFriendRequests().containsKey(senderId)) {
+            throw new IllegalOperationException(ErrorMessages.BadRequestErrorMessages.ILLEGAL_OPERATION);
+        }
+        receiver.getFriendRequests().remove(senderId);
+        userFMRepository.save(receiver);
+    }
     public List<Friend> findAllFriends(Long id) {
         var user = userFMRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException(ErrorMessages.NotFoundErrorMessages.USER_NOT_FOUND));
