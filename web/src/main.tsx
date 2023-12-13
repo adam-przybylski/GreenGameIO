@@ -14,7 +14,7 @@ import "./index.css";
 import AuthenticationLayout from "./pages/AuthenticationLayout";
 import AdminLayout from "./pages/admin/AdminLayout";
 import UserContextProvider from "./context/userContext";
-import QuizEditor from "./pages/quiz/userQuiz";
+import QuizzesAdmin from "./pages/admin/quizzesAdmin";
 
 const router = createBrowserRouter([
   {
@@ -43,8 +43,8 @@ const router = createBrowserRouter([
     children: AdminRoutes,
   },
   {
-    path: "/quizes",
-    Component: QuizEditor,
+    path: "/quizzes",
+    Component: QuizzesAdmin,
   },
 ] satisfies RouteObject[]);
 

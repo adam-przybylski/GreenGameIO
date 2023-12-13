@@ -1,4 +1,4 @@
-import { FC, useEffect, useState } from "react";
+import React, { FC, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useUserContext } from "../../context/userContext";
 import { AccountTypeEnum } from "../../types/accountType";
@@ -8,13 +8,13 @@ import AdminUsers from "./usersAdmin";
 import AdminTasks from "./tasksAdmin";
 import LogoutButton from "../../components/LogoutButton";
 import { logoutUser } from "../../api/logout";
-import AdminQuizzes from "./quizesAdmin";
+import AdminQuizzes from "./quizzesAdmin";
 
 
 const panels = {
     users: <AdminUsers />,
     tasks: <AdminTasks />,
-    quizes: <AdminQuizzes />,
+    quizzes: <AdminQuizzes />,
 } as const;
 
 export type Panel = keyof typeof panels;
@@ -40,7 +40,7 @@ const AdminLayout: FC = () => {
                 <SubPanel onClick={handleSubPanelClick} message="users">
                     <p>Użytkownicy</p>
                 </SubPanel>
-                <SubPanel onClick={handleSubPanelClick} message="quizes">
+                <SubPanel onClick={handleSubPanelClick} message="quizzes">
                     <p>Quizy</p>
                 </SubPanel>
                 <SubPanel onClick={handleSubPanelClick} message="tasks">
