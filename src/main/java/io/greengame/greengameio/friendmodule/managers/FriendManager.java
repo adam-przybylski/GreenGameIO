@@ -75,7 +75,9 @@ public class FriendManager {
         var friend = abstractChatHolderRepository.findById(receiver
                         .getFriends()
                         .stream()
-                        .filter(id -> id.equals(senderId))
+                        .filter(id -> sender
+                                .getFriends()
+                                .contains(id))
                         .findFirst()
                         .get())
                 .orElseThrow(() -> new NotFoundException(ErrorMessages.BadRequestErrorMessages.ILLEGAL_OPERATION));
