@@ -23,9 +23,9 @@ public class FriendModuleEndpoint {
     public List<UserFM> findAllUserFMs() {
         return friendManager.findAllUserFMs();
     }
-    @GetMapping("/username-contains")
-    public List<UserFM> findByUsernameContainsIgnoreCase(@RequestParam String username) {
-        return friendManager.findByUsernameContainsIgnoreCase(username);
+    @GetMapping("/{userId)/username-contains")
+    public List<UserFM> findByUsernameContainsIgnoreCase(@PathVariable Long userId,@RequestParam String username) {
+        return friendManager.findByUsernameContainsIgnoreCase(userId,username);
     }
     @PatchMapping("/{userId}/send-friend-request")
     public void sendFriendRequest(@PathVariable Long userId, @RequestParam Long receiverId) {
