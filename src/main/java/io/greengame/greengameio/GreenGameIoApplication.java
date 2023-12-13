@@ -40,16 +40,29 @@ public class GreenGameIoApplication {
                 Answer answerNo2ForQ3 = new Answer("Fałsz");
                 Question questionNo3 = new Question("Energia słoneczna jest odnawialnym źródłem energii.", 3, List.of(answerNo1ForQ3, answerNo2ForQ3), answerNo1ForQ3);
 
-                Quiz quiz = new Quiz("QuizTestowy", 1, admin, LocalDateTime.now().minusDays(1), List.of(questionNo1, questionNo2, questionNo3));
+				Answer answerNo1ForQ4 = new Answer("Emisje gazów cieplarnianych i wylesianie");
+				Answer answerNo2ForQ4 = new Answer("Nadmierna konsumpcja czekolady");
+				Question questionNo4 = new Question("Jakie są główne przyczyny zmian klimatu?", 4, List.of(answerNo1ForQ4, answerNo2ForQ4), answerNo1ForQ4);
+
+				Answer answerNo1ForQ5 = new Answer("Hodowanie roślin w domu");
+				Answer answerNo2ForQ5 = new Answer("Recykling i używanie przedmiotów wielokrotnego użytku");
+				Question questionNo5 = new Question("W jaki sposób możemy ograniczyć zużycie plastiku?", 5, List.of(answerNo1ForQ5, answerNo2ForQ5), answerNo2ForQ5);
+
+
+                Quiz quiz = new Quiz("QuizTestowy", 3, admin, LocalDateTime.now().minusDays(1), List.of(questionNo1, questionNo2, questionNo3));
+				Quiz quiz2 = new Quiz("QuizTestowy2", 2, admin, LocalDateTime.now().plusDays(30), List.of(questionNo4, questionNo5));
 
                 answerRepository.saveAll(List.of(answerNo1ForQ1, answerNo2ForQ1,
                 		answerNo1ForQ2, answerNo2ForQ2, answerNo3ForQ2, answerNo4ForQ2,
-               			answerNo1ForQ3, answerNo2ForQ3));
-               	questionRepository.saveAll(List.of(questionNo1, questionNo2, questionNo3));
+               			answerNo1ForQ3, answerNo2ForQ3, answerNo1ForQ4, answerNo2ForQ4, answerNo1ForQ5, answerNo2ForQ5));
+               	questionRepository.saveAll(List.of(questionNo1, questionNo2, questionNo3, questionNo4, questionNo5));
                 quizRepository.save(quiz);
+				quizRepository.save(quiz2);
 
                 HiScore hiScore = new HiScore(quiz, user, 1);
+                HiScore hiScore2 = new HiScore(quiz2, user, 2);
                 highScoreRepository.save(hiScore);
+                highScoreRepository.save(hiScore2);
 
 		};
 	}

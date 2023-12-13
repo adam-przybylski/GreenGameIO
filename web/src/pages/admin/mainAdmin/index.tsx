@@ -17,7 +17,7 @@ const AdminMain: FC = () => {
             <SubPanel onClick={handleSubPanelClick} message="users">
                 <p>Użytkownicy</p>
             </SubPanel>
-            <SubPanel onClick={handleSubPanelClick} message="quizes">
+            <SubPanel onClick={handleSubPanelClick} message="quizzes">
                 <p>Quizy</p>
             </SubPanel>
             <SubPanel onClick={handleSubPanelClick} message="tasks">
