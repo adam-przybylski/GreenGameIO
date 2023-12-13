@@ -85,7 +85,7 @@ const AdminQuizzes: FC = () => {
                         </div>
                     ))
                 ) : (
-                    <p>No quizzes available.</p>
+                    <p>Brak quizów.</p>
                 )}
             </div>
 

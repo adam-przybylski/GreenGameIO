@@ -17,9 +17,7 @@ type MenuItem = {
 const Nav: FC = () => {
     const menuItems: MenuItem[] = [
         { to: "games", icon: FaGamepad, label: "Games" },
-        { to: "quizes", icon: MdQuiz, label: "Quizes" },
-        { to: "games", icon: FaGamepad, label: "Games" },
-        { to: "quizes", icon: MdQuiz, label: "Quizes" },
+        { to: "quizzes", icon: MdQuiz, label: "Quizzes" },
         { to: "account", icon: FaUser, label: "Profile" },
         { to: "admin", icon: FaWrench, label: "Admin" },
     ];

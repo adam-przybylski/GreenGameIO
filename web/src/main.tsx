@@ -14,7 +14,7 @@ import "./index.css";
 import AuthenticationLayout from "./pages/AuthenticationLayout";
 import AdminLayout from "./pages/admin/AdminLayout";
 import UserContextProvider from "./context/userContext";
-import QuizzesAdmin from "./pages/admin/quizzesAdmin";
+import Quizzes from "./pages/quiz/userQuiz";
 
 const router = createBrowserRouter([
   {
@@ -44,7 +44,7 @@ const router = createBrowserRouter([
   },
   {
     path: "/quizzes",
-    Component: QuizzesAdmin,
+    Component: Quizzes,
   },
 ] satisfies RouteObject[]);
 
