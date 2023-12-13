@@ -7,7 +7,7 @@ import Button from "../../components/Button";
 const Notifications: FC = () => {
   const [data, setData] = useState<Notification[]>([]);
   const [notificationToEdit, setNotificationToEdit] = useState<Notification>();
-  const [notificationToAdd, setNotificationToAdd] = useState<boolean>(false);
+  const [isModalVisible, setModalVisibility] = useState<boolean>(false);
 
   const handleGet = () => {
     api.get("/admin/notifications").then((res) => {
@@ -20,21 +20,36 @@ const Notifications: FC = () => {
   }, []);
 
   const handleEdit = (notificaiton: Notification) => {
-    api.put("/admin/notifications", notificaiton).catch((error) => {
-      console.log(error);
-    });
+    api
+      .put("/admin/notifications", notificaiton)
+      .then(() => {
+        handleGet();
+      })
+      .catch((error) => {
+        console.log(error);
+      });
   };
 
   const handleAdd = (notificaiton: Notification) => {
-    api.post("/admin/notifications", notificaiton).catch((error) => {
-      console.log(error);
-    });
+    api
+      .post("/admin/notifications", notificaiton)
+      .then(() => {
+        handleGet();
+      })
+      .catch((error) => {
+        console.log(error);
+      });
   };
 
   const handleRemove = (notificaiton: Notification) => {
-    api.delete(`/admin/notifications/${notificaiton.id}`).catch((error) => {
-      console.log(error);
-    });
+    api
+      .delete(`/admin/notifications/${notificaiton.id}`)
+      .then(() => {
+        handleGet();
+      })
+      .catch((error) => {
+        console.log(error);
+      });
   };
 
   return (
@@ -42,17 +57,17 @@ const Notifications: FC = () => {
       <div className="flex justify-center mb-3">
         <Button
           label="Dodaj"
-          onClick={() => setNotificationToAdd(true)}
+          onClick={() => setModalVisibility(true)}
           className="bg-green-200 p-1 rounded text-black  mr-1 hover:text-white ease-in-out duration-100"
         />
       </div>
-      {notificationToAdd && (
+      {isModalVisible && (
         <NotificationModal
           notification={undefined}
           displayText="Dodaj"
           handleExecute={handleAdd}
           reset={() => {
-            setNotificationToAdd(false);
+            setModalVisibility(false);
           }}
         />
       )}
@@ -87,7 +102,9 @@ const Notifications: FC = () => {
                 />
                 <Button
                   label="Usuń"
-                  onClick={() => handleRemove(not)}
+                  onClick={() => {
+                    handleRemove(not);
+                  }}
                   className="bg-red-200 p-1 rounded text-black hover:text-white ease-in-out duration-100"
                 />
               </div>
