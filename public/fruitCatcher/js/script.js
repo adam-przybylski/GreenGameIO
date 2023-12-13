@@ -1,4 +1,4 @@
-//For the time being trying to use view port size instead of pixel to see if it scales correctly
+//Crazy? I was crazy once
 const PLAYER_WIDTH = 120;
 const PLAYER_HEIGHT = 100;
 const BOARD_WIDTH=1000;
@@ -7,11 +7,11 @@ const ITEM_WIDTH=50;
 const ITEM_HEIGHT=50;
 class Player{
     // fields
-    // positionX, positionY, PlayerStyleHandle, doMoveLeft, doMoveRight
+    // positionX, positionY, playerStyleHandle, doMoveLeft, doMoveRight
     constructor(position) {
         this.positionY = 500;
         this.positionX = position;
-        this.PlayerStyleHandle = document.getElementById("player").style;
+        this.playerStyleHandle = document.getElementById("player").style;
         document.addEventListener("keydown", (event)=> {
             if (event.key === "ArrowRight" ) { // Moving right
                 this.doMoveRight = true;
@@ -41,14 +41,14 @@ class Player{
         else if(this.doMoveRight) delta+=12;
         if(this.positionX+delta > 0 && this.positionX+PLAYER_WIDTH+delta<BOARD_WIDTH && delta !== 0) {
             this.positionX += delta;
-            this.PlayerStyleHandle.setProperty("left",this.positionX + "px");
+            this.playerStyleHandle.setProperty("left",this.positionX + "px");
         }
     }
 }
 
 class FruitCatcherGame{
     //fields
-    //lives, player, fpsInterval, elapsed, framesCycle, itemSpawnFrames, items, score, scoreHandle, livesHandle
+    //lives, player, fpsInterval, elapsed, framesCycle, itemSpawnFrames, items, score, scoreHandle, livesHandle, isGameRunning
     constructor() {
         this.lives = 3;
         this.player = new Player((BOARD_WIDTH-PLAYER_WIDTH)/2);
@@ -60,6 +60,7 @@ class FruitCatcherGame{
         this.score = 0;
         this.scoreHandle = document.getElementById("score");
         this.livesHandle = document.getElementById("lives");
+        this.isGameRunning = true;
     }
 
     gameLoop(){
@@ -68,7 +69,7 @@ class FruitCatcherGame{
         // calc elapsed time since last loop
         this.now = Date.now();
         this.elapsed = this.now - this.then;
-        if (this.elapsed > this.fpsInterval) {
+        if (this.elapsed > this.fpsInterval && this.isGameRunning) {
             // Get ready for next frame by setting then=now, but also adjust for your
             // specified fpsInterval not being a multiple of RAF's interval (16.7ms)
             this.then = this.now - (this.elapsed % this.fpsInterval);
@@ -86,7 +87,9 @@ class FruitCatcherGame{
                     if(item.isGood) {
                         this.lives--;
                         this.livesHandle.innerText=this.lives
-                        if(this.lives===0){this.endGame();}
+                        if(this.lives===0){
+                            this.endGame();
+                        }
                     }
                 }
                 if(this.checkCollisions(item)){
@@ -113,20 +116,49 @@ class FruitCatcherGame{
     }
 
     endGame(){
-        //TODO save to database popup
-        alert("You loose!");
+        this.isGameRunning = false;
+
+        //TODO get user id from idk know where
+        let userID = 12;
+        let bestScore = 0;
+        let xhttp = new XMLHttpRequest();
+        xhttp.open("GET", "http://localhost:8081/api/v1/games/fruitCatcher/"+userID,true);
+        xhttp.onload = () => {
+            if(xhttp.status === 200){
+                bestScore = xhttp.responseText;
+                document.getElementById("showBestScore").innerText = bestScore;
+                if(this.score>bestScore) document.getElementById("saveButton").disabled = false;
+            }
+        }
+        xhttp.send(null);
+
+        document.getElementById("showScore").innerText = this.score;
+        document.getElementById("showBestScore").innerText = "";
+        document.getElementById("endScreen").style.setProperty("display", "flex");
         this.resetGameState();
     }
 
     resetGameState(){
+        this.score = 0;
         this.scoreHandle.innerText=0;
         this.lives = 3;
         this.livesHandle.innerText = this.lives;
         this.player.positionX = (BOARD_WIDTH-PLAYER_WIDTH)/2;
+        this.player.playerStyleHandle.setProperty("left", this.player.positionX+"px");
         this.items.forEach((item) => item.destroy());
         this.items = [];
         this.player.doMoveRight = false;
         this.player.doMoveLeft = false;
+    }
+
+    closeModal(){
+        document.getElementById("endScreen").style.setProperty("display","none");
+        document.getElementById("saveButton").disabled = true;
+        this.isGameRunning = true;
+    }
+
+    saveScore(){
+
     }
 }
 

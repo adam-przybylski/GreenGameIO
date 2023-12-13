@@ -6,24 +6,39 @@
     <title>FruitCatcher</title>
 </head>
 <body>
-    <div id="body">
-        <div class="wrapper">
-            <div id="scoreBoard">
-                <div id="name">FRUIT CATCHER</div>
-                <div>
-                    <span>Pozostałe życia:</span>
-                    <span id="lives">3</span>
-                </div>
-                <div id="scoreDisplay">
-                    <span>Wynik:</span>
-                    <span id="score">0</span>
-                </div>
+<div id="body">
+    <div id="endScreen" class="modal">
+        <div class="modal-content">
+            <div>
+                <span>Zdobyty wynik:</span>
+                <span id="showScore"></span>
+                <span>Najlepszy wynik:</span>
+                <span id="showBestScore"></span>
             </div>
-            <div id="board">
-                <div id="player"></div>
+            <div>
+                <button id="saveButton" type="button" disabled onclick="game.closeModal()">Zapisz wynik</button>
+                <button type="button" onclick="game.closeModal()">Zamknij</button>
             </div>
         </div>
     </div>
+    <div class="wrapper">
+        <div id="scoreBoard">
+            <div id="name">FRUIT CATCHER</div>
+            <div>
+                <span>Pozostałe życia:</span>
+                <span id="lives">3</span>
+            </div>
+            <div id="scoreDisplay">
+                <span>Wynik:</span>
+                <span id="score">0</span>
+            </div>
+            <button type="button" onclick="game.endGame()">Zakończ grę</button>
+        </div>
+        <div id="board">
+            <div id="player"></div>
+        </div>
+    </div>
+</div>
 </body>
 <script src="js/script.js"></script>
 </html>
