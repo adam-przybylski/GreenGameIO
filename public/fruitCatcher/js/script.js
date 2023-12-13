@@ -49,6 +49,7 @@ class Player{
 class FruitCatcherGame{
     //fields
     //lives, player, fpsInterval, elapsed, framesCycle, itemSpawnFrames, items, score, scoreHandle, livesHandle, isGameRunning
+    //userId, scoreCopy
     constructor() {
         this.lives = 3;
         this.player = new Player((BOARD_WIDTH-PLAYER_WIDTH)/2);
@@ -61,6 +62,9 @@ class FruitCatcherGame{
         this.scoreHandle = document.getElementById("score");
         this.livesHandle = document.getElementById("lives");
         this.isGameRunning = true;
+        this.userId = 1;
+        this.scoreCopy = 0;
+        console.log(w)
     }
 
     gameLoop(){
@@ -117,18 +121,24 @@ class FruitCatcherGame{
 
     endGame(){
         this.isGameRunning = false;
-
-        //TODO get user id from idk know where
-        let userID = 12;
         let bestScore = 0;
+        this.scoreCopy = this.score;
         let xhttp = new XMLHttpRequest();
-        xhttp.open("GET", "http://localhost:8081/api/v1/games/fruitCatcher/"+userID,true);
+        xhttp.open("GET", "http://localhost:8081/api/v1/games/fruitCatcher/"+this.userId,true);
+        xhttp.timeout = 2000;
         xhttp.onload = () => {
             if(xhttp.status === 200){
                 bestScore = xhttp.responseText;
                 document.getElementById("showBestScore").innerText = bestScore;
-                if(this.score>bestScore) document.getElementById("saveButton").disabled = false;
+                if(this.scoreCopy>bestScore) document.getElementById("saveButton").disabled = false;
             }
+            else if( xhttp.status === 500){
+                document.getElementById("saveButton").disabled = false;
+            }
+        }
+        xhttp.ontimeout = () => {
+            document.getElementById("response").innerText="Brak połączenia";
+            document.getElementById("response").style.setProperty("color","yellow");
         }
         xhttp.send(null);
 
@@ -154,11 +164,28 @@ class FruitCatcherGame{
     closeModal(){
         document.getElementById("endScreen").style.setProperty("display","none");
         document.getElementById("saveButton").disabled = true;
+        document.getElementById("response").innerText="";
         this.isGameRunning = true;
     }
 
     saveScore(){
-
+        let xhttp = new XMLHttpRequest();
+        xhttp.open("POST", "http://localhost:8081/api/v1/games/fruitCatcher/"+this.userId+"/"+this.scoreCopy,true);
+        // xhttp.timeout = 2000;
+        xhttp.onload = () => {
+            document.getElementById("response").innerText="Zapisano";
+            document.getElementById("response").style.setProperty("color","green");
+            document.getElementById("saveButton").disabled=true;
+        }
+        xhttp.ontimeout = () => {
+            document.getElementById("response").innerText="Brak połączenia";
+            document.getElementById("response").style.setProperty("color","yellow");
+        }
+        xhttp.onerror = () => {
+            document.getElementById("response").innerText="Błąd";
+            document.getElementById("response").style.setProperty("color","red");
+        }
+        xhttp.send();
     }
 }
 
