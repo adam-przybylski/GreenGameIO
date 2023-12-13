@@ -16,6 +16,7 @@ paper_taken=false;
 bootle_taken=false;
 is_paused = false;
 xp = 0
+id = 1 //todo
 
 function genereteXYforTrashes(){
     let min = 1;
@@ -158,9 +159,51 @@ function updateGame(){
 }
 function gameOver(cause){
     lost = true;
+    if(id != null) {
+        updateXPInDatabase(id, getXp());
+        updateLightsOutResult(id, score)
+    }
     showGameOverModal(cause)
     resetGame();
 }
+function updateXPInDatabase(userId, xp) {
+    const url = `http://localhost:8081/api/v1/games1/updateUserXP/${userId}/${xp}`;
+
+    fetch(url, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+    })
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Network response was not ok');
+            }
+        })
+        .catch(error => {
+            console.error('There was a problem with the fetch operation:', error);
+        });
+}
+
+function updateLightsOutResult(userId, score) {
+    const url = `http://localhost:8081/api/v1/games1/lightsOut/${userId}/${score}`;
+
+    fetch(url, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+    })
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Network response was not ok');
+            }
+        })
+        .catch(error => {
+            console.error('There was a problem with the fetch operation:', error);
+        });
+}
+
 function  getXp(){
     return score/5
 }

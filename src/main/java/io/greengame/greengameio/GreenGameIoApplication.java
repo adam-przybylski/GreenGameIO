@@ -28,10 +28,8 @@ public class GreenGameIoApplication {
 			gameResultService.updateSnakeResult(1L,30);
 			gameResultService.updateUserXP(1L,69);
 			gameResultService.updateLightsOutResult(1L,32);
-			System.out.println(gameResultService.getLightOutScoreByUserId(1L));
-			System.out.println(gameResultService.getSnakeScoreByUserId(1L));
 			gameResultService.updateSnakeResult(1L,1000);
-			System.out.println(gameResultService.getSnakeScoreByUserId(1L));
+
 
 
 		};
