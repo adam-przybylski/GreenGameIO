@@ -16,7 +16,7 @@ paper_taken=false;
 bootle_taken=false;
 is_paused = false;
 xp = 0
-id = 1 //todo
+id = 2 //todo
 
 function genereteXYforTrashes(){
     let min = 1;
@@ -62,9 +62,10 @@ function checkCollision(snake) {
 }
 
 function updateGame(){
+
     // Part 1: Updating the snake array & Food
     if(checkCollision(snakeArray)){
-        gameOver("Wjechałes w ścianę ");
+        gameOver("Wjechałes w ścianę");
     }
 
     // If the snake has eaten the trash  , increment the score and regenerate the trash

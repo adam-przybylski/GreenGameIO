@@ -16,6 +16,7 @@ paper_taken=false;
 bootle_taken=false;
 is_paused = false;
 xp = 0
+id = 2 //todo
 
 function genereteXYforTrashes(){
     let min = 1;
@@ -34,7 +35,7 @@ function genereteXYforTrashes(){
         (head.x === bootle.x || head.y === bootle.y)&&
         (head.x === paper.x || head.y === paper.y)
         );
-        return [bootle,paper,head];
+    return [bootle,paper,head];
 }
 // Game Functions
 function gameLoop(currentTime) {
@@ -61,9 +62,10 @@ function checkCollision(snake) {
 }
 
 function updateGame(){
+
     // Part 1: Updating the snake array & Food
     if(checkCollision(snakeArray)){
-        gameOver("Wjechałes w ścianę ");
+        gameOver("Wjechałes w ścianę");
     }
 
     // If the snake has eaten the trash  , increment the score and regenerate the trash
@@ -158,9 +160,51 @@ function updateGame(){
 }
 function gameOver(cause){
     lost = true;
+    if(id != null) {
+        updateXPInDatabase(id, getXp());
+        updateLightsOutResult(id, score)
+    }
     showGameOverModal(cause)
     resetGame();
 }
+function updateXPInDatabase(userId, xp) {
+    const url = `http://localhost:8081/api/v1/games1/updateUserXP/${userId}/${xp}`;
+
+    fetch(url, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+    })
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Network response was not ok');
+            }
+        })
+        .catch(error => {
+            console.error('There was a problem with the fetch operation:', error);
+        });
+}
+
+function updateLightsOutResult(userId, score) {
+    const url = `http://localhost:8081/api/v1/games1/lightsOut/${userId}/${score}`;
+
+    fetch(url, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+    })
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Network response was not ok');
+            }
+        })
+        .catch(error => {
+            console.error('There was a problem with the fetch operation:', error);
+        });
+}
+
 function  getXp(){
     return score/5
 }
@@ -199,44 +243,44 @@ function toggleGame(){
     }
 }
 window.requestAnimationFrame(gameLoop);
-    document.addEventListener("keydown", (event) => {
-        switch (event.key) {
-            case "ArrowUp":
-                if (direction.y !== 1) {
-                    console.log("ArrowUp");
-                    direction.x = 0;
-                    direction.y = -1;
-                }
-                break;
+document.addEventListener("keydown", (event) => {
+    switch (event.key) {
+        case "ArrowUp":
+            if (direction.y !== 1) {
+                console.log("ArrowUp");
+                direction.x = 0;
+                direction.y = -1;
+            }
+            break;
 
-            case "ArrowDown":
-                if (direction.y !== -1) {
-                    direction.x = 0;
-                    direction.y = 1;
-                }
-                break;
+        case "ArrowDown":
+            if (direction.y !== -1) {
+                direction.x = 0;
+                direction.y = 1;
+            }
+            break;
 
-            case "ArrowLeft":
-                if (direction.x !== 1) {
-                    direction.x = -1;
-                    direction.y = 0;
-                }
-                break;
+        case "ArrowLeft":
+            if (direction.x !== 1) {
+                direction.x = -1;
+                direction.y = 0;
+            }
+            break;
 
-            case "ArrowRight":
-                if (direction.x !== -1) {
-                    direction.x = 1;
-                    direction.y = 0;
-                }
-                break;
-            case "Escape":
-                toggleGame();
-                break;
+        case "ArrowRight":
+            if (direction.x !== -1) {
+                direction.x = 1;
+                direction.y = 0;
+            }
+            break;
+        case "Escape":
+            toggleGame();
+            break;
 
-            default:
-                break;
-        }
-    });
+        default:
+            break;
+    }
+});
 document.addEventListener("mousedown", (event) => {
     continueGameAfterLost();
 });
