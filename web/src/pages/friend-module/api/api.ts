@@ -1,13 +1,11 @@
+import axios from "axios";
+
 const api = {
     getFriends: async () => {
-        const result = await fetch("http://localhost:8081/friend-module", {
-            method: "GET",
-            mode: "no-cors",
-            headers: {
-                "Authorization": "Basic " + btoa("admin:password")
-            }
-        });
-        return result.json();
+        const response = await fetch("http://localhost:8081/friend-module", {
+            mode: "no-cors"
+        })
+        console.log(await response.text());
     }
-};
+}
 export default api;

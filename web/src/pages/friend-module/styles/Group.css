@@ -1,0 +1,21 @@
+.group {
+    background-color: white;
+    margin: 1rem;
+    padding: 1rem 0;
+    border-radius: 3rem;
+    transition: 0.1s;
+    box-shadow: -1px 1px 3px black;
+}
+
+.group:hover {
+    background-color: #b9faca;
+}
+
+.group > h2 {
+    font-size: x-large;
+    text-shadow: -1px 1px 0 #000, 
+                    1px 1px 0 #000, 
+                1px -1px 0 #000, 
+                -1px -1px 0 #000;
+    margin-left: 1rem;
+}
