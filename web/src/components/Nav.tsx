@@ -1,12 +1,14 @@
 import { FC } from "react";
 import { NavLink } from "react-router-dom";
-import { FaGamepad, FaUser, FaWrench } from "react-icons/fa";
+import { FaGamepad, FaWrench } from "react-icons/fa";
 import { MdQuiz } from "react-icons/md";
 import { IconType } from "react-icons";
 import { classNames } from "../utils/tailwind";
 import LogoutButton from "./LogoutButton";
 import { logoutUser } from "../api/logout"
 import LoginButton from "./LoginButton";
+import {BiAward} from "react-icons/bi";
+import {IoNotificationsSharp} from "react-icons/io5";
 
 type MenuItem = {
     to: string;
@@ -17,8 +19,10 @@ type MenuItem = {
 const Nav: FC = () => {
   const menuItems: MenuItem[] = [
     { to: "games", icon: FaGamepad, label: "Games" },
-    { to: "quizes", icon: MdQuiz, label: "Quizes" },
-    { to: "account", icon: FaUser, label: "Profile" },
+    { to: "quizzes", icon: MdQuiz, label: "Quizes" },
+    //{ to: "account", icon: FaUser, label: "Profile" },
+      { to: "user/notifications", icon: IoNotificationsSharp, label: "Notifications" },
+      { to: "awards", icon: BiAward, label: "Awards" },
     { to: "admin", icon: FaWrench, label: "Admin" },
   ];
 

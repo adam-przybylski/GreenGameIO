@@ -2,10 +2,10 @@ import { FC } from "react";
 
 const AwardsPage: FC = () => {
     return (
-        <div className="flex">
-            <div className="flex-1">01</div>
-            <div className="flex-1">02</div>
-        </div>
+        <iframe
+            src={`http://localhost:8081/awards/adminTworzenieOdznaki.html`}
+            className="w-full h-full"
+        />
     
     );
 };

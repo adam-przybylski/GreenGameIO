@@ -14,7 +14,7 @@ import "./index.css";
 import AuthenticationLayout from "./pages/AuthenticationLayout";
 import AdminLayout from "./pages/admin/AdminLayout";
 import UserContextProvider from "./context/userContext";
-import Quizzes from "./pages/quiz/userQuiz";
+
 
 const router = createBrowserRouter([
   {
@@ -41,10 +41,6 @@ const router = createBrowserRouter([
     path: "/admin",
     Component: AdminLayout,
     children: AdminRoutes,
-  },
-  {
-    path: "/quizzes",
-    Component: Quizzes,
   },
 ] satisfies RouteObject[]);
 

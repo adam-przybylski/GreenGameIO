@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Admin - Create Award</title>
+    <link rel="stylesheet" type="text/css" href="style.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script src="script3.js"></script>
+</head>
+<body>
+<h1 class="wysrodkowany-napis">Create New Award</h1>
+<div class="div-glowny">
+    <div class="div-ramka">
+        <div class="div-ze-zdjeciem">
+            <div id="divZ"></div>
+            <div class="div-na-przyciski">
+                <button onclick="prev()" class="button button1">prev</button>
+                <button onclick="next()" class="button button1">next</button>
+            </div>
+            <div class="div-ze-zdjeciem">
+                <form>
+                    <input type="text" id="fnazwa" placeholder="nazwa">
+                    <input type="text" id="fopis" placeholder="opis">
+                </form>
+                <div class="pad">
+                    <button class="pad button button1" onclick="zatwierdz()">submit</button>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>
