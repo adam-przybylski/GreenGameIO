@@ -5,9 +5,6 @@ import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import lombok.*;
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.List;
 
@@ -45,10 +42,15 @@ public class User {
     @OneToMany(targetEntity = UserNotification.class)
     private List<UserNotification> userNotifications;
 
+    @Column(name = "odznaka", nullable = false)
+    private Long odznaka;
+
+
     public User(String username, String password, String email, UserType type) {
         this.username = username;
         this.password = password;
         this.email = email;
         this.type = type;
+        this.odznaka = 1L;
     }
 }

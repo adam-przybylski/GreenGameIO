@@ -32,14 +32,21 @@ public class GreenGameIoApplication {
                                         QuizRepository quizRepository,
                                         HiScoreRepository highScoreRepository,
                                         FriendManager friendManager,
-                                        UserService userService) {
+                                        UserService userService,
+                                        UserOdznakaRepository userOdznakaRepository,
+                                        OdznakaRepository odznakaRepository) {
         return args -> {
             //password is password
-            var admin = userService.createUser(new User("admin", "$2b$12$6J4h6z.Er73Ud7zWhUT4yueCCFl2xCLkUZGHi8JtJYYwxp3NHtbBK", "admin@email.com", UserType.ADMINISTRATOR));
-            var user = userService.createUser(new User("user", "$2b$12$6J4h6z.Er73Ud7zWhUT4yueCCFl2xCLkUZGHi8JtJYYwxp3NHtbBK", "user@email.com", UserType.USER));
-            User user3 = userService.createUser(new User("user11", "$2b$12$6J4h6z.Er73Ud7zWhUT4yueCCFl2xCLkUZGHi8JtJYYwxp3NHtbBK", "mail1@email.com", UserType.USER));
-            User user4 = userService.createUser(new User("pudzian", "$2b$12$6J4h6z.Er73Ud7zWhUT4yueCCFl2xCLkUZGHi8JtJYYwxp3NHtbBK", "polakpudzian@email.com", UserType.USER));
-            User user5 = userService.createUser(new User("malysz", "$2b$12$6J4h6z.Er73Ud7zWhUT4yueCCFl2xCLkUZGHi8JtJYYwxp3NHtbBK", "malysz@git.com", UserType.USER));
+            var admin = userService.createUser(new User("admin", "$2b$12$6J4h6z.Er73Ud7zWhUT4yueCCFl2xCLkUZGHi8JtJYYwxp3NHtbBK", "admin@email.com",
+                    UserType.ADMINISTRATOR));
+            var user = userService.createUser(new User("user", "$2b$12$6J4h6z.Er73Ud7zWhUT4yueCCFl2xCLkUZGHi8JtJYYwxp3NHtbBK", "user@email.com",
+                    UserType.USER));
+            User user3 = userService.createUser(new User("user11", "$2b$12$6J4h6z.Er73Ud7zWhUT4yueCCFl2xCLkUZGHi8JtJYYwxp3NHtbBK", "mail1@email" +
+                    ".com", UserType.USER));
+            User user4 = userService.createUser(new User("pudzian", "$2b$12$6J4h6z.Er73Ud7zWhUT4yueCCFl2xCLkUZGHi8JtJYYwxp3NHtbBK", "polakpudzian" +
+                    "@email.com", UserType.USER));
+            User user5 = userService.createUser(new User("malysz", "$2b$12$6J4h6z.Er73Ud7zWhUT4yueCCFl2xCLkUZGHi8JtJYYwxp3NHtbBK", "malysz@git.com"
+                    , UserType.USER));
 
             notificationRepository.save(new Notification("Title1", "Content1"));
             notificationRepository.save(new Notification("Title2", "Content2"));
@@ -66,27 +73,58 @@ public class GreenGameIoApplication {
             friendManager.addGroupMember(user.getId(), group.getId(), user4.getId());
             friendManager.addGroupMember(user.getId(), group.getId(), user5.getId());
 
+            odznakaRepository.save(new Odznaka(1L, "nazwa1", "opis1", "test1.png"));//, new HashSet<Long>()));
+            odznakaRepository.save(new Odznaka(2L, "nazwa2", "opis2", "test2.png"));//, new HashSet<Long>()));
+            odznakaRepository.save(new Odznaka(3L, "nazwa3", "opis3", "test3.png"));
+            odznakaRepository.save(new Odznaka(4L, "nazwa4", "opis4", "test4.png"));
+            odznakaRepository.save(new Odznaka(5L, "nazwa5", "opis5", "test5.png"));
+            odznakaRepository.save(new Odznaka(6L, "nazwa6", "opis6", "test6.png"));
+            odznakaRepository.save(new Odznaka(7L, "nazwa7", "opis7", "test7.png"));
+
+
+            userRepository.save(new User("user1", "$2b$12$6J4h6z.Er73Ud7zWhUT4yueCCFl2xCLkUZGHi8JtJYYwxp3NHtbBK", "user1@email.com", UserType.USER));//, new HashSet<Long>()));
+            userRepository.save(new User("user2", "$2b$12$6J4h6z.Er73Ud7zWhUT4yueCCFl2xCLkUZGHi8JtJYYwxp3NHtbBK", "user2@email.com", UserType.USER));
+            userRepository.save(new User("user3", "$2b$12$6J4h6z.Er73Ud7zWhUT4yueCCFl2xCLkUZGHi8JtJYYwxp3NHtbBK", "user3@email.com", UserType.USER));
+            userRepository.save(new User("user4", "$2b$12$6J4h6z.Er73Ud7zWhUT4yueCCFl2xCLkUZGHi8JtJYYwxp3NHtbBK", "user4@email.com", UserType.USER));
+            userRepository.save(new User("user5", "$2b$12$6J4h6z.Er73Ud7zWhUT4yueCCFl2xCLkUZGHi8JtJYYwxp3NHtbBK", "user5@email.com", UserType.USER));
+
+            userOdznakaRepository.save(new UserOdznaka(1L, 1L));
+            userOdznakaRepository.save(new UserOdznaka(2L, 1L));
+            userOdznakaRepository.save(new UserOdznaka(3L, 1L));
+            userOdznakaRepository.save(new UserOdznaka(4L, 1L));
+            userOdznakaRepository.save(new UserOdznaka(5L, 1L));
+            userOdznakaRepository.save(new UserOdznaka(6L, 1L));
+            userOdznakaRepository.save(new UserOdznaka(7L, 1L));
+            userOdznakaRepository.save(new UserOdznaka(2L, 2L));
+            userOdznakaRepository.save(new UserOdznaka(7L, 3L));
+            userOdznakaRepository.save(new UserOdznaka(6L, 3L));
+
             Answer answerNo1ForQ1 = new Answer("Prawda");
             Answer answerNo2ForQ1 = new Answer("Fałsz");
-            Question questionNo1 = new Question("Recykling papieru jest korzystny dla środowiska, ponieważ pomaga ograniczyć wycinkę drzew.", 1, List.of(answerNo1ForQ1, answerNo2ForQ1), answerNo1ForQ1);
+            Question questionNo1 = new Question("Recykling papieru jest korzystny dla środowiska, ponieważ pomaga ograniczyć wycinkę drzew.", 1,
+                    List.of(answerNo1ForQ1, answerNo2ForQ1), answerNo1ForQ1);
 
             Answer answerNo1ForQ2 = new Answer("Transport");
             Answer answerNo2ForQ2 = new Answer("Energia odnawialna");
             Answer answerNo3ForQ2 = new Answer("Górnictwo");
             Answer answerNo4ForQ2 = new Answer("Przemysł spożywczy");
-            Question questionNo2 = new Question("Jakie jest główne źródło emisji dwutlenku węgla związane z działalnością człowieka?", 2, List.of(answerNo1ForQ2, answerNo2ForQ2, answerNo3ForQ2, answerNo4ForQ2), answerNo1ForQ2);
+            Question questionNo2 = new Question("Jakie jest główne źródło emisji dwutlenku węgla związane z działalnością człowieka?", 2,
+                    List.of(answerNo1ForQ2, answerNo2ForQ2, answerNo3ForQ2, answerNo4ForQ2), answerNo1ForQ2);
 
             Answer answerNo1ForQ3 = new Answer("Prawda");
             Answer answerNo2ForQ3 = new Answer("Fałsz");
-            Question questionNo3 = new Question("Energia słoneczna jest odnawialnym źródłem energii.", 3, List.of(answerNo1ForQ3, answerNo2ForQ3), answerNo1ForQ3);
+            Question questionNo3 = new Question("Energia słoneczna jest odnawialnym źródłem energii.", 3, List.of(answerNo1ForQ3, answerNo2ForQ3),
+                    answerNo1ForQ3);
 
             Answer answerNo1ForQ4 = new Answer("Emisje gazów cieplarnianych i wylesianie");
             Answer answerNo2ForQ4 = new Answer("Nadmierna konsumpcja czekolady");
-            Question questionNo4 = new Question("Jakie są główne przyczyny zmian klimatu?", 4, List.of(answerNo1ForQ4, answerNo2ForQ4), answerNo1ForQ4);
+            Question questionNo4 = new Question("Jakie są główne przyczyny zmian klimatu?", 4, List.of(answerNo1ForQ4, answerNo2ForQ4),
+                    answerNo1ForQ4);
 
             Answer answerNo1ForQ5 = new Answer("Hodowanie roślin w domu");
             Answer answerNo2ForQ5 = new Answer("Recykling i używanie przedmiotów wielokrotnego użytku");
-            Question questionNo5 = new Question("W jaki sposób możemy ograniczyć zużycie plastiku?", 5, List.of(answerNo1ForQ5, answerNo2ForQ5), answerNo2ForQ5);
+            Question questionNo5 = new Question("W jaki sposób możemy ograniczyć zużycie plastiku?", 5, List.of(answerNo1ForQ5, answerNo2ForQ5),
+                    answerNo2ForQ5);
 
 
             Quiz quiz = new Quiz("QuizTestowy", 3, admin, LocalDateTime.now().minusDays(1), List.of(questionNo1, questionNo2, questionNo3));
