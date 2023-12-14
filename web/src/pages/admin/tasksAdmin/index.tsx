@@ -91,7 +91,8 @@ const AdminTasks: FC = () => {
   return (
     <div className="bg-neutral-200 flex justify-center flex-col w-full">
       <h2 className="text-center font-semibold">Lista Zadań</h2>
-      <button className="hover:invert ml-4 p-4" onClick={() => handleAddTask()}>
+      <button className="hover:invert ml-4 p-4 flex flex-row justify-center shrink w-32" onClick={() => handleAddTask()}>
+        <div> Dodaj Zadanie </div> 
         <MdAdd />
       </button>
 

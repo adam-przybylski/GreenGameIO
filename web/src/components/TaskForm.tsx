@@ -14,7 +14,7 @@ const TaskForm: React.FC<TaskFormProps> = ({ onSubmit, onCancel, initialTask }) 
   const [task, setTask] = useState<TaskType>(initialTask || { id: 0, name: "", expValue: 0, active: false, description: "" });
 
   useEffect(() => {
-    setTask(initialTask || { id: 0, name: "", expValue: 0, active: false, description: "" });
+    setTask(initialTask || { id: 0, name: "", expValue: 0, active: true, description: "" });
   }, [initialTask]);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
@@ -36,16 +36,17 @@ const TaskForm: React.FC<TaskFormProps> = ({ onSubmit, onCancel, initialTask }) 
       <div className="bg-white p-8 rounded shadow-lg w-150">
         <form onSubmit={handleSubmit} className="mt-8 mb-2 max-w-screen-lg sm:w-96">
           <Typography variant="h4" color="blue-gray">
-            Add Task
+            Formularz Zadania
           </Typography>
           <Typography color="gray" className="mt-2 text-base font-normal">
-            Enter task details below.
+            Wprowadź dane zadania poniżej.
           </Typography>
 
           <div className="mb-6 mt-4">
-            <Typography variant="h6" color="blue-gray" className="-mb-3 mb-2">
-              Task Name
+            <Typography variant="h6" color="blue-gray" className="-mb-3">
+              Nazwa Zadania
             </Typography>
+            <br />
             <input
               type="text"
               name="name"
@@ -57,8 +58,9 @@ const TaskForm: React.FC<TaskFormProps> = ({ onSubmit, onCancel, initialTask }) 
 
           <div className="mb-6">
             <Typography variant="h6" color="blue-gray" className="-mb-3">
-              Task Value
+              Wartość Zadania
             </Typography>
+            <br />
             <input
               type="number"
               name="expValue"
@@ -77,14 +79,15 @@ const TaskForm: React.FC<TaskFormProps> = ({ onSubmit, onCancel, initialTask }) 
                 onChange={() => setTask((prevTask) => ({ ...prevTask, active: !prevTask.active }))}
                 className="mr-2"
               />
-              <span className="text-blue-gray-700">Active</span>
+              <span className="text-blue-gray-700">Aktywny</span>
             </label>
           </div>
 
           <div className="mb-6">
             <Typography variant="h6" color="blue-gray" className="-mb-3">
-              Task Description
+              Opis Zadania
             </Typography>
+            <br />
             <textarea
               name="description"
               value={task.description}
@@ -98,7 +101,7 @@ const TaskForm: React.FC<TaskFormProps> = ({ onSubmit, onCancel, initialTask }) 
               type="submit"
               className="bg-blue-500 text-white p-2 rounded hover:bg-blue-700 focus:outline-none"
             >
-              Submit
+              Zatwierdź
             </button>
             <button
               type="button"

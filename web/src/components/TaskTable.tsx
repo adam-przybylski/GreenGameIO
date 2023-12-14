@@ -18,7 +18,7 @@ interface TaskTableProps {
     expandedTasks,
   }) => {
   return (
-    <table className="mx-20  border-collapse border border-slate-500 rounded-lg">
+    <table className="mx-20 table-fixed border-collapse border border-slate-500 min-w-max">
       <thead className="bg-neutral-400">
         <tr>
           <th className="border border-slate-600 px-5 py-3">Id</th>
@@ -48,14 +48,19 @@ interface TaskTableProps {
                     className="hover:invert p-4"
                     onClick={() => task.id !== undefined && toggleTaskExpansion(task.id)}
                   >
-                    Show More
+                    Pokaż Więcej
                   </button>
                 </div>
               </td>
             </tr>
             {task.id !== undefined && expandedTasks.includes(task.id) && (
               <tr key={`expanded-${task.id}`}>
-                <td colSpan={5}>Opis: {task.description}</td>
+                <td colSpan={5}>
+                  <div className="text-center">Opis:</div>
+                  <div>
+                    {task.description}
+                  </div> 
+                </td>
               </tr>
             )}
           </React.Fragment>
