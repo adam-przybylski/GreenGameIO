@@ -1,9 +1,14 @@
 package io.greengame.greengameio;
 
+import io.greengame.greengameio.entity.GameResult;
 import io.greengame.greengameio.entity.Notification;
 import io.greengame.greengameio.entity.User;
 import io.greengame.greengameio.entity.UserNotification;
 import io.greengame.greengameio.entity.UserType;
+import io.greengame.greengameio.repository.GameResultRepository;
+import io.greengame.greengameio.repository.UserRepository;
+import io.greengame.greengameio.services.GameResultService;
+import io.greengame.greengameio.services.UserService;
 import io.greengame.greengameio.repository.NotificationRepository;
 import io.greengame.greengameio.repository.UserNotificationRepository;
 import io.greengame.greengameio.repository.UserRepository;
@@ -37,6 +42,10 @@ public class GreenGameIoApplication {
             userNotificationRepository.save(new UserNotification("UserTitle12", "UserContent12",false, user2));
             userNotificationRepository.save(new UserNotification("UserTitle13", "UserContent13",true, user2));
             userNotificationRepository.save(new UserNotification("UserTitle14", "UserContent14",false, user2));
+          			gameResultService.updateSnakeResult(1L,1);
+			gameResultService.updateUserXP(1L,69);
+			gameResultService.updateLightsOutResult(1L,32);
+			gameResultService.updateSnakeResult(1L,2);
         };
     }
 

@@ -1,0 +1,138 @@
+* {
+    padding: 0;
+    margin: 0;
+    --item-size: 50px;
+}
+
+#body {
+    background: url("../img/bunch-of-vegetables.jpg");
+    background-size: 100vw 100vh;
+    background-repeat: no-repeat;
+    z-index: 0;
+    width: 100%;
+    min-height: 100vh;
+    justify-content: center;
+    align-items: center;
+    display: flex;
+}
+
+.wrapper {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+}
+
+#scoreDisplay {
+    min-width: 200px;
+    display: flex;
+    justify-content: space-between;
+}
+
+#scoreBoard {
+    position: relative;
+    z-index: 3;
+    height: 80px;
+    outline: black thick solid;
+    background-color: cadetblue;
+    display: flex;
+    justify-content: space-evenly;
+    align-items: center;
+    font-size: 30px;
+}
+
+#board {
+    position: relative;
+    outline: black thick solid;
+    height: 600px;
+    width: 1000px;
+    background-color: rgba(255, 255, 255, 0.56);
+}
+
+#player {
+    opacity: revert;
+    z-index: 2;
+    position: absolute;
+    height: 100px;
+    width: 120px;
+    top: 500px;
+    left: 450px;
+    background: url("../img/cart.png");
+    background-size: cover;
+
+}
+
+.item {
+    opacity: 1;
+    z-index: 1;
+    position: absolute;
+    height: var(--item-size);
+    width: var(--item-size);
+    background-color: green;
+}
+
+/*number zero*/
+.\30  {
+    background: url("../img/bananas.png");
+    background-size: var(--item-size) var(--item-size);
+}
+
+/*number one*/
+.\31  {
+    background: url("../img/brocolli.png");
+    background-size: var(--item-size) var(--item-size);
+}
+
+/*number two*/
+.\32  {
+    background: url("../img/cherries.png");
+    background-size: var(--item-size) var(--item-size);
+}
+
+/*number three*/
+.\33  {
+    background: url("../img/chocolate.png");
+    background-size: var(--item-size) var(--item-size);;
+}
+
+/*number four*/
+.\34  {
+    background: url("../img/french-fries.png");
+    background-size: var(--item-size) var(--item-size);
+}
+
+/*number five*/
+.\35  {
+    background: url("../img/hamburger.png");
+    background-size: var(--item-size) var(--item-size);
+}
+
+.modal {
+    display: none; /* Hidden by default */
+    position: fixed; /* Stay in place */
+    z-index: 10; /* Sit on top */
+    padding-top: 100px; /* Location of the box */
+    left: 0;
+    top: 0;
+    width: 100%; /* Full width */
+    height: 100%; /* Full height */
+    overflow: auto; /* Enable scroll if needed */
+    background-color: rgb(0, 0, 0); /* Fallback color */
+    background-color: rgba(0, 0, 0, 0.4); /* Black w/ opacity */
+    justify-content: center;
+    align-items: center;
+}
+
+.modal-content {
+    background-color: #fefefe;
+    margin: auto;
+    padding: 20px;
+    border: 1px solid #888;
+    border-radius: 10px;
+    width: 200px;
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    align-items: center;
+    display: flex;
+    flex-flow: column;
+}

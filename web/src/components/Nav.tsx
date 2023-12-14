@@ -18,27 +18,27 @@ const Nav: FC = () => {
   const menuItems: MenuItem[] = [
     { to: "games", icon: FaGamepad, label: "Games" },
     { to: "quizes", icon: MdQuiz, label: "Quizes" },
-    { to: "games", icon: FaGamepad, label: "Games" },
-    { to: "quizes", icon: MdQuiz, label: "Quizes" },
     { to: "account", icon: FaUser, label: "Profile" },
     { to: "admin", icon: FaWrench, label: "Admin" },
   ];
 
   return (
-    <div className="h-full flex items-center justify-center w-2/3">
-      <ul className="w-full flex flex-row justify-evenly">
+    <div className="h-full flex w-full">
+      <ul className="w-full flex flex-col items-center">
         {menuItems.map(({ to, icon: Icon, label }) => (
-          <li key={to}>
+          <li key={to} className="w-full p-2">
             <NavLink
               to={to}
               className={({ isActive }) =>
                 classNames(
-                  "hover:text-green-500 flex items-center flex-col",
-                  isActive ? "text-green-500" : "text-white"
+                  "hover:text-green-500 flex items-center flex-col p-2",
+                  isActive
+                    ? "text-green-500 border border-green-500 rounded-md"
+                    : "text-white"
                 )
               }
             >
-              <Icon className="h-14 w-14" />
+              <Icon className="h-10 w-10" />
               {label}
             </NavLink>
           </li>

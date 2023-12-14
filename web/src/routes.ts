@@ -8,6 +8,9 @@ export const UnprotectedRoutes = [
   { path: "/", Component: MainPage },
   { path: "/notifications", Component: Notifications },
   { path: "/user/notifications", Component: UserNotifications },
+   { path: "/login", Component: LoginPage },
+  { path: "/games", Component: GamesPage },
+  { path: "/games/:name", Component: GamePage },
 ] satisfies RouteObject[];
 export const ProtectedRoutes = [] satisfies RouteObject[];
 
