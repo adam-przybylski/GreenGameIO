@@ -6,7 +6,7 @@ import { api, setAuthHeader } from "../../api/api.config.ts";
 import { LoginRequest } from "../../types/loginRequest.ts";
 import { useNavigate } from "react-router-dom";
 import { useUserContext } from "../../context/userContext.tsx";
-import { AccountTypeEnum } from "../../types/accountType.ts";
+
 
 const LoginPage: FC = () => {
   const methods = useForm<LoginRequest>({
@@ -29,10 +29,10 @@ const LoginPage: FC = () => {
           type: response.data.userType
         });
 
-        if (response.data.userType === AccountTypeEnum.ADMIN) {
-          navigation("/admin");
-          return;
-        }
+        // if (response.data.userType === AccountTypeEnum.ADMIN) {
+        //   navigation("/admin");
+        //   return;
+        // }
         navigation("/");
       })
       .catch(error => {
