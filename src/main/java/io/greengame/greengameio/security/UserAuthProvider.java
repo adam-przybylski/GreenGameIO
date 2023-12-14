@@ -20,7 +20,6 @@ import java.util.Base64;
 import java.util.Collections;
 import java.util.Date;
 
-
 @RequiredArgsConstructor
 @Component
 public class UserAuthProvider {
@@ -50,5 +49,11 @@ public class UserAuthProvider {
         DecodedJWT decodedJWT = verifier.verify(token);
         UserDto userDto = authenticationService.findByLogin(decodedJWT.getSubject());
         return new UsernamePasswordAuthenticationToken(userDto, null, Collections.singleton(new SimpleGrantedAuthority("ROLE_" + userDto.getUserType().name())));
+    }
+
+    public String getUserLogin(String token) {
+        JWTVerifier verifier = JWT.require(Algorithm.HMAC256(secretKey)).build();
+        DecodedJWT decodedJWT = verifier.verify(token);
+        return decodedJWT.getSubject();
     }
 }

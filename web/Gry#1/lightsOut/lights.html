@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lights Out!</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+    <link rel="stylesheet" type="text/css" href="css/style.css">
+</head>
+
+<body>
+<div class="container text-center">
+    <h1 class="mt-5">Lights Out!</h1>
+    <div><p id="pointsDisplay">Points: <span id="points">0</span></p></div>
+    <div id="board" class="mb-3"></div>
+    <button class="btn btn-primary" onclick="startGame()">Start</button>
+</div>
+
+<div class="note-header">
+    <div>
+        <img src="img/smallQuestionMark.png" alt="Question Mark">
+        <div class="note-text">Jak grać?</div>
+    </div>
+</div>
+
+<div class="note-container" style="background-color: rgb(128,128,128)">
+    <div class="note-content">
+        <h1 style="margin-right: 10%; margin-left: 10%; text-align: center">Poradnik do gry Lights Out!</h1>
+        <ul>
+            <li>Aby rozpocząć grę kliknij przycisk "Start"</li>
+            <li>Twoim zadaniem jest wyłączanie wszystkich zapalonych świateł</li>
+            <li>Światła zapalają się losowo</li>
+            <li>Jeśli światło jest zapalone, kliknij je myszką, aby je wyłączyć</li>
+            <li>Jeśli nie zdążysz wyłączyć światła, przegrywasz</li>
+            <li>Kazde wyłączone świało to jeden punkt</li>
+        </ul>
+    </div>
+</div>
+
+
+<div class="overlay" id="pauseAlertModal" style="display: none;">
+    <div class="modal-content">
+        <h5>Gra zatrzymana</h5>
+        <p>Naciśnij "Esc" ponownie żeby wznowić grę.</p>
+    </div>
+</div>
+
+<div class="overlay" id="gameOverModal" style="display: none;">
+    <div class="modal-content">
+        <h5>Przegrana</h5>
+        <p>Przegrałeś! Zdobyte punkty: <span id="pointsEarned"></span></p>
+    </div>
+</div>
+
+<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+<script src="./js/script.js"></script>
+</body>
+
+</html>
