@@ -1,9 +1,18 @@
 import { useEffect, useState } from "react";
-import api from "../api/api";
-import Friend from "./Friend";
 import AddFriend from "./AddFriend";
 
 const AddFriendModal = ({ close, userID, users }) => {
+    const [userFilter, setUserFilter] = useState("");
+    const [filteredUsers, seTFilteredUsers] = useState(users);
+
+    const filterUsers = (text) => {
+        return [...users].filter(element => element.username.includes(text));
+    }
+
+    useEffect(() => {
+        seTFilteredUsers(filterUsers(userFilter));
+    }, [userFilter, users])
+
     return (
         <div id="modal-background">
             <div id="modal">
@@ -16,10 +25,10 @@ const AddFriendModal = ({ close, userID, users }) => {
                     <h1>Add friend</h1>
                 </div>
                 <div id="input">
-                   <input type="text" name="username" id="username" placeholder="Filter list"></input>
+                   <input value={userFilter} onChange={e => setUserFilter(e.target.value)} type="text" name="username" id="username" placeholder="Filter list"></input>
                 </div>
                 <div id="data">
-                    {users.map((x, i) => {
+                    {filteredUsers.map((x, i) => {
                         return <AddFriend user={x} userID={userID}></AddFriend>
                     })}
                  </div>

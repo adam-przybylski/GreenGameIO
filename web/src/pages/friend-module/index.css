@@ -226,7 +226,7 @@
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    margin: 2rem;
+    margin: 0em 2em 0em 2em;
 }
 
 #list > #heading {
@@ -275,7 +275,7 @@
 #content {
     background-color: lightgreen;
     border-radius: 3.5rem;
-    min-height: 20rem;
+    min-height: 22.4em;
     overflow: auto;
     width: 50vw;
 }
@@ -298,7 +298,7 @@
 }
 
 #friends, #groups {
-    max-height: 20rem;
+    max-height: 18rem;
     overflow: auto;
 }
 
@@ -338,4 +338,25 @@
                 1px 1px 0 #000, 
             1px -1px 0 #000, 
             -1px -1px 0 #000;
+}
+
+.text {
+    width: 20vw;
+    text-align: center;
+    height: 5vh;
+    font-size: large;
+    color: black;
+    border-radius: 3rem;
+    transition: 0.1s;
+    box-shadow: -1px 1px 3px black;
+    margin-bottom: 0.5rem;
+}
+
+.text:hover {
+    background-color: lightgray;
+}
+
+.text:focus {
+    background-color: lightgray;
+    outline: none;
 }

@@ -82,12 +82,12 @@ const List: FC = () => {
 
     useEffect(() => {
         setFilteredFriends(filterFriends(filter));
-    }, [filter]);
+    }, [filter, friends]);
 
     return (
         <div id="list">
             <h1 id="heading">Friends</h1>
-            <input value={filter} type="text" name="" id="user-filter" onChange={(e) => {setFilter(e.target.value)}} placeholder="Filter friends"/>
+            {areFriendsDisplayed ? <input className="text" value={filter} type="text" name="" id="user-filter" onChange={(e) => {setFilter(e.target.value)}} placeholder="Filter friends"/> : <></>}
             <div id="functional-buttons">
                 {areFriendsDisplayed && <button className="button" onClick={displayAddFriendModal}>Add friend</button>}
                 {!areFriendsDisplayed && <button className="button" onClick={displayCreateGroupModal}>Create group</button>}
