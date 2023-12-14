@@ -226,7 +226,6 @@ return (
                                     backgroundColor: 'red',
                                     marginLeft: '10px',
                                 }}
-                                //onClick={() => handleDeleteQuiz(quiz.quizID)}
                             >
                                 DELETE
                             </button>
