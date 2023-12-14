@@ -15,7 +15,7 @@ export const UnprotectedRoutes = [
   { path: "/games/:name", Component: GamePage },
 ] satisfies RouteObject[];
 export const ProtectedRoutes = [
-  { path: ":id/friends", Component: FriendPage }
+  { path: ":id/friends", Component: FriendPage },
 ] satisfies RouteObject[];
 
 export const AdminRoutes = [
