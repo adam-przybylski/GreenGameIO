@@ -39,7 +39,8 @@ public class SecurityConfig {
                 .authorizeHttpRequests((requests) -> { requests
                         .requestMatchers(HttpMethod.POST, "/api/v1/authentication/login", "/api/v1/authentication/register").permitAll()
                         .requestMatchers("/api/v1/**").authenticated()
-                        .requestMatchers("/api/v1/tasks/**").hasAuthority("ROLE_ADMINISTRATOR");
+                        .requestMatchers("/api/v1/tasks/**").hasAuthority("ROLE_ADMINISTRATOR")
+                        .requestMatchers("/**").permitAll();
                 });
 
       
