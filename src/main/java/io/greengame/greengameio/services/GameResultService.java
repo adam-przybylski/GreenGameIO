@@ -21,7 +21,7 @@ public class GameResultService {
         return gameResultRepository.findXpByUserId(userId);
     }
 
-    public void updateUserXP(Long userId,double xp) {
+    public GameResult updateUserXP(Long userId,double xp) {
         Optional<GameResult> optionalGameResult = gameResultRepository.findByUserId(userId);
         if (optionalGameResult.isPresent()) {
             GameResult gameResult = optionalGameResult.get();
@@ -29,11 +29,13 @@ public class GameResultService {
             double actualXp = previousXp + xp;
             gameResult.setXp(actualXp);
             gameResultRepository.save(gameResult);
+            return gameResult;
         } else {
             GameResult newGameResult = new GameResult();
             newGameResult.setUserId(userId);
             newGameResult.setXp(xp);
             gameResultRepository.save(newGameResult);
+            return newGameResult;
         }
     }
 

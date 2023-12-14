@@ -20,7 +20,6 @@ public class GameResult {
 
     @Column(name = "user_id", nullable = false, unique = true)
     private Long userId;
-
     @Column(name = "xp", nullable = false)
     private double xp;
 

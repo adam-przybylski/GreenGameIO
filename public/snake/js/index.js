@@ -16,6 +16,7 @@ paper_taken=false;
 bootle_taken=false;
 is_paused = false;
 xp = 0
+//id= JSON.parse(window.localStorage.getItem("account")).id;
 id = 2 //todo
 
 function genereteXYforTrashes(){
@@ -162,7 +163,7 @@ function gameOver(cause){
     lost = true;
     if(id != null) {
         updateXPInDatabase(id, getXp());
-        updateLightsOutResult(id, score)
+        updateSnakeResult(id, score)
     }
     showGameOverModal(cause)
     resetGame();
@@ -186,7 +187,7 @@ function updateXPInDatabase(userId, xp) {
         });
 }
 
-function updateLightsOutResult(userId, score) {
+function updateSnakeResult(userId, score) {
     const url = `http://localhost:8081/api/v1/games/snake/${userId}/${score}`;
 
     fetch(url, {

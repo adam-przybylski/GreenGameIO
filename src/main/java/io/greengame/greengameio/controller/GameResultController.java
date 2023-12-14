@@ -18,10 +18,18 @@ public class GameResultController {
     double getXpByUserId(@PathVariable Long userId) {
         return gameResultService.getXpByUserId(userId);
     }
+    @GetMapping("snake/{userId}")
+    int getSnakeScore(@PathVariable Long userId){
+        return gameResultService.getSnakeScoreByUserId(userId);
+    }
+    @GetMapping("lightsOut/{userId}")
+    int getLightOutScore(@PathVariable Long userId){
+        return gameResultService.getLightOutScoreByUserId(userId);
+    }
 
     @PostMapping("updateUserXP/{userId}/{xp}")
-    void updateUserXP(@PathVariable Long userId,@PathVariable double xp) {
-        gameResultService.updateUserXP(userId, xp);
+    GameResult updateUserXP(@PathVariable Long userId,@PathVariable double xp) {
+        return gameResultService.updateUserXP(userId, xp);
     }
 
     @PostMapping("snake/{userId}/{snakeScore}")

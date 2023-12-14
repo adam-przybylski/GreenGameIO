@@ -21,7 +21,7 @@ public class SecurityConfig {
         http.authorizeHttpRequests((requests) -> {
                     requests
                             .requestMatchers("/api/v1/users").hasAnyAuthority("ROLE_USER", "ROLE_ADMINISTRATOR")
-                            .requestMatchers("/api/v1/games/**").hasAnyAuthority("ROLE_USER", "ROLE_ADMINISTRATOR")
+                            .requestMatchers("/api/v1/games/**").permitAll()
                             .requestMatchers("/api/v1/authentication").permitAll()
                             .requestMatchers("/**").permitAll();
                 })
