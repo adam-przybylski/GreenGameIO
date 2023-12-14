@@ -124,7 +124,6 @@ return (
                 <p>Brak quizów.</p>
             )}
         </div>
-
         <Modal
             isOpen={modalIsOpen}
             onRequestClose={closeModal}
@@ -173,6 +172,8 @@ return (
             contentLabel="Add Quiz"
             style={styles.modalStyles}
         >
+            <h2 style={styles.headingStyles}>Dodaj Quiz</h2>
+            <h3 style={styles.headingStyles2}>Uzupełnij dane o quizie:</h3><br/>
             <button
                 style={{
                     ...styles.buttonStyles,
@@ -186,6 +187,78 @@ return (
                 Zamknij
             </button>
         </Modal>
+        <Modal
+            isOpen={addModalIsOpen}
+            onRequestClose={() => setAddModalIsOpen(false)}
+            contentLabel="Add Quiz"
+            style={styles.modalStyles}
+        >
+            <h2 style={styles.headingStyles}>Dodaj Quiz</h2>
+            <h3 style={styles.headingStyles2}>Uzupełnij dane o quizie:</h3>
+            <form>
+                <div style={{ marginBottom: '15px' }}>
+                    <label style={{ fontWeight: 'bold' }}>Nazwa Quizu:</label>
+                    <input type="text" style={{ boxShadow: '2px 2px 5px rgba(0, 0, 0, 0.1)', marginLeft: '10px' }} />
+                </div>
+                <div style={{ marginBottom: '15px' }}>
+                    <label style={{ fontWeight: 'bold' }}>Twórca Quizu:</label>
+                    <input type="text" style={{ boxShadow: '2px 2px 5px rgba(0, 0, 0, 0.1)', marginLeft: '10px' }} />
+                </div>
+                <div style={{ marginBottom: '15px' }}>
+                    <label style={{ fontWeight: 'bold' }}>Data Otwarcia Quizu:</label>
+                    <input type="datetime-local" style={{ boxShadow: '2px 2px 5px rgba(0, 0, 0, 0.1)', marginLeft: '10px' }} />
+                </div>
+                <div style={{ marginBottom: '15px' }}>
+                    <label style={{ fontWeight: 'bold' }}>Pytania:</label>
+                    <div>
+                        <input type="text" placeholder="Treść pytania" style={{ boxShadow: '2px 2px 5px rgba(0, 0, 0, 0.1)', marginRight: '10px' }} />
+                        <button
+                            style={{
+                                ...styles.buttonStyles,
+                                backgroundColor: 'black',
+                            }}
+                            onClick={(e) => {
+                                e.preventDefault();
+                                console.log('Add new question (dummy action)');
+                            }}
+                        >
+                            Dodaj pytanie
+                        </button>
+                    </div>
+                    <div style={{ marginTop: '10px' }}>
+                        <br/><label style={{ fontWeight: 'bold' }}>Wybierz poprawną odpowiedź:</label>
+                        <select style={{ boxShadow: '2px 2px 5px rgba(0, 0, 0, 0.1)', marginLeft: '10px' }}>
+                            <option value="1">Odpowiedź 1</option>
+                            <option value="2">Odpowiedź 2</option>
+                        </select>
+                    </div>
+                </div>
+            </form>
+            <button
+                style={{
+                    ...styles.buttonStyles,
+                    position: 'absolute',
+                    bottom: '10px',
+                    left: '50%',
+                    transform: 'translateX(-50%)',
+                }}
+                onClick={() => setAddModalIsOpen(false)}
+            >
+                Zamknij
+            </button>
+            <button
+                style={{
+                    ...styles.buttonStyles,
+                    position: 'absolute',
+                    bottom: '200px',
+                    left: '50%',
+                    transform: 'translateX(-50%)',
+                    backgroundColor: 'green',
+                }}
+            >
+                Zapisz Quiz
+            </button>
+        </Modal>
 
         <Modal
             isOpen={editModalIsOpen}
@@ -193,6 +266,26 @@ return (
             contentLabel="Edit Quiz"
             style={styles.modalStyles}
         >
+            <h2 style={styles.headingStyles}>Edytuj Quiz</h2>
+            <h3 style={styles.headingStyles2}>Wybierz quiz do edycji:</h3><br/>
+            <ul style={{listStyleType: 'none', padding: 0}}>
+                {quizzes &&
+                    quizzes.map((quiz) => (
+                        <li key={quiz.quizID} style={{marginBottom: '10px', display: 'flex', alignItems: 'center'}}>
+                    <span style={{marginRight: '20px'}}>
+                        <strong>{quiz.quizTitle}</strong>
+                    </span>
+                            <button
+                                style={{
+                                    ...styles.buttonStyles,
+                                    backgroundColor: 'blue',
+                                }}
+                            >
+                                Edytuj
+                            </button>
+                        </li>
+                    ))}
+            </ul>
             <button
                 style={{
                     ...styles.buttonStyles,
@@ -213,21 +306,22 @@ return (
             contentLabel="Delete Quiz"
             style={styles.modalStyles}
         >
-            <h2>Delete Quiz</h2>
-            <p>Select a quiz to delete:</p>
-            <ul>
+            <h2 style={styles.headingStyles}>Usuń Quiz</h2>
+            <h3 style={styles.headingStyles2}>Wybierz quiz do usunięcia:</h3><br/>
+            <ul style={{listStyleType: 'none', padding: 0}}>
                 {quizzes &&
                     quizzes.map((quiz) => (
-                        <li key={quiz.quizID}>
-                            {quiz.quizTitle}
+                        <li key={quiz.quizID} style={{marginBottom: '10px', display: 'flex', alignItems: 'center'}}>
+                    <span style={{marginRight: '20px'}}>
+                        <strong>{quiz.quizTitle}</strong>
+                    </span>
                             <button
                                 style={{
                                     ...styles.buttonStyles,
                                     backgroundColor: 'red',
-                                    marginLeft: '10px',
                                 }}
                             >
-                                DELETE
+                                Usuń
                             </button>
                         </li>
                     ))}

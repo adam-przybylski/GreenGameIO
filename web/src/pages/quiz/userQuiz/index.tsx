@@ -1,6 +1,6 @@
-import { FC, useEffect, useState } from "react";
+import {FC, useEffect, useState} from "react";
 import Modal from "react-modal";
-import { api } from "../../../api/api.config.ts";
+import {api} from "../../../api/api.config.ts";
 import * as styles from "./styles";
 
 interface Quiz {
@@ -34,7 +34,6 @@ const Quizzes: FC = () => {
     useEffect(() => {
         api.get("/quizzes")
             .then(function (response) {
-                // Filter quizzes based on opening date
                 const filteredQuizzes = response.data.filter(quiz => new Date(quiz.quizOpenDate) < new Date());
                 setQuizzes(filteredQuizzes);
             })
@@ -42,6 +41,7 @@ const Quizzes: FC = () => {
                 console.error("Error fetching quizzes:", error);
                 setQuizzes([]);
             });
+
     }, []);
 
     const openModal = (quiz: Quiz) => {
@@ -69,19 +69,20 @@ const Quizzes: FC = () => {
     return (
         <div>
             <h2 style={styles.headingStyles}>Quizy</h2>
-            <div style={{ display: 'flex', flexWrap: 'wrap' }}>
+            <div style={{display: 'flex', flexWrap: 'wrap'}}>
                 {quizzes && quizzes.length > 0 ? (
                     quizzes.map((quiz) => (
                         <div
                             key={quiz.quizID}
+
                             onClick={() => openModal(quiz)}
                             style={styles.squareStyles}
                         >
-                            <div style={{ textAlign: 'center' }}>
-                                <strong>{quiz.quizTitle}</strong><br /><br />
+                            <div style={{textAlign: 'center'}}>
+                                <strong>{quiz.quizTitle}</strong><br/><br/>
                             </div>
-                            <strong>Data Otwarcia:</strong> {formatOpeningDate(quiz.quizOpenDate)}<br /><br />
-                            <strong>Liczba pytań:</strong> {quiz.listOfQuestions.length}<br />
+                            <strong>Data Otwarcia:</strong> {formatOpeningDate(quiz.quizOpenDate)}<br/><br/>
+                            <strong>Liczba pytań:</strong> {quiz.listOfQuestions.length}<br/>
 
                         </div>
                     ))
@@ -100,13 +101,14 @@ const Quizzes: FC = () => {
                     <div>
                         <h2 style={styles.headingStyles}>{selectedQuiz.quizTitle}</h2>
                         <strong>Twórca:</strong> {selectedQuiz.quizCreator.username}<br/>
-                        <strong>Data Otwarcia:</strong> {formatOpeningDate(selectedQuiz.quizOpenDate)}<br/><br/>
+                        <strong>Data Otwarcia:</strong> {formatOpeningDate(selectedQuiz.quizOpenDate)}<br/>
+                        <strong>Twój Najlepszy Wynik: </strong>{1}<br/><br/>
                         <button style={{
                             ...styles.buttonStyles2,
                             position: 'absolute',
                             left: '50%',
                             transform: 'translateX(-50%)'
-                        }} >
+                        }}>
                             Rozpocznij Quiz
                         </button>
                         <button style={{
