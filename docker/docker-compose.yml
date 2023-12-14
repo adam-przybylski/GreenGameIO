@@ -1,6 +1,21 @@
 version: '3.8'
 
 services:
+  mongo1:
+    container_name: mongo1
+    image: mongo:4.4
+    volumes:
+      - ~/mongors/data1:/data/frienddb
+    ports:
+      - 27021:27017
+    restart: always
+    command: >
+      /bin/bash -c "
+        /usr/bin/mongod --bind_ip_all;
+        /usr/bin/mongod --replSet;
+        /usr/bin/mongod dbrs;
+        mongo --eval 'rs.initiate()'"
+
   db:
     image: postgres:14
     restart: always
@@ -19,6 +34,5 @@ services:
     restart: always
     ports:
       - 8080:8080
-
 volumes:
   pg:
