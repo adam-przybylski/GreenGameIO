@@ -5,6 +5,10 @@
     border-radius: 3rem;
     transition: 0.1s;
     box-shadow: -1px 1px 3px black;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
 }
 
 .group:hover {
@@ -18,4 +22,11 @@
                 1px -1px 0 #000, 
                 -1px -1px 0 #000;
     margin-left: 1rem;
+}
+
+.group > #group-buttons {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: center;
 }

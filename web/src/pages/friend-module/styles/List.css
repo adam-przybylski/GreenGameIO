@@ -30,6 +30,7 @@
     box-shadow: -1px 1px 3px black;
     border-radius: 3rem 0 3rem 0;
     transition: 0.1s
+    
 }
 
 .button:hover {
@@ -60,7 +61,11 @@
     width: 50vw;
 }
 
-@media(max-width: 638px) {
+.pressed { 
+    background-color: #002606;
+}
+
+@media(max-width: 940px) {
     #functional-buttons {
         display: flex;
         flex-direction: column;
@@ -71,4 +76,9 @@
     #content {
         width: 75vw;
     }
+}
+
+#friends, #groups {
+    max-height: 20rem;
+    overflow: auto;
 }

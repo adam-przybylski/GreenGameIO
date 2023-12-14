@@ -16,19 +16,18 @@ export default {
         .catch(err => console.error(err));
     },
 
-    getAllFriends: (userID, setFriends) => {
-        fetch(`http://localhost:8081/friend-module/${userID}/username-contains?username=""`)
+    getAllUsers: (id, setUsers) => {
+        fetch(`http://localhost:8081/friend-module/${id}/username-contains?username`)
         .then(response => response.json())
-        .then(data => setFriends(data))
+        .then(data => setUsers(data))
         .catch(err => console.error(err));
     },
 
-    removeFriend: (userID, friend, update) => {
-        fetch(`http://localhost:8081/friend-module/${userID}/remove-friend?receiverId=${friend.id}`, {
+    removeFriend: (id, friend) => {
+        fetch(`http://localhost:8081/friend-module/${id}/remove-friend?receiverId=${friend.id}`, {
             method: "PATCH"
         }).then(response => {
             if (response.status == 200) {
-                update();
                 alert(`User \"${friend.name}\" has been removed from the friend list!`);
             }
         }).catch(err => {
@@ -37,8 +36,8 @@ export default {
         });
     },
 
-    addFriend: (userID, friend) => {
-        fetch(`http://localhost:8081/friend-module/${userID}/send-friend-request?receiverId=${friend.id}`, {
+    addFriend: (id, friend) => {
+        fetch(`http://localhost:8081/friend-module/${id}/send-friend-request?receiverId=${friend.id}`, {
             method: "PATCH"
         })
         .then(response => {
@@ -50,8 +49,8 @@ export default {
         }).catch(err => console.error(err));
     },
 
-    getPendingRequests: (userID, setRequests) => {
-        fetch(`http://localhost:8081/friend-module/${userID}/get-friend-requests`)
+    getPendingRequests: (id, setRequests) => {
+        fetch(`http://localhost:8081/friend-module/${id}/get-friend-requests`)
         .then(response => response.json())
         .then(json => {
             const temp = [];
@@ -61,20 +60,65 @@ export default {
                     username: json[property]
                 });
             }
-            console.log(temp);
             setRequests(temp);
         }).catch(err => console.error(err))
     },
 
-    acceptFriendRequest: (userID, request) => {
-        fetch(`http://localhost:8081/friend-module/${userID}/accept-friend-request?senderId=${request.id}`, {
+    acceptFriendRequest: (id, request) => {
+        fetch(`http://localhost:8081/friend-module/${id}/accept-friend-request?senderId=${request.id}`, {
             method: "PATCH"
         })
         .then(response => {
             if (response.status == 200) {
-                alert(`Friend request from ${request.username} has been accepted!`)
+                alert(`Friend request from ${request.username} has been accepted!`);
             } else {
                 alert(`Failed to accept friend request from ${request.username}`);
+            }
+        }).catch(err => console.error(err));
+    },
+
+    getUsersGroups: (id, setGroups) => {
+        fetch(`http://localhost:8081/friend-module/${id}/groups`)
+        .then(response => response.json())
+        .then(json => setGroups(json));
+    },
+
+    createGroup: (id, body) => {
+        fetch(`http://localhost:8081/friend-module/${id}/groups`, {
+            method: "POST",
+            headers: {
+                "Content-type": "application/json"
+            },
+            body: JSON.stringify(body)
+        }).then(response => {
+            if (response.status == 200) {
+                alert(`Group ${body.name} has been created!`)
+            } else {
+                alert("Failed to create group :(");
+            }
+        }).catch(err => console.error(err));
+    },
+
+    deleteGroup: (id, group) => {
+        fetch(`http://localhost:8081/friend-module/${id}/groups/${group.id}`, {
+            method: "DELETE"
+        }).then(response => {
+            if (response.status == 200) {
+                alert(`Group ${group.name} has been deleted!`);
+            } else {
+                alert("Failed to delete group :(")
+            }
+        }).catch(err => console.error(err));
+    },
+
+    addGroupMember: (id, group, member) => {
+        fetch(`http://localhost:8081/friend-module/${id}/groups/${group.id}/add-member?memberId=${member.id}`, {
+            method: "PATCH"
+        }).then(response => {
+            if (response.status == 200) {
+                alert(`Friend ${member.name} has been added to group ${group.name}!`);
+            } else {
+                alert("Failed to add user to group :(");
             }
         }).catch(err => console.error(err));
     }

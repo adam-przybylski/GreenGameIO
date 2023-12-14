@@ -1,11 +1,6 @@
-import { useEffect, useState } from "react";
-import "../styles/AddFriendModal.css";
-import api from "../api/api";
-import PendingRequest from "./PendingRequest";
+import GroupMember from "./GroupMember";
 
-
-
-const PendingRequestsModal = ({ close, userID, requests}) => {
+const AddGroupMembersModal = ({ id, friends, close, group }) => {
     return (
         <div id="modal-background">
             <div id="modal">
@@ -15,11 +10,14 @@ const PendingRequestsModal = ({ close, userID, requests}) => {
                             <path stroke="black" strokeWidth="0.3" d="M2.146 2.854a.5.5 0 1 1 .708-.708L8 7.293l5.146-5.147a.5.5 0 0 1 .708.708L8.707 8l5.147 5.146a.5.5 0 0 1-.708.708L8 8.707l-5.146 5.147a.5.5 0 0 1-.708-.708L7.293 8z"/>
                         </svg>
                     </button>
-                    <h1>Pending friend requests</h1>
+                    <h1>Add group members</h1>
+                </div>
+                <div id="input">
+                   <input type="text" name="username" id="username" placeholder="Filter list"></input>
                 </div>
                 <div id="data">
-                    {requests.map((x, _i) => {
-                        return <PendingRequest request={x} userID={userID}></PendingRequest>
+                    {friends.map((x, i) => {
+                        return <GroupMember friend={x} id={id} group={group}></GroupMember>
                     })}
                  </div>
              </div>
@@ -27,4 +25,4 @@ const PendingRequestsModal = ({ close, userID, requests}) => {
     )
 };
 
-export default PendingRequestsModal;
+export default AddGroupMembersModal;

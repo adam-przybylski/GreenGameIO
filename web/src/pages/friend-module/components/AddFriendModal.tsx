@@ -4,11 +4,7 @@ import api from "../api/api";
 import Friend from "./Friend";
 import AddFriend from "./AddFriend";
 
-const AddFriendModal = ({ close, userID }) => {
-    const [friends, setFriends] = useState([]);
-    useEffect(() => {
-        api.getAllFriends(userID, setFriends);
-    }, []);
+const AddFriendModal = ({ close, userID, users }) => {
     return (
         <div id="modal-background">
             <div id="modal">
@@ -24,8 +20,8 @@ const AddFriendModal = ({ close, userID }) => {
                    <input type="text" name="username" id="username" placeholder="Filter list"></input>
                 </div>
                 <div id="data">
-                    {friends.map((x, i) => {
-                        return <AddFriend friend={x} userID={userID}></AddFriend>
+                    {users.map((x, i) => {
+                        return <AddFriend user={x} userID={userID}></AddFriend>
                     })}
                  </div>
              </div>
