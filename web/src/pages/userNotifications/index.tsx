@@ -8,7 +8,6 @@ const UserNotifications: FC = () => {
 
   const handleGet = () => {
     api.get("/user/notifications").then((res) => {
-      console.log(res.data);
       setData(res.data);
     });
   };
