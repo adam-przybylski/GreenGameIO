@@ -1,9 +1,10 @@
 import { FC } from "react";
 import { NavLink } from "react-router-dom";
 import { FaGamepad, FaUser } from "react-icons/fa";
-import { MdQuiz } from "react-icons/md";
+import { MdQrCode, MdQuiz } from "react-icons/md";
 import { IconType } from "react-icons";
 import { classNames } from "../utils/tailwind";
+import { GrAchievement } from "react-icons/gr";
 
 type MenuItem = {
   to: string;
@@ -18,6 +19,8 @@ const Nav: FC = () => {
     { to: "games", icon: FaGamepad, label: "Games" },
     { to: "quizes", icon: MdQuiz, label: "Quizes" },
     { to: "account", icon: FaUser, label: "Profile" },
+    { to: "leaderboard", icon: MdQrCode, label: "Leaderboard"},
+    { to: "awards", icon: GrAchievement, label: "Awardes"}
   ];
 
   return (

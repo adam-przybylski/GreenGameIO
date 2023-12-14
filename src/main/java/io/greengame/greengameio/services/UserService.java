@@ -1,6 +1,7 @@
 package io.greengame.greengameio.services;
 
 
+import io.greengame.greengameio.entity.Odznaka;
 import io.greengame.greengameio.entity.User;
 import io.greengame.greengameio.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -47,6 +48,7 @@ public class UserService {
         user1.setPassword(user.getPassword());
         user1.setEmail(user.getEmail());
         user1.setType(user.getType());
+        user1.setOdznaka(user.getOdznaka());
         return userRepository.save(user1);
     }
 }

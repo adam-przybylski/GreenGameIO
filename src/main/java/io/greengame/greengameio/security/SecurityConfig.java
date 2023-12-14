@@ -19,7 +19,18 @@ public class SecurityConfig {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http.authorizeHttpRequests((requests) -> { requests
                         .requestMatchers("/api/v1/users").hasAnyAuthority("ROLE_USER", "ROLE_ADMINISTRATOR")
-                .requestMatchers("/api/v1/authentication").permitAll();
+                        .requestMatchers("/api/v1/authentication").permitAll()
+                        .requestMatchers("/api/v1/odznaki").permitAll()
+                        .requestMatchers("/api/v1/odznaki/nazwaOdznaki/{name}").permitAll()
+                        .requestMatchers("/api/v1/odznaki/idOdznaki/{id}").permitAll()
+                        .requestMatchers("/api/v1/odznaki/tworzenieOdznaki").permitAll()
+                        .requestMatchers("/api/v1/odznakaManager").permitAll()
+                        .requestMatchers("/api/v1/odznakaManager/odznaka/{id}").permitAll()
+                        .requestMatchers("/api/v1/odznakaManager/user/{id}").permitAll()
+                        .requestMatchers("/api/v1/odznakaManager/przyznajOdznake").permitAll()
+                        .requestMatchers("/api/v1/odznakaManager/przypnij").permitAll()
+                        .requestMatchers("/api/v1/odznakaManager/gracze/{id}").permitAll()
+                        .requestMatchers("/api/v1/odznakaManager/dodajOdznake").permitAll();
         })
                 .httpBasic(Customizer.withDefaults())
                 .formLogin(Customizer.withDefaults());
