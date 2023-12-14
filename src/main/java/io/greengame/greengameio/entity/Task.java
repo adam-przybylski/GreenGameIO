@@ -27,6 +27,7 @@ public class Task {
     private String name;
 
     @Column(name = "description", nullable = false)
+    @Lob
     @NotBlank(message = "Description is mandatory")
     private String description;
 

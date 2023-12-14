@@ -1,7 +1,7 @@
 export interface TaskType {
-    id: number;
+    id: number | undefined;
     name: string;
     description: string;
-    expValue: string;
+    expValue: number;
     active: boolean;
 }
