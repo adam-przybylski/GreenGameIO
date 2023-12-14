@@ -9,9 +9,9 @@ import { logoutUser } from "../api/logout"
 import LoginButton from "./LoginButton";
 
 type MenuItem = {
-  to: string;
-  icon: IconType;
-  label: string;
+    to: string;
+    icon: IconType;
+    label: string;
 };
 
 const Nav: FC = () => {
