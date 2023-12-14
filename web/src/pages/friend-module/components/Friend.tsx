@@ -1,10 +1,9 @@
 import { FC } from "react";
-import "../styles/Friend.css";
 import api from "../api/api";
 
 const Friend: FC = ({ friend, userID, viewModal, setViewedUser}) => {
     const setViewedUserAndDisplayModal = () => {
-        setViewedUser(friend);
+        setViewedUser(friend.id);
         viewModal();
     };
     const removeFriend = () => {

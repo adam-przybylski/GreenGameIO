@@ -1,5 +1,4 @@
 import api from "../api/api";
-import "../styles/PendingRequest.css"
 
 const PendingRequest = ({userID, request}) => {
     const acceptRequest = () => {

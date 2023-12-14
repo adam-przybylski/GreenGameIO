@@ -1,5 +1,3 @@
-import "../styles/GroupModal.css"
-
 const GroupModal = ({close, group}) => {
     return (
         <div id="modal-background">

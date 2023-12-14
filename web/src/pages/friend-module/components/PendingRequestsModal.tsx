@@ -1,6 +1,4 @@
 import { useEffect, useState } from "react";
-import "../styles/AddFriendModal.css";
-import api from "../api/api";
 import PendingRequest from "./PendingRequest";
 
 

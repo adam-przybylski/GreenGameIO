@@ -10,7 +10,7 @@ export default {
                     id: Object.keys(friend.members)[0],
                     name: Object.values(friend.members)[0]
                 });
-            })
+            });
             setFriends(temp);
         })
         .catch(err => console.error(err));
@@ -113,12 +113,40 @@ export default {
 
     addGroupMember: (id, group, member) => {
         fetch(`http://localhost:8081/friend-module/${id}/groups/${group.id}/add-member?memberId=${member.id}`, {
-            method: "PATCH"
+            method: "POST"
         }).then(response => {
             if (response.status == 200) {
                 alert(`Friend ${member.name} has been added to group ${group.name}!`);
             } else {
                 alert("Failed to add user to group :(");
+            }
+        }).catch(err => console.error(err));
+    },
+
+    editGroup: (id, group, body) => {
+        fetch(`http://localhost:8081/friend-module/${id}/groups/${group.id}`, {
+            method: "PUT",
+            body: JSON.stringify(body),
+            headers: {
+                "Content-type": "application/json"
+            },
+        }).then(response => {
+            if (response.status == 200) {
+                alert(`Group ${group.name} has been changed!`);
+            } else {
+                alert("Failed to modify group :(");
+            }
+        }).catch(err => console.error(err));
+    },
+
+    removeGroupMember: (id, groupID, memberID) => {
+        fetch(`http://localhost:8081/friend-module/${id}/groups/${groupID}/remove-member?memberId=${memberID}`, {
+            method: "DELETE"
+        }).then(response => {
+            if (response.status == 200) {
+                alert("User has been removed from the group!");
+            } else {
+                alert("Failed to remove user :(");
             }
         }).catch(err => console.error(err));
     }

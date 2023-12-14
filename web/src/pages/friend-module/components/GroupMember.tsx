@@ -1,5 +1,4 @@
 import { FC } from "react";
-import "../styles/Friend.css";
 import api from "../api/api";
 
 const GroupMember: FC = ({ friend, id, group }) => {

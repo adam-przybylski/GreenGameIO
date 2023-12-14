@@ -1,7 +1,6 @@
-import { FC, useEffect, useState } from "react";
-import api from "./api/api";
+import { FC } from "react";
 import List from "./components/List";
-import { useParams } from "react-router-dom";
+import "./index.css";
 
 const FriendPage: FC = () => {
     

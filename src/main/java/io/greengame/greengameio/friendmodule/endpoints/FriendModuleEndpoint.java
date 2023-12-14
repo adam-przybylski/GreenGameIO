@@ -65,16 +65,16 @@ public class FriendModuleEndpoint {
     }
     @DeleteMapping("/{userId}/groups/{groupId}")
     public void deleteGroup(@PathVariable Long userId, @PathVariable String groupId) {
-        friendManager.deleteGroup(userId, groupId);
+            friendManager.deleteGroup(userId, groupId);
     }
 
-    @PatchMapping("/{userId}/groups/{groupId}/add-member")
-    public void addMemberToGroup(@PathVariable Long userId, @PathVariable String groupId, @RequestParam Long memberId) {
-        friendManager.addGroupMember(userId, groupId, memberId);
+    @PostMapping("/{userId}/groups/{groupId}/add-member")
+    public Group addMemberToGroup(@PathVariable Long userId, @PathVariable String groupId, @RequestParam Long memberId) {
+        return friendManager.addGroupMember(userId, groupId, memberId);
     }
-    @PatchMapping("/{userId}/groups/{groupId}/remove-member")
-    public void removeMemberFromGroup(@PathVariable Long userId, @PathVariable String groupId,@RequestParam Long memberId) {
-        friendManager.removeGroupMember(userId, groupId, memberId);
+    @DeleteMapping("/{userId}/groups/{groupId}/remove-member")
+    public Group removeMemberFromGroup(@PathVariable Long userId, @PathVariable String groupId,@RequestParam Long memberId) {
+        return friendManager.removeGroupMember(userId, groupId, memberId);
     }
     @GetMapping("/chats/{chatId}")
     public Chat findChat(@PathVariable String chatId) {

@@ -1,5 +1,4 @@
 import { useEffect, useState } from "react";
-import "../styles/AddFriendModal.css";
 import api from "../api/api";
 import Friend from "./Friend";
 import AddFriend from "./AddFriend";

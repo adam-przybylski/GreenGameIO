@@ -1,5 +1,4 @@
 import api from "../api/api";
-import "../styles/AddFriend.css";
 
 const AddFriend = ({ user, userID }) => {
     const addFriend = () => {
