@@ -15,6 +15,7 @@ export const UnprotectedRoutes = [
   { path: "/user/notifications", Component: UserNotifications },
   { path: "/games", Component: GamesPage },
   { path: "/games/:name", Component: GamePage },
+  {path: "/awards", Component: AwardsPage},
   {
     path: "/quizzes",
     Component: Quizzes,
@@ -26,5 +27,5 @@ export const ProtectedRoutes = [
 
 export const AdminRoutes = [
   { path: "/admin", Component: AdminLayout },
-  {path: "/admin/awards", Component: AwardsPage}
+
 ] satisfies RouteObject[];
