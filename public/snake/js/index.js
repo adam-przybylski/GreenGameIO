@@ -17,7 +17,7 @@ bootle_taken=false;
 is_paused = false;
 xp = 0
 //id= JSON.parse(window.localStorage.getItem("account")).id;
-id = 2 //todo
+id = 25 //todo
 
 function genereteXYforTrashes(){
     let min = 1;
@@ -162,8 +162,11 @@ function updateGame(){
 function gameOver(cause){
     lost = true;
     if(id != null) {
-        updateXPInDatabase(id, getXp());
+        let xpEarned = getXp();
         updateSnakeResult(id, score)
+        setTimeout(function(){
+            updateXPInDatabase(id, xpEarned);
+        }, 1000);
     }
     showGameOverModal(cause)
     resetGame();

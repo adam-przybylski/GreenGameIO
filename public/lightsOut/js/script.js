@@ -109,8 +109,11 @@ function endGame() {
     showGameOverModal(points)
     const xpEarned = calculateXPfromPoints(points);
 
-    updateXPInDatabase(5, xpEarned); //TODO userId
-    updateLightsOutResult(5, points); //TODO userId
+    updateXPInDatabase(30, xpEarned); //TODO userId
+    setTimeout(function(){
+        updateLightsOutResult(30, points);//TODO userId
+    }, 1000);
+
     resetGame();
 }
 
