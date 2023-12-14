@@ -1,9 +1,12 @@
 import { FC } from "react";
 import { NavLink } from "react-router-dom";
-import { FaGamepad, FaUser } from "react-icons/fa";
+import { FaGamepad, FaUser, FaWrench } from "react-icons/fa";
 import { MdQuiz } from "react-icons/md";
 import { IconType } from "react-icons";
 import { classNames } from "../utils/tailwind";
+import LogoutButton from "./LogoutButton";
+import { logoutUser } from "../api/logout"
+import LoginButton from "./LoginButton";
 
 type MenuItem = {
   to: string;
@@ -18,6 +21,7 @@ const Nav: FC = () => {
     { to: "games", icon: FaGamepad, label: "Games" },
     { to: "quizes", icon: MdQuiz, label: "Quizes" },
     { to: "account", icon: FaUser, label: "Profile" },
+    { to: "admin", icon: FaWrench, label: "Admin" },
   ];
 
   return (
@@ -39,6 +43,10 @@ const Nav: FC = () => {
             </NavLink>
           </li>
         ))}
+        {localStorage.getItem("token") != null ? <li>
+          <LogoutButton logoutUser={logoutUser} />
+        </li> : <LoginButton />}
+
       </ul>
     </div>
   );

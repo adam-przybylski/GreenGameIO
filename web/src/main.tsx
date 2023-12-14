@@ -6,12 +6,14 @@ import {
   createBrowserRouter,
 } from "react-router-dom";
 import Layout from "./pages/Layout";
-import { ProtectedRoutes, UnprotectedRoutes } from "./routes";
+import { AdminRoutes, ProtectedRoutes, UnprotectedRoutes } from "./routes";
 import AuthRouteGuard from "./pages/AuthRouteGuard";
 import LoginPage from "./pages/login";
 import RegisterPage from "./pages/register";
 import "./index.css";
 import AuthenticationLayout from "./pages/AuthenticationLayout";
+import AdminLayout from "./pages/admin/AdminLayout";
+import UserContextProvider from "./context/userContext";
 
 const router = createBrowserRouter([
   {
@@ -19,7 +21,11 @@ const router = createBrowserRouter([
     Component: Layout,
     children: [
       ...UnprotectedRoutes,
-      { path: "/", Component: AuthRouteGuard, children: ProtectedRoutes },
+      {
+        path: "/",
+        Component: AuthRouteGuard,
+        children: ProtectedRoutes,
+      },
     ],
   },
   {
@@ -28,12 +34,19 @@ const router = createBrowserRouter([
     children: [
       { path: "/register", Component: RegisterPage },
       { path: "/login", Component: LoginPage },
-    ]
+    ],
+  },
+  {
+    path: "/admin",
+    Component: AdminLayout,
+    children: AdminRoutes,
   },
 ] satisfies RouteObject[]);
 
 ReactDOM.createRoot(document.getElementById("root")!).render(
   <React.StrictMode>
-    <RouterProvider router={router} />
+    <UserContextProvider>
+      <RouterProvider router={router} />
+    </UserContextProvider>
   </React.StrictMode>
 );

@@ -36,7 +36,7 @@ public class UserAuthProvider {
 
     public String createToken(String login) {
         LocalDateTime now = LocalDateTime.now();
-        LocalDateTime validity = now.plusHours(1);
+        LocalDateTime validity = now.plusHours(12);
         return JWT.create()
                 .withSubject(login)
                 .withIssuedAt(Date.from(now.atZone(ZoneId.systemDefault()).toInstant()))

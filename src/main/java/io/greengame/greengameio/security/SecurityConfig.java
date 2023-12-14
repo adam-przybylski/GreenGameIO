@@ -35,8 +35,10 @@ public class SecurityConfig {
                 .sessionManagement(sessionManagement -> sessionManagement.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests((requests) -> { requests
                         .requestMatchers(HttpMethod.POST, "/api/v1/authentication/login", "/api/v1/authentication/register").permitAll()
-                        .requestMatchers("/api/v1/**").authenticated();
+                        .requestMatchers("/api/v1/**").authenticated()
+                        .requestMatchers("/api/v1/tasks/**").hasAuthority("ROLE_ADMINISTRATOR");
                 });
+
 
         return http.build();
     }
@@ -50,7 +52,7 @@ public class SecurityConfig {
                 HttpHeaders.AUTHORIZATION,
                 HttpHeaders.CONTENT_TYPE,
                 HttpHeaders.ACCEPT));
-        configuration.setAllowedMethods(Arrays.asList("GET","POST","PUT", "DELETE"));
+        configuration.setAllowedMethods(Arrays.asList("GET", "POST", "DELETE", "PUT", "PATCH"));
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", configuration);
         return source;

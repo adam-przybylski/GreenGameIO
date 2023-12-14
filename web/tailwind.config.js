@@ -9,7 +9,10 @@ export default {
       colors: {
         'nice-green': '#1aebb6',
       },
-      borderColor: ['focus']
+      borderColor: ['focus'],
+      minHeight: {
+        '5/6': '83.333333%',
+      },
     },
   },
   plugins: [],
