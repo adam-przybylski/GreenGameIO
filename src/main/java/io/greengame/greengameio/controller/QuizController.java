@@ -26,13 +26,13 @@ public class QuizController {
 
     @PostMapping
     public ResponseEntity<?> createQuiz(@RequestBody Quiz quiz) {
-        Quiz newQuiz = quizService.createQuiz(quiz);
         for (Question question : quiz.getListOfQuestions()) {
-            questionService.createQuestion(question);
             for (Answer answer : question.getQuestionAnswers()) {
                 answerService.createAnswer(answer);
             }
+            questionService.createQuestion(question);
         }
+        Quiz newQuiz = quizService.createQuiz(quiz);
         return ResponseEntity.created(URI.create("http://localhost:8081/api/v1/quizzes/" + newQuiz.getQuizID())).contentType(MediaType.APPLICATION_JSON).body(newQuiz);
     }
 
