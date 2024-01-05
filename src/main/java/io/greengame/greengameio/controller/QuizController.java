@@ -3,6 +3,7 @@ package io.greengame.greengameio.controller;
 import io.greengame.greengameio.entity.*;
 import io.greengame.greengameio.exceptions.quiz.QuizNotFoundException;
 import io.greengame.greengameio.services.*;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -15,6 +16,7 @@ import java.net.URI;
 @Validated
 @RequestMapping("/api/v1/quizzes")
 @RequiredArgsConstructor
+@Transactional
 public class QuizController {
 
     private final QuizService quizService;
@@ -58,7 +60,7 @@ public class QuizController {
         }
     }
 
-    @PostMapping("/id/{quizID}/modify")
+    @PutMapping("/id/{quizID}/modify")
     public ResponseEntity<?> modifyQuiz(@PathVariable Long quizID, @RequestBody Quiz quiz) {
         quiz.setQuizID(quizID);
         quizService.updateQuiz(quiz);
@@ -67,13 +69,9 @@ public class QuizController {
 
     @DeleteMapping("/id/{quizID}")
     public ResponseEntity<?> deleteQuiz(@PathVariable Long quizID) {
-        try {
-            Quiz quiz = quizService.getQuiz(quizID);
-            quizService.deleteQuiz(quiz);
-            return ResponseEntity.noContent().build();
-        } catch (QuizNotFoundException exception) {
-            return ResponseEntity.badRequest().contentType(MediaType.APPLICATION_JSON).build();
-        }
+        hiScoreService.deleteAllHiScoresByQuizId(quizID);
+        quizService.deleteQuizByQuizId(quizID);
+        return ResponseEntity.noContent().build();
     }
 
     @GetMapping("/id/{quizID}/user-id/{userID}")

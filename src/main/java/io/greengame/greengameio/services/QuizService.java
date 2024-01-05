@@ -46,7 +46,7 @@ public class QuizService {
 
     // Delete
 
-    public void deleteQuiz(Quiz quiz) {
-        quizRepository.delete(quiz);
+    public void deleteQuizByQuizId(Long quizId) {
+        quizRepository.deleteQuizByQuizID(quizId);
     }
 }

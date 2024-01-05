@@ -8,4 +8,5 @@ import org.springframework.stereotype.Repository;
 public interface QuizRepository extends JpaRepository<Quiz, Long> {
 
     public Quiz getQuizByQuizTitle(String quizTitle);
+    public void deleteQuizByQuizID(Long quizId);
 }

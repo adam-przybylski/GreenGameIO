@@ -52,7 +52,7 @@ public class HiScoreService {
         hiScoreRepository.deleteAllByUser(user);
     }
 
-    public void deleteAllHighScoresForQuiz(Quiz quiz) {
-        hiScoreRepository.deleteAllByQuiz(quiz);
+    public void deleteAllHiScoresByQuizId(Long quizId) {
+        hiScoreRepository.deleteHiScoresByQuiz_QuizID(quizId);
     }
 }

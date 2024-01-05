@@ -17,5 +17,5 @@ public interface HiScoreRepository extends JpaRepository<HiScore, Long> {
     public List<HiScore> getHiScoresByQuiz(Quiz quiz);
 
     public void deleteAllByUser(User user);
-    public void deleteAllByQuiz(Quiz quiz);
+    public void deleteHiScoresByQuiz_QuizID(Long quizId);
 }
