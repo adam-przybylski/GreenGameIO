@@ -1,5 +1,9 @@
 package io.greengame.greengameio;
 
+import io.greengame.greengameio.dtos.quizzes.input_dtos.AnswerInputDTO;
+import io.greengame.greengameio.dtos.quizzes.input_dtos.QuestionInputDTO;
+import io.greengame.greengameio.dtos.quizzes.input_dtos.QuizInputDTO;
+import io.greengame.greengameio.dtos.quizzes.mappers.QuizMapper;
 import io.greengame.greengameio.entity.*;
 import io.greengame.greengameio.friendmodule.dto.GroupUpdateDTO;
 import io.greengame.greengameio.friendmodule.managers.FriendManager;
@@ -99,47 +103,52 @@ public class GreenGameIoApplication {
             userOdznakaRepository.save(new UserOdznaka(7L, 3L));
             userOdznakaRepository.save(new UserOdznaka(6L, 3L));
 
-            Answer answerNo1ForQ1 = new Answer("Prawda");
-            Answer answerNo2ForQ1 = new Answer("Fałsz");
-            Question questionNo1 = new Question("Recykling papieru jest korzystny dla środowiska, ponieważ pomaga ograniczyć wycinkę drzew.", 1,
-                    List.of(answerNo1ForQ1, answerNo2ForQ1), answerNo1ForQ1);
+            AnswerInputDTO answerNo1ForQ1 = new AnswerInputDTO("Prawda", true);
+            AnswerInputDTO answerNo2ForQ1 = new AnswerInputDTO("Fałsz", false);
+            QuestionInputDTO questionNo1 = new QuestionInputDTO("Recykling papieru jest korzystny dla środowiska, ponieważ pomaga ograniczyć wycinkę drzew.", 1,
+                    List.of(answerNo1ForQ1, answerNo2ForQ1));
 
-            Answer answerNo1ForQ2 = new Answer("Transport");
-            Answer answerNo2ForQ2 = new Answer("Energia odnawialna");
-            Answer answerNo3ForQ2 = new Answer("Górnictwo");
-            Answer answerNo4ForQ2 = new Answer("Przemysł spożywczy");
-            Question questionNo2 = new Question("Jakie jest główne źródło emisji dwutlenku węgla związane z działalnością człowieka?", 2,
-                    List.of(answerNo1ForQ2, answerNo2ForQ2, answerNo3ForQ2, answerNo4ForQ2), answerNo1ForQ2);
+            AnswerInputDTO answerNo1ForQ2 = new AnswerInputDTO("Transport", true);
+            AnswerInputDTO answerNo2ForQ2 = new AnswerInputDTO("Energia odnawialna", false);
+            AnswerInputDTO answerNo3ForQ2 = new AnswerInputDTO("Górnictwo", false);
+            AnswerInputDTO answerNo4ForQ2 = new AnswerInputDTO("Przemysł spożywczy", false);
+            QuestionInputDTO questionNo2 = new QuestionInputDTO("Jakie jest główne źródło emisji dwutlenku węgla związane z działalnością człowieka?", 2,
+                    List.of(answerNo1ForQ2, answerNo2ForQ2, answerNo3ForQ2, answerNo4ForQ2));
 
-            Answer answerNo1ForQ3 = new Answer("Prawda");
-            Answer answerNo2ForQ3 = new Answer("Fałsz");
-            Question questionNo3 = new Question("Energia słoneczna jest odnawialnym źródłem energii.", 3, List.of(answerNo1ForQ3, answerNo2ForQ3),
-                    answerNo1ForQ3);
+            AnswerInputDTO answerNo1ForQ3 = new AnswerInputDTO("Prawda", true);
+            AnswerInputDTO answerNo2ForQ3 = new AnswerInputDTO("Fałsz", false);
+            QuestionInputDTO questionNo3 = new QuestionInputDTO("Energia słoneczna jest odnawialnym źródłem energii.", 3, List.of(answerNo1ForQ3, answerNo2ForQ3));
 
-            Answer answerNo1ForQ4 = new Answer("Emisje gazów cieplarnianych i wylesianie");
-            Answer answerNo2ForQ4 = new Answer("Nadmierna konsumpcja czekolady");
-            Question questionNo4 = new Question("Jakie są główne przyczyny zmian klimatu?", 4, List.of(answerNo1ForQ4, answerNo2ForQ4),
-                    answerNo1ForQ4);
+            AnswerInputDTO answerNo1ForQ4 = new AnswerInputDTO("Emisje gazów cieplarnianych i wylesianie", true);
+            AnswerInputDTO answerNo2ForQ4 = new AnswerInputDTO("Nadmierna konsumpcja czekolady", false);
+            QuestionInputDTO questionNo4 = new QuestionInputDTO("Jakie są główne przyczyny zmian klimatu?", 4, List.of(answerNo1ForQ4, answerNo2ForQ4));
 
-            Answer answerNo1ForQ5 = new Answer("Hodowanie roślin w domu");
-            Answer answerNo2ForQ5 = new Answer("Recykling i używanie przedmiotów wielokrotnego użytku");
-            Question questionNo5 = new Question("W jaki sposób możemy ograniczyć zużycie plastiku?", 5, List.of(answerNo1ForQ5, answerNo2ForQ5),
-                    answerNo2ForQ5);
+            AnswerInputDTO answerNo1ForQ5 = new AnswerInputDTO("Hodowanie roślin w domu", true);
+            AnswerInputDTO answerNo2ForQ5 = new AnswerInputDTO("Recykling i używanie przedmiotów wielokrotnego użytku", false);
+            QuestionInputDTO questionNo5 = new QuestionInputDTO("W jaki sposób możemy ograniczyć zużycie plastiku?", 5, List.of(answerNo1ForQ5, answerNo2ForQ5));
 
 
-            Quiz quiz = new Quiz("QuizTestowy", 3, admin, LocalDateTime.now().minusDays(1), List.of(questionNo1, questionNo2, questionNo3));
-            Quiz quiz2 = new Quiz("QuizTestowy2", 2, admin, LocalDateTime.now().plusDays(30), List.of(questionNo4, questionNo5));
+            QuizInputDTO quizInputDto1 = new QuizInputDTO("QuizTestowy1", admin.getUsername(), LocalDateTime.now().minusDays(1), List.of(questionNo1, questionNo2, questionNo3));
+            QuizInputDTO quizInputDto2 = new QuizInputDTO("QuizTestowy2", admin.getUsername(), LocalDateTime.now().plusDays(30), List.of(questionNo4, questionNo5));
 
-            answerRepository.saveAll(List.of(answerNo1ForQ1, answerNo2ForQ1,
-                    answerNo1ForQ2, answerNo2ForQ2, answerNo3ForQ2, answerNo4ForQ2,
-                    answerNo1ForQ3, answerNo2ForQ3, answerNo1ForQ4, answerNo2ForQ4, answerNo1ForQ5, answerNo2ForQ5));
-            questionRepository.saveAll(List.of(questionNo1, questionNo2, questionNo3, questionNo4, questionNo5));
-            quizRepository.save(quiz);
+            Quiz quiz1 = QuizMapper.toQuiz(quizInputDto1);
+            Quiz quiz2 = QuizMapper.toQuiz(quizInputDto2);
+
+            for (Question question : quiz1.getListOfQuestions()) {
+                answerRepository.saveAll(question.getListOfAnswers());
+            }
+            questionRepository.saveAll(quiz1.getListOfQuestions());
+            quizRepository.save(quiz1);
+
+            for (Question question : quiz2.getListOfQuestions()) {
+                answerRepository.saveAll(question.getListOfAnswers());
+            }
+            questionRepository.saveAll(quiz2.getListOfQuestions());
             quizRepository.save(quiz2);
 
-            HiScore hiScore = new HiScore(quiz, user, 1);
+            HiScore hiScore1 = new HiScore(quiz1, user, 1);
             HiScore hiScore2 = new HiScore(quiz2, user, 2);
-            highScoreRepository.save(hiScore);
+            highScoreRepository.save(hiScore1);
             highScoreRepository.save(hiScore2);
         };
     }
