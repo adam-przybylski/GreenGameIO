@@ -6,19 +6,14 @@ import * as styles from "./styles";
 interface Quiz {
     quizID: number;
     quizTitle: string;
-    quizCreator: {
-        username: string;
-    };
-    quizOpenDate: string;
+    quizCreatorName: string;
+    quizOpenDate: Date;
     listOfQuestions: Array<{
-        questionNumber: number;
         questionContent: string;
-        questionAnswers: Array<{
+        listOfAnswers: Array<{
             answerContent: string;
+            correct: boolean;
         }>;
-        correctAnswer: {
-            answerContent: string;
-        };
     }>;
 }
 
@@ -27,9 +22,6 @@ const AdminQuizzes: FC = () => {
         const [selectedQuiz, setSelectedQuiz] = useState<Quiz | null>(null);
         const [modalIsOpen, setModalIsOpen] = useState(false);
         const [addModalIsOpen, setAddModalIsOpen] = useState(false);
-        const [editModalIsOpen, setEditModalIsOpen] = useState(false);
-        const [deleteModalIsOpen, setDeleteModalIsOpen] = useState(false);
-        const [users, setUsers] = useState([]);
 
         useEffect(() => {
             api.get("/quizzes")
@@ -42,23 +34,6 @@ const AdminQuizzes: FC = () => {
                 });
         }, []);
 
-        useEffect(() => {
-            const fetchUsers = async () => {
-                try {
-                    const response = await api.get('/users');
-                    if (response.status === 200) {
-                        setUsers(response.data);
-                    } else {
-                        console.error('Failed to fetch users:', response.statusText);
-                    }
-                } catch (error) {
-                    console.error('Error fetching users:', error);
-                }
-            };
-
-            fetchUsers();
-        }, []);
-
         const openModal = (quiz: Quiz) => {
             setSelectedQuiz(quiz);
             setModalIsOpen(true);
@@ -69,7 +44,7 @@ const AdminQuizzes: FC = () => {
             setModalIsOpen(false);
         };
 
-        const formatOpeningDate = (dateString: string) => {
+        const formatOpeningDate = (dateString: Date) => {
             const options = {
                 year: 'numeric',
                 month: 'long',
@@ -78,57 +53,69 @@ const AdminQuizzes: FC = () => {
                 minute: 'numeric',
                 second: 'numeric'
             };
+            // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+            // @ts-expect-error
             return new Date(dateString).toLocaleString('PL', options);
         };
 
         const addQuiz = async () => {
             try {
-                const answer = {
-                    answerContent: "Jeszcze jak",
+                const NewTestQuiz = {
+                    quizID: 1234,
+                    quizTitle: "ReactAddQuizTest2",
+                    quizCreatorName: "Tomek B",
+                    quizOpenDate: "2024-01-01T13:09:35.394Z",
+                    listOfQuestions: [
+                        {
+                            questionContent: "Czy piwo jest dobre?",
+                            listOfAnswers: [
+                                {
+                                    answerContent: "Tak",
+                                    correct: true
+                                },
+                                {
+                                    answerContent: "Nie",
+                                    correct: false
+                                }
+                            ],
+                        },
+                        {
+                            questionContent: "Czy wino jest dobre?",
+                            listOfAnswers: [
+                                {
+                                    answerContent: "Tak",
+                                    correct: true
+                                },
+                                {
+                                    answerContent: "Nie",
+                                    correct: false
+                                }
+                            ],
+                        }
+                    ]
                 }
-                const adminUser = users.find((user) => user.username === 'admin');
-                const question = {
-                    questionNumber: 20,
-                    questionContent: "gitara siema?",
-                    questionAnswers: [answer],
-                    correctAnswer: answer,
-                }
-                const newQuiz = {
-                    quizTitle: "PostMethodTest",
-                    quizLength: 1,
-                    quizCreator: adminUser,
-                    quizOpenDate: new Date().toISOString(),
-                    listOfQuestions: [question]
-                };
 
-
-                const responseQuiz = await api.post("/quizzes", newQuiz);
+                const responseQuiz = await api.post("/quizzes", NewTestQuiz);
 
                 if (responseQuiz.status === 201) {
                     setQuizzes((prevQuizzes) => [...(prevQuizzes || []), responseQuiz.data]);
                 } else {
                     console.error('Failed to add quiz:', responseQuiz.statusText);
                 }
-
             } catch (error) {
                 console.error('Error adding quiz:', error);
             }
         };
 
-    const deleteQuiz = async (quizID: number) => {
-        try {
-            const response = await api.delete(`/quizzes/id/${quizID}`);
-
-            if (response.status === 204) {
+        const deleteQuiz = async (quizID: number) => {
+            try {
+                await api.delete(`/quizzes/id/${quizID}`);
                 setQuizzes((prevQuizzes) => prevQuizzes?.filter(quiz => quiz.quizID !== quizID) || []);
-            } else {
-                console.error('Failed to delete quiz:', response.statusText);
-            }
 
-        } catch (error) {
-            console.error('Error deleting quiz:', error);
-        }
-    };
+            } catch (error) {
+                console.error('Error deleting quiz:', error);
+            }
+        };
 
         return (
             <div>
@@ -144,40 +131,20 @@ const AdminQuizzes: FC = () => {
                     >
                         Dodaj Quiz
                     </button>
-                    <button
-                        style={{
-                            ...styles.buttonStyles,
-                            backgroundColor: 'blue',
-                            marginLeft: '10px',
-                        }}
-                        onClick={() => setEditModalIsOpen(true)}
-                    >
-                        Edytuj Quiz
-                    </button>
-                    <button
-                        style={{
-                            ...styles.buttonStyles,
-                            backgroundColor: 'red',
-                            marginLeft: '10px',
-                        }}
-                        onClick={() => setDeleteModalIsOpen(true)}
-                    >
-                        Usuń Quiz
-                    </button>
                 </div>
 
                 <div style={{display: 'flex', flexWrap: 'wrap'}}>
                     {quizzes && quizzes.length > 0 ? (
                         quizzes.map((quiz) => (
                             <div
-                                key={quiz.quizID}
+                                key={quiz.quizTitle}
                                 onClick={() => openModal(quiz)}
                                 style={styles.squareStyles}
                             >
                                 <div style={{textAlign: 'center'}}>
                                     <strong>{quiz.quizTitle}</strong><br/><br/>
                                 </div>
-                                <strong>Twórca:</strong> {quiz.quizCreator.username}<br/>
+                                <strong>Twórca:</strong> {quiz.quizCreatorName}<br/>
                                 <strong>Data Otwarcia:</strong> {formatOpeningDate(quiz.quizOpenDate)}<br/><br/>
                                 <strong>Liczba pytań:</strong> {quiz.listOfQuestions.length}<br/>
 
@@ -209,19 +176,17 @@ const AdminQuizzes: FC = () => {
                     {selectedQuiz && (
                         <div>
                             <h2 style={styles.headingStyles}>{selectedQuiz.quizTitle}</h2>
-                            <strong>ID Quizu:</strong> {selectedQuiz.quizID}<br/>
-                            <strong>Twórca:</strong> {selectedQuiz.quizCreator.username}<br/>
+                            <strong>Twórca:</strong> {selectedQuiz.quizCreatorName}<br/>
                             <strong>Data Otwarcia:</strong> {formatOpeningDate(selectedQuiz.quizOpenDate)}<br/><br/>
                             <h3 style={styles.headingStyles2}>Pytania</h3>
                             <ul>
                                 {selectedQuiz.listOfQuestions.map((question, index) => (
-                                    <li key={question.questionID}>
+                                    <li key={question.questionContent}>
                                         <strong>Pytanie {index + 1}:</strong> {question.questionContent}<br/>
                                         <strong>Odpowiedzi:</strong>
                                         <ul>
-                                            {question.questionAnswers.map((answer) => (
-                                                <li key={answer.answerID}
-                                                    style={answer.answerID === question.correctAnswer.answerID ? styles.correctAnswerStyles : styles.answerStyles}>
+                                            {question.listOfAnswers.map((answer) => (
+                                                <li key={answer.answerContent}>
                                                     {answer.answerContent}
                                                 </li>
                                             ))}
@@ -241,27 +206,6 @@ const AdminQuizzes: FC = () => {
                             </button>
                         </div>
                     )}
-                </Modal>
-                <Modal
-                    isOpen={addModalIsOpen}
-                    onRequestClose={() => setAddModalIsOpen(false)}
-                    contentLabel="Add Quiz"
-                    style={styles.modalStyles}
-                >
-                    <h2 style={styles.headingStyles}>Dodaj Quiz</h2>
-                    <h3 style={styles.headingStyles2}>Uzupełnij dane o quizie:</h3><br/>
-                    <button
-                        style={{
-                            ...styles.buttonStyles,
-                            position: 'absolute',
-                            bottom: '10px',
-                            left: '50%',
-                            transform: 'translateX(-50%)',
-                        }}
-                        onClick={() => setAddModalIsOpen(false)}
-                    >
-                        Zamknij
-                    </button>
                 </Modal>
                 <Modal
                     isOpen={addModalIsOpen}
@@ -337,88 +281,6 @@ const AdminQuizzes: FC = () => {
                         }}
                     >
                         Zapisz Quiz
-                    </button>
-                </Modal>
-
-                <Modal
-                    isOpen={editModalIsOpen}
-                    onRequestClose={() => setEditModalIsOpen(false)}
-                    contentLabel="Edit Quiz"
-                    style={styles.modalStyles}
-                >
-                    <h2 style={styles.headingStyles}>Edytuj Quiz</h2>
-                    <h3 style={styles.headingStyles2}>Wybierz quiz do edycji:</h3><br/>
-                    <ul style={{listStyleType: 'none', padding: 0}}>
-                        {quizzes &&
-                            quizzes.map((quiz) => (
-                                <li key={quiz.quizID}
-                                    style={{marginBottom: '10px', display: 'flex', alignItems: 'center'}}>
-                    <span style={{marginRight: '20px'}}>
-                        <strong>{quiz.quizTitle}</strong>
-                    </span>
-                                    <button
-                                        style={{
-                                            ...styles.buttonStyles,
-                                            backgroundColor: 'blue',
-                                        }}
-                                    >
-                                        Edytuj
-                                    </button>
-                                </li>
-                            ))}
-                    </ul>
-                    <button
-                        style={{
-                            ...styles.buttonStyles,
-                            position: 'absolute',
-                            bottom: '10px',
-                            left: '50%',
-                            transform: 'translateX(-50%)',
-                        }}
-                        onClick={() => setEditModalIsOpen(false)}
-                    >
-                        Zamknij
-                    </button>
-                </Modal>
-
-                <Modal
-                    isOpen={deleteModalIsOpen}
-                    onRequestClose={() => setDeleteModalIsOpen(false)}
-                    contentLabel="Delete Quiz"
-                    style={styles.modalStyles}
-                >
-                    <h2 style={styles.headingStyles}>Usuń Quiz</h2>
-                    <h3 style={styles.headingStyles2}>Wybierz quiz do usunięcia:</h3><br/>
-                    <ul style={{listStyleType: 'none', padding: 0}}>
-                        {quizzes &&
-                            quizzes.map((quiz) => (
-                                <li key={quiz.quizID}
-                                    style={{marginBottom: '10px', display: 'flex', alignItems: 'center'}}>
-                    <span style={{marginRight: '20px'}}>
-                        <strong>{quiz.quizTitle}</strong>
-                    </span>
-                                    <button
-                                        style={{
-                                            ...styles.buttonStyles,
-                                            backgroundColor: 'red',
-                                        }}
-                                    >
-                                        Usuń
-                                    </button>
-                                </li>
-                            ))}
-                    </ul>
-                    <button
-                        style={{
-                            ...styles.buttonStyles,
-                            position: 'absolute',
-                            bottom: '10px',
-                            left: '50%',
-                            transform: 'translateX(-50%)',
-                        }}
-                        onClick={() => setDeleteModalIsOpen(false)}
-                    >
-                        Zamknij
                     </button>
                 </Modal>
                 <button
