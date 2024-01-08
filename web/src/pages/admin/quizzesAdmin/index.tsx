@@ -163,24 +163,35 @@ const AdminQuizzes: FC = () => {
             console.log(formFieldsQuestion)
             console.log(formFieldsAnswer)
 
+            const newAnswer1: Answer = {
+                answerContent: formFieldsAnswer[0].answerContent,
+                correct: formFieldsAnswer[0].correct
+            }
+
+            const newAnswer2: Answer = {
+                answerContent: formFieldsAnswer[1].answerContent,
+                correct: formFieldsAnswer[1].correct
+            }
+
+            const newQuestion: Question = {
+                questionContent: formFieldsQuestion[0].questionContent,
+                listOfAnswers: [newAnswer1, newAnswer2]
+            }
+
             const newQuiz: Quiz = {
                 quizID: 0,
                 quizTitle: formFieldsQuiz[0].quizTitle,
                 quizCreatorName: formFieldsQuiz[0].quizCreator,
                 quizOpenDate: new Date(formFieldsQuiz[0].quizOpenDate),
-                listOfQuestions: formFieldsQuestion.map((question, index) => {
-                    return {
-                        questionContent: question.questionContent,
-                        listOfAnswers: formFieldsAnswer
-                            .filter((answer) => answer.index === index)
-                            .map((answer) => ({
-                                answerContent: answer.answerContent,
-                                correct: answer.correct,
-                            })),
-                    };
-                }),
+                listOfQuestions: [newQuestion]
             };
-            console.log(newQuiz)
+
+            postNewQuiz(newQuiz)
+        }
+
+        const postNewQuiz = async (newQuiz: Quiz) => {
+            await api.post("/quizzes", newQuiz);
+
         }
 
         const addQuestion = (e) => {
