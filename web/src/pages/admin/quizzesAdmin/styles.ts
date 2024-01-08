@@ -7,10 +7,19 @@ export const modalStyles = {
         paddingBottom: '10px',
     },
 };
+export const smallModalStyles = {
+    content: {
+        width: '20%',
+        height: '15%',
+        margin: 'auto',
+        padding: '20px',
+        paddingBottom: '10px',
+    },
+};
 
 export const squareStyles = {
     width: '300px',
-    height: '200px',
+    height: '300px',
     border: '2px solid #ccc',
     borderRadius: '8px',
     margin: '10px',
@@ -33,6 +42,13 @@ export const headingStyles2 = {
     margin: '10px 0',
 };
 
+export const smallModalText = {
+    fontSize: '1.2em',
+    fontWeight: 'bold',
+    textAlign: 'center',
+    margin: '10px 0',
+};
+
 export const buttonStyles = {
     backgroundColor: '#1aebb6',
     color: 'white',
@@ -42,12 +58,12 @@ export const buttonStyles = {
     cursor: 'pointer',
 };
 
-export const correctAnswerStyles = {
-    marginLeft: '20px',
-    color: 'green',
-    fontWeight: 'bold',
-};
-
-export const answerStyles = {
-    marginLeft: '20px',
+export const buttonStylesClose = {
+    backgroundColor: '#1aebb6',
+    color: 'white',
+    border: 'none',
+    padding: '1px 5px',
+    borderRadius: '5px',
+    cursor: 'pointer',
+    textAlign: 'center',
 };
