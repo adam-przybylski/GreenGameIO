@@ -127,101 +127,132 @@ const AdminQuizzes: FC = () => {
 
     function AddQuiz() {
         const [formFieldsQuiz, setFormFieldsQuiz] = useState([
-            {quizTitle: '', quizCreator: '', quizOpenDate: new Date()},
-        ])
-        const [formFieldsQuestion, setFormFieldsQuestion] = useState([
-            {questionContent: '', questionAnswers: []},
-        ])
+            {quizTitle: "", quizCreator: "", quizOpenDate: new Date()},
+        ]);
 
-        const [formFieldsAnswer, setFormFieldsAnswer] = useState([
-            {answerContent: '', correct: false,},
-        ])
+        const [formFieldsQuestion, setFormFieldsQuestion] = useState([
+            {questionContent: "", questionAnswers: [{answerContent: "", correct: false}]},
+        ]);
+
         const handleQuizFormChange = (event, index) => {
             let data = [...formFieldsQuiz];
             data[index][event.target.name] = event.target.value;
             setFormFieldsQuiz(data);
-        }
+        };
+
         const handleQuestionFormChange = (event, index) => {
             let data = [...formFieldsQuestion];
             data[index][event.target.name] = event.target.value;
             setFormFieldsQuestion(data);
-        }
-        const handleAnswerFormChange = (event, index) => {
-            let data = [...formFieldsAnswer];
-            data[index][event.target.name] = event.target.value;
-            setFormFieldsAnswer(data);
-            if (event.target.type === 'checkbox') {
-                data[index][event.target.name] = event.target.checked;
+        };
+
+        const handleAnswerFormChange = (event, questionIndex, answerIndex) => {
+            let data = [...formFieldsQuestion];
+            if (event.target.type === "checkbox") {
+                data[questionIndex].questionAnswers[answerIndex][event.target.name] = event.target.checked;
             } else {
-                data[index][event.target.name] = event.target.value;
+                data[questionIndex].questionAnswers[answerIndex][event.target.name] = event.target.value;
             }
-        }
+            setFormFieldsQuestion(data);
+        };
 
         const submit = (e) => {
             e.preventDefault();
-            console.log(formFieldsQuiz)
-            console.log(formFieldsQuestion)
-            console.log(formFieldsAnswer)
 
-            const newAnswer1: Answer = {
-                answerContent: formFieldsAnswer[0].answerContent,
-                correct: formFieldsAnswer[0].correct
+            if (formFieldsQuiz[0].quizTitle.trim() === '') {
+                console.error('Quiz name is required.');
+                return;
             }
 
-            const newAnswer2: Answer = {
-                answerContent: formFieldsAnswer[1].answerContent,
-                correct: formFieldsAnswer[1].correct
+            if (formFieldsQuiz[0].quizCreator.trim() === '') {
+                console.error('Creator name is required.');
+                return;
             }
 
-            const newQuestion: Question = {
-                questionContent: formFieldsQuestion[0].questionContent,
-                listOfAnswers: [newAnswer1, newAnswer2]
+            if (!formFieldsQuiz[0].quizOpenDate) {
+                console.error('Quiz date is required.');
+                return;
             }
+
+            if (formFieldsQuestion.length === 0 || formFieldsQuestion.length > 10) {
+                console.error('A quiz must contain between 1 and 10 questions.');
+                return;
+            }
+
+            for (const question of formFieldsQuestion) {
+                if (
+                    question.questionContent.trim() === '' ||
+                    question.questionAnswers.length < 2 ||
+                    question.questionAnswers.length > 5 ||
+                    !question.questionAnswers.some(answer => answer.correct)
+                ) {
+                    console.error('Each question must have a content, between 2 and 5 answers, and at least 1 correct answer.');
+                    return;
+                }
+            }
+
+            console.log(formFieldsQuiz);
+            console.log(formFieldsQuestion);
 
             const newQuiz: Quiz = {
                 quizID: 0,
                 quizTitle: formFieldsQuiz[0].quizTitle,
                 quizCreatorName: formFieldsQuiz[0].quizCreator,
                 quizOpenDate: new Date(formFieldsQuiz[0].quizOpenDate),
-                listOfQuestions: [newQuestion]
+                listOfQuestions: formFieldsQuestion.map((question) => {
+                    return {
+                        questionContent: question.questionContent,
+                        listOfAnswers: question.questionAnswers.map((answer) => {
+                            return {
+                                answerContent: answer.answerContent,
+                                correct: answer.correct,
+                            };
+                        }),
+                    };
+                }),
             };
-
             postNewQuiz(newQuiz)
+            setAddModalIsOpen(false)
         }
 
         const postNewQuiz = async (newQuiz: Quiz) => {
-            await api.post("/quizzes", newQuiz);
-
+            try{
+                await api.post("/quizzes", newQuiz);
+                api.get("/quizzes")
+                    .then(response => setQuizzes(response.data))
+            }
+            catch(error) {
+                console.error('Error', error);
+            }
         }
 
         const addQuestion = (e) => {
             e.preventDefault();
             let object = {
-                questionContent: '',
-                questionAnswers: [],
-            }
+                questionContent: "",
+                questionAnswers: [{answerContent: "", correct: false}],
+            };
 
-            setFormFieldsQuestion([...formFieldsQuestion, object])
-        }
-        const addAnswer = (e) => {
-            e.preventDefault();
-            let object = {
-                answerContent: '',
-                correct: false,
-            }
-            setFormFieldsAnswer([...formFieldsAnswer, object])
-        }
+            setFormFieldsQuestion([...formFieldsQuestion, object]);
+        };
+
+        const addAnswer = (questionIndex) => {
+            let data = [...formFieldsQuestion];
+            data[questionIndex].questionAnswers.push({answerContent: "", correct: false});
+            setFormFieldsQuestion(data);
+        };
 
         const removeQuestion = (index) => {
             let data = [...formFieldsQuestion];
-            data.splice(index, 1)
-            setFormFieldsQuestion(data)
-        }
-        const removeAnswer = (index) => {
-            let data = [...formFieldsAnswer];
-            data.splice(index, 1)
-            setFormFieldsAnswer(data)
-        }
+            data.splice(index, 1);
+            setFormFieldsQuestion(data);
+        };
+
+        const removeAnswer = (questionIndex, answerIndex) => {
+            let data = [...formFieldsQuestion];
+            data[questionIndex].questionAnswers.splice(answerIndex, 1);
+            setFormFieldsQuestion(data);
+        };
 
         return (
             <div className="AddQuiz">
@@ -230,74 +261,79 @@ const AdminQuizzes: FC = () => {
                         return (
                             <div key={index}>
                                 <input
-                                    name='quizTitle'
-                                    placeholder='Treść pytania'
-                                    onChange={event => handleQuizFormChange(event, index)}
+                                    name="quizTitle"
+                                    placeholder="Treść pytania"
+                                    onChange={(event) => handleQuizFormChange(event, index)}
                                     value={form.quizTitle}
+                                    required={true}
                                 />
                                 <br/>
                                 <input
-                                    name='quizCreator'
-                                    placeholder='Twórca Quizu'
-                                    onChange={event => handleQuizFormChange(event, index)}
+                                    name="quizCreator"
+                                    placeholder="Twórca Quizu"
+                                    onChange={(event) => handleQuizFormChange(event, index)}
                                     value={form.quizCreator}
+                                    required={true}
                                 />
                                 <br/>
                                 <input
                                     type="datetime-local"
-                                    onChange={event => handleQuizFormChange(event, index)}
+                                    onChange={(event) => handleQuizFormChange(event, index)}
                                     defaultValue={form.quizOpenDate.toISOString().slice(0, 16)}
                                     key={`quizOpenDate-${index}`}
+                                    required={true}
                                 />
                             </div>
-                        )
+                        );
                     })}
                 </form>
-                <br/><br/>
+                <br/>
+                <br/>
                 <form>
-                    {formFieldsQuestion.map((form, index) => {
+                    {formFieldsQuestion.map((form, questionIndex) => {
                         return (
-                            <div key={index}>
+                            <div key={questionIndex}>
                                 <input
-                                    name='questionContent'
-                                    placeholder='Treść Odpowiedzi'
-                                    onChange={event => handleQuestionFormChange(event, index)}
+                                    name="questionContent"
+                                    placeholder="Treść Pytania"
+                                    onChange={(event) => handleQuestionFormChange(event, questionIndex)}
                                     value={form.questionContent}
                                 />
                                 <br/>
-                                <button onClick={() => removeQuestion(index)}>Remove Question</button>
+                                {form.questionAnswers.map((answer, answerIndex) => (
+                                    <div key={answerIndex}>
+                                        <input
+                                            name="answerContent"
+                                            placeholder="Treść Odpowiedzi"
+                                            onChange={(event) => handleAnswerFormChange(event, questionIndex, answerIndex)}
+                                            value={answer.answerContent}
+                                        />
+                                        <input
+                                            type="checkbox"
+                                            name="correct"
+                                            label="Czy poprawne?"
+                                            onChange={(event) => handleAnswerFormChange(event, questionIndex, answerIndex)}
+                                            checked={answer.correct}
+                                        />
+                                        <button type="button" onClick={() => removeAnswer(questionIndex, answerIndex)}>
+                                            Remove Answer
+                                        </button>
+                                        <br/>
+                                    </div>
+                                ))}
+                                <button type="button" onClick={() => addAnswer(questionIndex)}>
+                                    Add an Answer
+                                </button>
+                                <br/>
+                                <button type="button" onClick={() => removeQuestion(questionIndex)}>
+                                    Remove Question
+                                </button>
                             </div>
-                        )
+                        );
                     })}
-                    {formFieldsAnswer.map((form, index) => {
-                        return (
-                            <>
-                                <div key={index}>
-                                    <input
-                                        name='answerContent'
-                                        placeholder='Treść Pytania'
-                                        onChange={event => handleAnswerFormChange(event, index)}
-                                        value={form.answerContent}/>
-                                    <input
-                                        type='checkbox'
-                                        name='correct'
-                                        label='Czy poprawne?'
-                                        onChange={event => handleAnswerFormChange(event, index)}
-                                        checked={form.correct}
-                                    />
-                                    <button type="button" onClick={() => removeAnswer(index)}>Remove Answer</button>
-                                    <br/>
-
-                                </div>
-                                <button type="button" onClick={addAnswer}>Add an Answer</button>
-                            </>
-                        )
-                    })}
-
                 </form>
                 <br/>
                 <button onClick={addQuestion}>Add A Question</button>
-
                 <br/>
                 <button onClick={submit}>Submit</button>
             </div>
@@ -414,33 +450,19 @@ const AdminQuizzes: FC = () => {
             >
                 <h2 style={styles.headingStyles}>Dodaj Quiz</h2>
                 <h3 style={styles.headingStyles2}>Uzupełnij dane o quizie:</h3>
-                <AddQuiz></AddQuiz>
-                <form>
-                    <button
-                        style={{
-                            ...styles.buttonStyles,
-                            position: 'absolute',
-                            bottom: '10px',
-                            left: '50%',
-                            transform: 'translateX(-50%)',
-                        }}
-                        onClick={() => setAddModalIsOpen(false)}
-                    >
-                        Zamknij
-                    </button>
-                    <button
-                        style={{
-                            ...styles.buttonStyles,
-                            position: 'absolute',
-                            bottom: '200px',
-                            left: '50%',
-                            transform: 'translateX(-50%)',
-                            backgroundColor: 'green',
-                        }}
-                    >
-                        Zapisz Quiz
-                    </button>
-                </form>
+                <AddQuiz/>
+                <button
+                    style={{
+                        ...styles.buttonStyles,
+                        position: 'absolute',
+                        bottom: '10px',
+                        left: '50%',
+                        transform: 'translateX(-50%)',
+                    }}
+                    onClick={() => setAddModalIsOpen(false)}
+                >
+                    Zamknij
+                </button>
             </Modal>
             <Modal
                 isOpen={deleteConfirmationModalIsOpen}
@@ -458,7 +480,7 @@ const AdminQuizzes: FC = () => {
                                 style={{
                                     ...styles.buttonStyles,
                                     backgroundColor: 'red',
-                                    margin: '10px', // Add margin for spacing
+                                    margin: '10px',
                                 }}
                                 onClick={confirmDeleteQuiz}
                             >
@@ -468,7 +490,7 @@ const AdminQuizzes: FC = () => {
                                 style={{
                                     ...styles.buttonStyles,
                                     marginLeft: '10px',
-                                    margin: '10px', // Add margin for spacing
+                                    margin: '10px',
                                 }}
                                 onClick={() => setDeleteConfirmationModalIsOpen(false)}
                             >
