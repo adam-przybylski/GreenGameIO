@@ -10,6 +10,7 @@ import io.greengame.greengameio.dtos.quizzes.mappers.QuizMapper;
 import io.greengame.greengameio.dtos.quizzes.modification_dtos.QuizGeneralInfoModificationDTO;
 import io.greengame.greengameio.dtos.quizzes.modification_dtos.QuizQuestionModificationDTO;
 import io.greengame.greengameio.dtos.quizzes.output_dtos.QuizOutputDTO;
+import io.greengame.greengameio.dtos.quizzes.output_dtos.QuizWithCorrectAnswersDTO;
 import io.greengame.greengameio.entity.*;
 import io.greengame.greengameio.exceptions.quiz.QuizNotFoundException;
 import io.greengame.greengameio.services.*;
@@ -96,6 +97,16 @@ public class QuizController {
         return ResponseEntity.ok().contentType(MediaType.APPLICATION_JSON).body(listOfQuizOutputDTOs);
     }
 
+    @GetMapping("/correct")
+    public ResponseEntity<?> getAllQuizzesWithCorrectAnswersByID() {
+        List<Quiz> listOfAllQuizzes = quizService.getAllQuizzes();
+        List<QuizWithCorrectAnswersDTO> listOfQuizOutputDTOs = new ArrayList<>();
+        for (Quiz quiz : listOfAllQuizzes) {
+            listOfQuizOutputDTOs.add(QuizMapper.toQuizWithCorrectAnswersDTO(quiz));
+        }
+        return ResponseEntity.ok().contentType(MediaType.APPLICATION_JSON).body(listOfQuizOutputDTOs);
+    }
+
     @GetMapping("/id/{quizID}/user-id/{userID}")
     public ResponseEntity<?> getHiScoreForUserInCertainQuiz(@PathVariable Long userID, @PathVariable Long quizID) {
         try {
@@ -124,6 +135,7 @@ public class QuizController {
     }
 
     @PutMapping("/id/{quizID}/modify-questions")
+    @Transactional
     public ResponseEntity<?> modifyQuizQuestions(@PathVariable Long quizID, @RequestBody QuizQuestionModificationDTO quizQuestionModificationDTO) {
         try {
             Quiz existingQuiz = quizService.getQuiz(quizID);
