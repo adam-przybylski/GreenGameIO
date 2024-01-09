@@ -25,11 +25,10 @@ const AdminQuizzes: FC = () => {
     const [quizzes, setQuizzes] = useState<Quiz[] | null>(null);
     const [selectedQuiz, setSelectedQuiz] = useState<Quiz | null>(null);
     const [modalIsOpen, setModalIsOpen] = useState(false);
+    const [editModalIsOpen, setEditModalIsOpen] = useState(false);
     const [addModalIsOpen, setAddModalIsOpen] = useState(false);
     const [deleteConfirmationModalIsOpen, setDeleteConfirmationModalIsOpen] = useState(false);
     const [quizToDelete, setQuizToDelete] = useState<Quiz | null>(null);
-    const [editModalIsOpen, setEditModalIsOpen] = useState(false);
-
 
     useEffect(() => {
         api.get("/quizzes")
@@ -62,9 +61,12 @@ const AdminQuizzes: FC = () => {
         return new Date(dateString).toLocaleString('PL', options);
     };
     const openEditQuizModal = (quiz: Quiz) => {
+        setSelectedQuiz(quiz);
         setEditModalIsOpen(true);
     };
+
     const closeEditQuizModal = () => {
+        setSelectedQuiz(null);
         setEditModalIsOpen(false);
     };
     const addSampleQuiz = async () => {
@@ -216,12 +218,11 @@ const AdminQuizzes: FC = () => {
         }
 
         const postNewQuiz = async (newQuiz: Quiz) => {
-            try{
+            try {
                 await api.post("/quizzes", newQuiz);
                 api.get("/quizzes")
                     .then(response => setQuizzes(response.data))
-            }
-            catch(error) {
+            } catch (error) {
                 console.error('Error', error);
             }
         }
@@ -339,6 +340,274 @@ const AdminQuizzes: FC = () => {
             </div>
         );
     }
+
+    function EditQuiz({selectedQuiz, isOpen, onClose, onUpdateQuiz}) {
+        const [formFieldsQuiz, setFormFieldsQuiz] = useState([
+            {
+                quizTitle: selectedQuiz?.quizTitle || "",
+                quizCreator: selectedQuiz?.quizCreatorName || "",
+                quizOpenDate: selectedQuiz?.quizOpenDate
+                    ? selectedQuiz.quizOpenDate
+                    : new Date().toISOString().slice(0, 16),
+            },
+        ]);
+
+        const [formFieldsQuestion, setFormFieldsQuestion] = useState(
+            selectedQuiz?.listOfQuestions.map((question) => {
+                return {
+                    questionContent: question.questionContent,
+                    questionAnswers: question.listOfAnswers.map((answer) => {
+                        return {
+                            answerContent: answer.answerContent,
+                            correct: answer.correct,
+                        };
+                    }),
+                };
+            }) || [
+                {questionContent: "", questionAnswers: [{answerContent: "", correct: false}]},
+            ]
+        );
+
+        const handleQuizFormChange = (event, index) => {
+            let data = [...formFieldsQuiz];
+            data[index][event.target.name] = event.target.value;
+            setFormFieldsQuiz(data);
+        };
+
+        const handleQuestionFormChange = (event, index) => {
+            let data = [...formFieldsQuestion];
+            data[index][event.target.name] = event.target.value;
+            setFormFieldsQuestion(data);
+        };
+
+        const handleAnswerFormChange = (event, questionIndex, answerIndex) => {
+            let data = [...formFieldsQuestion];
+            if (event.target.type === "checkbox") {
+                data[questionIndex].questionAnswers[answerIndex][event.target.name] =
+                    event.target.checked;
+            } else {
+                data[questionIndex].questionAnswers[answerIndex][event.target.name] =
+                    event.target.value;
+            }
+            setFormFieldsQuestion(data);
+        };
+
+        const submit = (e) => {
+            e.preventDefault();
+
+            if (formFieldsQuiz[0].quizTitle.trim() === '') {
+                console.error('Quiz name is required.');
+                return;
+            }
+
+            if (formFieldsQuiz[0].quizCreator.trim() === '') {
+                console.error('Creator name is required.');
+                return;
+            }
+
+            if (!formFieldsQuiz[0].quizOpenDate) {
+                console.error('Quiz date is required.');
+                return;
+            }
+
+            if (formFieldsQuestion.length === 0 || formFieldsQuestion.length > 10) {
+                console.error('A quiz must contain between 1 and 10 questions.');
+                return;
+            }
+
+            for (const question of formFieldsQuestion) {
+                if (
+                    question.questionContent.trim() === '' ||
+                    question.questionAnswers.length < 2 ||
+                    question.questionAnswers.length > 5 ||
+                    !question.questionAnswers.some(answer => answer.correct)
+                ) {
+                    console.error('Each question must have a content, between 2 and 5 answers, and at least 1 correct answer.');
+                    return;
+                }
+            }
+
+            console.log(formFieldsQuiz);
+            console.log(formFieldsQuestion);
+
+            const updatedQuiz = {
+                quizID: selectedQuiz?.quizID,
+                quizTitle: formFieldsQuiz[0].quizTitle,
+                quizCreatorName: formFieldsQuiz[0].quizCreator,
+                quizOpenDate: new Date(formFieldsQuiz[0].quizOpenDate),
+                listOfQuestions: formFieldsQuestion.map((question) => {
+                    return {
+                        questionContent: question.questionContent,
+                        listOfAnswers: question.questionAnswers.map((answer) => {
+                            return {
+                                answerContent: answer.answerContent,
+                                correct: answer.correct,
+                            };
+                        }),
+                    };
+                }),
+            };
+            onUpdateQuiz(updatedQuiz);
+        };
+
+        const postUpdatedQuiz = async (updatedQuiz: Quiz) => {
+
+            const quizGeneralInfo = {
+                quizTitle: updatedQuiz.quizTitle,
+                quizOpenDate: updatedQuiz.quizOpenDate
+            }
+
+            try {
+                await api.post("/quizzes", updatedQuiz);
+                api.get("/quizzes")
+                    .then(response => setQuizzes(response.data))
+            } catch (error) {
+                console.error('Error', error);
+            }
+
+        }
+
+        const addQuestion = (e) => {
+            e.preventDefault();
+            let object = {
+                questionContent: "",
+                questionAnswers: [{answerContent: "", correct: false}],
+            };
+
+            setFormFieldsQuestion([...formFieldsQuestion, object]);
+        };
+
+        const addAnswer = (questionIndex) => {
+            let data = [...formFieldsQuestion];
+            data[questionIndex].questionAnswers.push({answerContent: "", correct: false});
+            setFormFieldsQuestion(data);
+        };
+
+        const removeQuestion = (index) => {
+            let data = [...formFieldsQuestion];
+            data.splice(index, 1);
+            setFormFieldsQuestion(data);
+        };
+
+        const removeAnswer = (questionIndex, answerIndex) => {
+            let data = [...formFieldsQuestion];
+            data[questionIndex].questionAnswers.splice(answerIndex, 1);
+            setFormFieldsQuestion(data);
+        };
+
+        return (
+            <Modal
+                isOpen={isOpen}
+                onRequestClose={onClose}
+                contentLabel="Edit Quiz"
+                style={styles.modalStyles}
+            >
+                <div>
+                    <h2 style={styles.headingStyles}>Edytuj Quiz</h2>
+
+                    <form>
+                        {formFieldsQuiz.map((form, index) => {
+                            return (
+                                <div key={index}>
+                                    <input
+                                        name="quizTitle"
+                                        placeholder="Treść pytania"
+                                        onChange={(event) => handleQuizFormChange(event, index)}
+                                        value={form.quizTitle}
+                                        required={true}
+                                    />
+                                    <br/>
+                                    <input
+                                        name="quizCreator"
+                                        placeholder="Twórca Quizu"
+                                        onChange={(event) => handleQuizFormChange(event, index)}
+                                        value={form.quizCreator}
+                                        required={true}
+                                    />
+                                    <br/>
+                                    <input
+                                        type="datetime-local"
+                                        onChange={(event) => handleQuizFormChange(event, index)}
+                                        defaultValue={form.quizOpenDate}
+                                        key={`quizOpenDate-${index}`}
+                                        required={true}
+                                    />
+                                </div>
+                            );
+                        })}
+                    </form>
+                    <br/>
+                    <br/>
+                    <form>
+                        {formFieldsQuestion.map((form, questionIndex) => {
+                            return (
+                                <div key={questionIndex}>
+                                    <input
+                                        name="questionContent"
+                                        placeholder="Treść Pytania"
+                                        onChange={(event) => handleQuestionFormChange(event, questionIndex)}
+                                        value={form.questionContent}
+                                    />
+                                    <br/>
+                                    {form.questionAnswers.map((answer, answerIndex) => (
+                                        <div key={answerIndex}>
+                                            <input
+                                                name="answerContent"
+                                                placeholder="Treść Odpowiedzi"
+                                                onChange={(event) => handleAnswerFormChange(event, questionIndex, answerIndex)}
+                                                value={answer.answerContent}
+                                            />
+                                            <input
+                                                type="checkbox"
+                                                name="correct"
+                                                label="Czy poprawne?"
+                                                onChange={(event) => handleAnswerFormChange(event, questionIndex, answerIndex)}
+                                                checked={answer.correct}
+                                            />
+                                            <button type="button"
+                                                    onClick={() => removeAnswer(questionIndex, answerIndex)}>
+                                                Remove Answer
+                                            </button>
+                                            <br/>
+                                        </div>
+                                    ))}
+                                    <button type="button" onClick={() => addAnswer(questionIndex)}>
+                                        Add an Answer
+                                    </button>
+                                    <br/>
+                                    <button type="button" onClick={() => removeQuestion(questionIndex)}>
+                                        Remove Question
+                                    </button>
+                                </div>
+                            );
+                        })}
+                    </form>
+                    <br/>
+                    <button onClick={addQuestion}>Add A Question</button>
+                    <br/>
+                    <button onClick={submit}>Submit</button>
+
+                    <button
+                        style={{
+                            ...styles.buttonStyles,
+                            position: 'absolute',
+                            bottom: '10px',
+                            left: '50%',
+                            transform: 'translateX(-50%)',
+                        }}
+                        onClick={onClose}
+                    >
+                        Zamknij
+                    </button>
+                </div>
+            </Modal>
+        );
+    }
+
+    const updateQuiz = (updatedQuiz: Quiz) => {
+        console.log("Updated Quiz:", updatedQuiz);
+        closeEditQuizModal();
+    };
 
     return (
         <div>
@@ -500,25 +769,12 @@ const AdminQuizzes: FC = () => {
                     )}
                 </div>
             </Modal>
-            <Modal
+            <EditQuiz
+                selectedQuiz={selectedQuiz}
                 isOpen={editModalIsOpen}
-                onRequestClose={closeEditQuizModal}
-                contentLabel="Edit Quiz"
-                style={styles.modalStyles}
-            >
-                <button
-                    style={{
-                        ...styles.buttonStyles,
-                        position: 'absolute',
-                        bottom: '10px',
-                        left: '50%',
-                        transform: 'translateX(-50%)',
-                    }}
-                    onClick={closeEditQuizModal}
-                >
-                    Zamknij
-                </button>
-            </Modal>
+                onClose={closeEditQuizModal}
+                onUpdateQuiz={updateQuiz}
+            />
             <button
                 style={{
                     ...styles.buttonStyles,
