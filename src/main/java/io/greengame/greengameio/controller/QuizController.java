@@ -65,6 +65,17 @@ public class QuizController {
         }
     }
 
+    @GetMapping("/id/{id}/correct")
+    public ResponseEntity<?> getQuizWithCorrectAnswersByID(@PathVariable Long id) {
+        Quiz quiz = null;
+        try {
+            quiz = quizService.getQuiz(id);
+            return ResponseEntity.ok().contentType(MediaType.APPLICATION_JSON).body(QuizMapper.toQuizWithCorrectAnswersDTO(quiz));
+        } catch (QuizNotFoundException exception) {
+            return ResponseEntity.notFound().build();
+        }
+    }
+
     @GetMapping("/title/{title}")
     public ResponseEntity<?> getQuizByTitle(@PathVariable String title) {
         try {

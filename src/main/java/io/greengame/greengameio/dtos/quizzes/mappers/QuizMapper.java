@@ -1,7 +1,9 @@
 package io.greengame.greengameio.dtos.quizzes.mappers;
 
 import io.greengame.greengameio.dtos.quizzes.input_dtos.QuestionInputDTO;
+import io.greengame.greengameio.dtos.quizzes.output_dtos.QuestionWithCorrectAnswersOutputDTO;
 import io.greengame.greengameio.dtos.quizzes.input_dtos.QuizInputDTO;
+import io.greengame.greengameio.dtos.quizzes.output_dtos.QuizWithCorrectAnswersDTO;
 import io.greengame.greengameio.dtos.quizzes.output_dtos.QuestionOutputDTO;
 import io.greengame.greengameio.dtos.quizzes.output_dtos.QuizOutputDTO;
 import io.greengame.greengameio.entity.Question;
@@ -27,5 +29,13 @@ public class QuizMapper {
             listOfQuestionOutputDTOs.add(QuestionMapper.toQuestionOutputDTO(question));
         }
         return new QuizOutputDTO(quiz.getQuizID(), quiz.getQuizTitle(), quiz.getQuizCreatorName(), quiz.getQuizOpenDate(), quiz.getQuizLength(), listOfQuestionOutputDTOs);
+    }
+
+    public static QuizWithCorrectAnswersDTO toQuizWithCorrectAnswersDTO(Quiz quiz) {
+        List<QuestionWithCorrectAnswersOutputDTO> listOfQuestionOutputDTOs = new ArrayList<>();
+        for (Question question : quiz.getListOfQuestions()) {
+            listOfQuestionOutputDTOs.add(QuestionMapper.toQuestionWithCorrectAnswersOutputDTO(question));
+        }
+        return new QuizWithCorrectAnswersDTO(quiz.getQuizID(), quiz.getQuizTitle(), quiz.getQuizCreatorName(), quiz.getQuizOpenDate(), quiz.getQuizLength(), listOfQuestionOutputDTOs);
     }
 }
