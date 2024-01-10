@@ -8,6 +8,15 @@ export const modalStyles = {
     },
 };
 
+export const bigModalStyles = {
+    content: {
+        width: 'auto%',
+        height: 'auto',
+        margin: 'auto',
+        padding: '20px',
+        paddingBottom: '10px',
+    },
+};
 export const squareStyles = {
     width: '300px',
     height: '200px',

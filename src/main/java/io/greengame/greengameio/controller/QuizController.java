@@ -193,6 +193,7 @@ public class QuizController {
     // Other methods
 
     @PostMapping("/id/{quizID}/check")
+    @Transactional
     public ResponseEntity<?> checkQuiz(@PathVariable Long quizID, @RequestBody QuizCheckDTO quizCheckDTO) {
         try {
             Quiz quizFromDB = quizService.getQuiz(quizID);
