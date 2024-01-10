@@ -34,8 +34,11 @@ class PipesGame {
         this.path = []
         this.timeHTML = document.getElementById("time");
         this.score = 0;
+        this.scoreCopy = 0;
         this.duration = 20000;
         this.scoreHTML = document.getElementById("score");
+        this.intervalId = 0;
+        this.userId = 1;
     }
 
     initGame() {
@@ -98,7 +101,6 @@ class PipesGame {
 
     //direction - where the water is coming from
     simulateWaterFlow(x, y, direction) {
-        console.log("cola")
         if (x < 0 || x >= BOARD_WIDTH || y < 0 || y >= BOARD_HEIGHT || this.findCoordinates(this.path,[x,y])!== -1) {
             return false
         }
@@ -136,7 +138,6 @@ class PipesGame {
     async endRound(){
         this.path = [];
         if(this.simulateWaterFlow(4,0,DIRECTIONS.UP)){
-            console.log("true");
             for (const pos of this.path) {
                 this.pipes[pos[1]][pos[0]].changeWaterOpacity(0,0.05);
                 await new Promise(r => setTimeout(r, 25));
@@ -189,8 +190,7 @@ class PipesGame {
 
     gameLoop(duration) {
         let timer = duration, seconds, milliseconds;
-        let intervalId = setInterval( async () => {
-            console.log(timer);
+        this.intervalId = setInterval( async () => {
             seconds = parseInt(timer / 1000, 10);
             milliseconds = parseInt(timer % 1000, 10) / 100;
 
@@ -198,16 +198,76 @@ class PipesGame {
 
             timer -= 100;
             if (timer < 0) {
-                clearInterval(intervalId);
-                this.endRound().then((wasRoundWon) => {console.log(wasRoundWon); if(wasRoundWon){this.gameLoop(duration-500);}});
+                clearInterval(this.intervalId);
+                this.endRound().then((wasRoundWon) => {if(wasRoundWon){this.gameLoop(duration-500);}});
             }
 
         }, 100);
     }
 
     endGame(){
-        console.log("You loose");
+        this.addExperience();
+        clearInterval(this.intervalId)
+        let bestScore = 0;
+        let scoreCopy = this.score;
+        let xhttp = new XMLHttpRequest();
+        xhttp.open("GET", "http://localhost:8081/api/v1/games/plumber/"+this.userId,true);
+        xhttp.timeout = 2000;
+        xhttp.onload = () => {
+            console.log(xhttp);
+            if(xhttp.status === 200){
+                bestScore = xhttp.responseText;
+                document.getElementById("showBestScore").innerText = bestScore;
+                if(scoreCopy>bestScore) document.getElementById("saveButton").disabled = false;
+            }
+            else if( xhttp.status === 500){
+                document.getElementById("saveButton").disabled = false;
+            }
+        }
+        xhttp.ontimeout = () => {
+            document.getElementById("response").innerText="Brak połączenia";
+            document.getElementById("response").style.setProperty("color","yellow");
+        }
+        xhttp.send(null);
+
+        document.getElementById("showScore").innerText = this.score;
+        document.getElementById("showBestScore").innerText = "";
+        document.getElementById("endScreen").style.setProperty("display", "flex");
+    }
+
+    closeModal(){
+        document.getElementById("endScreen").style.setProperty("display","none");
+        document.getElementById("saveButton").disabled = true;
+        document.getElementById("response").innerText="";
         this.resetGameState();
+        this.gameLoop(this.duration);
+    }
+
+    saveScore(){
+        let xhttp = new XMLHttpRequest();
+        xhttp.open("POST", "http://localhost:8081/api/v1/games/plumber/"+this.userId+"/"+this.scoreCopy,true);
+        // xhttp.timeout = 2000;
+        xhttp.onload = () => {
+            document.getElementById("response").innerText="Zapisano";
+            document.getElementById("response").style.setProperty("color","green");
+            document.getElementById("saveButton").disabled=true;
+        }
+        xhttp.ontimeout = () => {
+            document.getElementById("response").innerText="Brak połączenia";
+            document.getElementById("response").style.setProperty("color","yellow");
+        }
+        xhttp.onerror = () => {
+            document.getElementById("response").innerText="Błąd";
+            document.getElementById("response").style.setProperty("color","red");
+        }
+        xhttp.send();
+    }
+
+    addExperience(){
+        if(score!==0)return;
+        let xhttp = new XMLHttpRequest();
+        xhttp.open("POST", "http://localhost:8081/api/v1/games/plumber/"+this.userId+"/100",true);
+        xhttp.send();
     }
 
     resetGameState(){
