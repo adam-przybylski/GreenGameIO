@@ -31,7 +31,7 @@ const AdminQuizzes: FC = () => {
     const [quizToDelete, setQuizToDelete] = useState<Quiz | null>(null);
 
     useEffect(() => {
-        api.get("/quizzes")
+        api.get("/quizzes/correct")
             .then(response => setQuizzes(response.data))
             .catch(error => {
                 console.error("Error fetching quizzes:", error);
@@ -356,6 +356,7 @@ const AdminQuizzes: FC = () => {
             selectedQuiz?.listOfQuestions.map((question) => {
                 return {
                     questionContent: question.questionContent,
+                    questionNumber: question.questionNumber,
                     questionAnswers: question.listOfAnswers.map((answer) => {
                         return {
                             answerContent: answer.answerContent,
@@ -429,6 +430,7 @@ const AdminQuizzes: FC = () => {
 
             console.log(formFieldsQuiz);
             console.log(formFieldsQuestion);
+            console.log(formFieldsQuiz[0].quizOpenDate.toString())
 
             const updatedQuiz = {
                 quizID: selectedQuiz?.quizID,
@@ -438,6 +440,7 @@ const AdminQuizzes: FC = () => {
                 listOfQuestions: formFieldsQuestion.map((question) => {
                     return {
                         questionContent: question.questionContent,
+                        questionNumber: question.questionNumber,
                         listOfAnswers: question.questionAnswers.map((answer) => {
                             return {
                                 answerContent: answer.answerContent,
@@ -447,24 +450,38 @@ const AdminQuizzes: FC = () => {
                     };
                 }),
             };
-            onUpdateQuiz(updatedQuiz);
+            onUpdateQuiz(updatedQuiz)
+            postUpdatedQuiz(updatedQuiz)
         };
 
         const postUpdatedQuiz = async (updatedQuiz: Quiz) => {
-
             const quizGeneralInfo = {
                 quizTitle: updatedQuiz.quizTitle,
                 quizOpenDate: updatedQuiz.quizOpenDate
             }
 
+            const quizModifiedQuestions = {
+                listOfQuestions: updatedQuiz.listOfQuestions
+            }
+
+            console.log(updatedQuiz.quizID)
+            console.table(updatedQuiz.listOfQuestions)
+            console.log(quizModifiedQuestions)
+
             try {
-                await api.post("/quizzes", updatedQuiz);
-                api.get("/quizzes")
-                    .then(response => setQuizzes(response.data))
+                await api.put(`/quizzes/id/${Number(updatedQuiz.quizID)}/modify-general`, quizGeneralInfo)
             } catch (error) {
                 console.error('Error', error);
             }
 
+            try {
+                await api.put(`/quizzes/id/${Number(updatedQuiz.quizID)}/modify-questions`, quizModifiedQuestions)
+            } catch (error) {
+                console.error('Error', error);
+            } finally {
+                api.get("/quizzes/correct")
+                    .then(response => setQuizzes(response.data))
+            }
         }
 
         const addQuestion = (e) => {
@@ -500,7 +517,7 @@ const AdminQuizzes: FC = () => {
                 isOpen={isOpen}
                 onRequestClose={onClose}
                 contentLabel="Edit Quiz"
-                style={styles.modalStyles}
+                style={styles.bigModalStyles}
             >
                 <div>
                     <h2 style={styles.headingStyles}>Edytuj Quiz</h2>
@@ -517,13 +534,6 @@ const AdminQuizzes: FC = () => {
                                         required={true}
                                     />
                                     <br/>
-                                    <input
-                                        name="quizCreator"
-                                        placeholder="Twórca Quizu"
-                                        onChange={(event) => handleQuizFormChange(event, index)}
-                                        value={form.quizCreator}
-                                        required={true}
-                                    />
                                     <br/>
                                     <input
                                         type="datetime-local"
@@ -541,8 +551,9 @@ const AdminQuizzes: FC = () => {
                     <form>
                         {formFieldsQuestion.map((form, questionIndex) => {
                             return (
-                                <div key={questionIndex}>
+                                <div key={questionIndex} style={{marginBottom: '10px'}}>
                                     <input
+                                        style={{width: '80%', padding: '4px'}}
                                         name="questionContent"
                                         placeholder="Treść Pytania"
                                         onChange={(event) => handleQuestionFormChange(event, questionIndex)}
@@ -550,8 +561,9 @@ const AdminQuizzes: FC = () => {
                                     />
                                     <br/>
                                     {form.questionAnswers.map((answer, answerIndex) => (
-                                        <div key={answerIndex}>
+                                        <div key={answerIndex} style={{marginBottom: '5px'}}>
                                             <input
+                                                style={{width: '60%', padding: '4px'}}
                                                 name="answerContent"
                                                 placeholder="Treść Odpowiedzi"
                                                 onChange={(event) => handleAnswerFormChange(event, questionIndex, answerIndex)}

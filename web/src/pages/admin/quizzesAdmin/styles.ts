@@ -7,6 +7,15 @@ export const modalStyles = {
         paddingBottom: '10px',
     },
 };
+export const bigModalStyles = {
+    content: {
+        width: 'auto%',
+        height: 'auto',
+        margin: 'auto',
+        padding: '20px',
+        paddingBottom: '10px',
+    },
+};
 export const smallModalStyles = {
     content: {
         width: '20%',
