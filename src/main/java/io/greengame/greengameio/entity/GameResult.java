@@ -31,4 +31,7 @@ public class GameResult {
 
     @Column(name = "fruit_catcher_score")
     private int fruitCatcher;
+
+    @Column(name = "plumber")
+    private int plumber;
 }
