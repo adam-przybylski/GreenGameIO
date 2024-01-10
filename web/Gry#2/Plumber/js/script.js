@@ -264,9 +264,9 @@ class PipesGame {
     }
 
     addExperience(){
-        if(score!==0)return;
+        if(this.score!==0)return;
         let xhttp = new XMLHttpRequest();
-        xhttp.open("POST", "http://localhost:8081/api/v1/games/plumber/"+this.userId+"/100",true);
+        xhttp.open("POST", "http://localhost:8081/api/v1/games/updateUserXP/"+this.userId+"/100",true);
         xhttp.send();
     }
 

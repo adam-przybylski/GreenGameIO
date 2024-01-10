@@ -120,6 +120,7 @@ class FruitCatcherGame{
     }
 
     endGame(){
+        this.addExperience();
         this.isGameRunning = false;
         let bestScore = 0;
         this.scoreCopy = this.score;
@@ -184,6 +185,15 @@ class FruitCatcherGame{
         xhttp.onerror = () => {
             document.getElementById("response").innerText="Błąd";
             document.getElementById("response").style.setProperty("color","red");
+        }
+        xhttp.send();
+    }
+    addExperience(){
+        if(this.score<=0)return;
+        let xhttp = new XMLHttpRequest();
+        xhttp.open("POST", "http://localhost:8081/api/v1/games/updateUserXP/"+this.userId+"/100",true);
+        xhttp.onload = () => {
+            console.log(xhttp.response);
         }
         xhttp.send();
     }
