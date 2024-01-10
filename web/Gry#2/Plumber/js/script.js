@@ -17,30 +17,14 @@ const DIRECTIONS = {
 }
 
 // const PIPES = [
-//     [1],
-//     [PT.I],
-//     [PT.I],
-//     [1],
-// ];
-
-const PIPES = [
-    [0,0,0,0,1,0,0,0,0],
-    [PT.L, PT.I, PT.T, PT.I, PT.T, PT.I, PT.T, PT.I, PT.L],
-    [PT.I, 0, PT.L, PT.L, PT.I, 0, PT.I, 0, PT.I],
-    [PT.T, PT.I, PT.L, PT.T, PT.L, PT.I, PT.T, 0, PT.I],
-    [PT.T, PT.I, PT.T, PT.L, PT.I, PT.T, PT.L, PT.I, PT.L],
-    [PT.I, 0, 0, PT.I, 0, PT.T, PT.I, PT.I, PT.L],
-    [PT.I, 0, 0, PT.I, 0, PT.I, 0, 0, PT.I],
-    [1,0,0,1,0,1,0,0,1]
-];
-
-// [
-//     [L, I, T, I, T, I, T, T, L],
-//     [I, 0, L, L, I, 0, I, 0, I],
-//     [T, I, L, T, L, I, T, 0, I],
-//     [T, I, T, L, I, T, L, I, L],
-//     [I, 0, 0, I, 0, T, I, I, L],
-//     [I, 0, 0, I, 0, I, 0, 0, I]
+//     [0,0,0,0,1,0,0,0,0],
+//     [PT.L, PT.I, PT.T, PT.I, PT.T, PT.I, PT.T, PT.I, PT.L],
+//     [PT.I, 0, PT.L, PT.L, PT.I, 0, PT.I, 0, PT.I],
+//     [PT.T, PT.I, PT.L, PT.T, PT.L, PT.I, PT.T, 0, PT.I],
+//     [PT.T, PT.I, PT.T, PT.L, PT.I, PT.T, PT.L, PT.I, PT.L],
+//     [PT.I, 0, 0, PT.I, 0, PT.T, PT.I, PT.I, PT.L],
+//     [PT.I, 0, 0, PT.I, 0, PT.I, 0, 0, PT.I],
+//     [1,0,0,1,0,1,0,0,1]
 // ];
 
 class PipesGame {
@@ -49,23 +33,12 @@ class PipesGame {
         this.pipesHTML = document.getElementById("pipes");
         this.path = []
         this.timeHTML = document.getElementById("time");
+        this.score = 0;
+        this.duration = 20000;
+        this.scoreHTML = document.getElementById("score");
     }
 
-    // gameLoop() {
-    //     // request another frame
-    //     requestAnimationFrame(() => this.gameLoop());
-    //     // calc elapsed time since last loop
-    //     this.now = Date.now();
-    //     this.elapsed = this.now - this.then;
-    //     if (this.elapsed > this.fpsInterval && this.isGameRunning) {
-    //         // Get ready for next frame by setting then=now, but also adjust for your
-    //         // specified fpsInterval not being a multiple of RAF's interval (16.7ms)
-    //         this.then = this.now - (this.elapsed % this.fpsInterval);
-    //
-    //     }
-    // }
-
-    initPipes() {
+    initGame() {
         //creation of first row by hand
         let pipesRow = [];
         let pipesRowHTML = document.createElement("tr");
@@ -120,6 +93,7 @@ class PipesGame {
         }
         this.pipes.push(row);
         this.pipesHTML.appendChild(rowHTML);
+        this.addNewWaterCup();
     }
 
     //direction - where the water is coming from
@@ -159,7 +133,7 @@ class PipesGame {
         return false;
     }
 
-    async buttonSimulateWaterFlow(){
+    async endRound(){
         this.path = [];
         if(this.simulateWaterFlow(4,0,DIRECTIONS.UP)){
             console.log("true");
@@ -177,7 +151,12 @@ class PipesGame {
                 await new Promise(r => setTimeout(r, 25));
             }
             await new Promise(r => setTimeout(r, 1000));
+            this.removeWaterCup(x);
             this.addNewWaterCup();
+            return true;
+        } else{
+            this.endGame();
+            return false;
         }
     }
 
@@ -200,25 +179,42 @@ class PipesGame {
         this.pipes[BOARD_HEIGHT-1][cupPosition] = newWaterCup;
     }
 
-    timer(duration) {
+    removeWaterCup(cupPosition){
+        this.score++;
+        this.scoreHTML.innerText = this.score;
+        this.pipes[BOARD_HEIGHT-1][cupPosition]=0;
+        let elementToReplace = document.querySelector(`tr:last-child > td:nth-child(${cupPosition+1})`);
+        this.pipesHTML.lastChild.replaceChild(document.createElement("td"), elementToReplace);
+    }
+
+    gameLoop(duration) {
         let timer = duration, seconds, milliseconds;
-        let intervalId = setInterval( () => {
+        let intervalId = setInterval( async () => {
             console.log(timer);
             seconds = parseInt(timer / 1000, 10);
-            milliseconds = parseInt(timer % 1000, 10)/100;
-
-            // seconds = seconds < 10 ? "0" + seconds : seconds;
-            // milliseconds = milliseconds < 10 ? "0" + milliseconds : milliseconds;
+            milliseconds = parseInt(timer % 1000, 10) / 100;
 
             this.timeHTML.textContent = seconds + ":" + milliseconds + " s";
 
-            timer-=100;
+            timer -= 100;
             if (timer < 0) {
                 clearInterval(intervalId);
+                this.endRound().then((wasRoundWon) => {console.log(wasRoundWon); if(wasRoundWon){this.gameLoop(duration-500);}});
             }
 
         }, 100);
+    }
 
+    endGame(){
+        console.log("You loose");
+        this.resetGameState();
+    }
+
+    resetGameState(){
+        this.pipes = [];
+        this.pipesHTML.textContent='';
+        this.score = 0;
+        this.initGame();
     }
 }
 
@@ -278,4 +274,5 @@ class Pipe {
 }
 
 let game = new PipesGame();
-game.initPipes();
+game.initGame();
+game.gameLoop(game.duration);
