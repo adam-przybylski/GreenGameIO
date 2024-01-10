@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="css/style.css">
+    <title>Plumber</title>
+</head>
+<body>
+<div id="body">
+    <div id="endScreen" class="modal">
+        <div class="modal-content">
+            <div>
+                <span>Zdobyty wynik:</span>
+                <span id="showScore"></span>
+                <span>Najlepszy wynik:</span>
+                <span id="showBestScore"></span>
+            </div>
+            <div>
+                <button id="saveButton" type="button" disabled onclick="game.closeModal()">Zapisz wynik</button>
+                <button type="button" onclick="game.closeModal()">Zamknij</button>
+            </div>
+        </div>
+    </div>
+    <div class="wrapper">
+        <div id="scoreBoard">
+            <div id="name">PLUMBER</div>
+            <div>
+                <span>Pozostały czas:</span>
+                <span id="time">0:0 s</span>
+            </div>
+            <div id="scoreDisplay">
+                <span>Wynik:</span>
+                <span id="score">0</span>
+            </div>
+            <button type="button" onclick="game.endGame()">Zakończ grę</button>
+        </div>
+        <table id="pipes">
+        </table>
+    </div>
+</div>
+<button onclick="game.buttonSimulateWaterFlow()">Lej te cole</button>
+</body>
+<script src="js/script.js"></script>
+</html>
