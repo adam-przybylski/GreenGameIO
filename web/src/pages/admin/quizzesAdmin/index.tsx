@@ -87,9 +87,9 @@ const AdminQuizzes: FC = () => {
             listOfQuestions: updatedQuiz.listOfQuestions
         }
 
-        console.log(updatedQuiz.quizID)
-        console.table(updatedQuiz.listOfQuestions)
-        console.log(quizModifiedQuestions)
+        // console.log(updatedQuiz.quizID)
+        // console.table(updatedQuiz.listOfQuestions)
+        // console.log(quizModifiedQuestions)
 
         try {
             await api.put(`/quizzes/id/${Number(updatedQuiz.quizID)}/modify-general`, quizGeneralInfo)
@@ -170,7 +170,7 @@ const AdminQuizzes: FC = () => {
     };
 
     const updateQuiz = (updatedQuiz: Quiz) => {
-        console.log("Updated Quiz:", updatedQuiz);
+        // console.log("Updated Quiz:", updatedQuiz);
         closeEditQuizModal();
     };
 

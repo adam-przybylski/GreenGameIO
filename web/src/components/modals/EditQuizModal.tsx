@@ -1,5 +1,4 @@
 import React, {FC, useState} from 'react';
-import * as styles from './styles.ts'
 
 interface Answer {
     answerContent: string;
@@ -49,9 +48,9 @@ const EditQuizModal: FC<EditQuizProps> = ({selectedQuiz, setEditModalIsOpen, onU
         },
     ]);
 
-    console.log("EDIT QUIZ")
-    console.table(selectedQuiz)
-    console.table(formFieldsQuiz)
+    // console.log("EDIT QUIZ")
+    // console.table(selectedQuiz)
+    // console.table(formFieldsQuiz)
 
     const [formFieldsQuestion, setFormFieldsQuestion] = useState(
         selectedQuiz?.listOfQuestions.map((question) => {
@@ -133,9 +132,9 @@ const EditQuizModal: FC<EditQuizProps> = ({selectedQuiz, setEditModalIsOpen, onU
             }
         }
 
-        console.log(formFieldsQuiz);
-        console.log(formFieldsQuestion);
-        console.log(formFieldsQuiz[0].quizOpenDate.toString())
+        // console.log(formFieldsQuiz);
+        // console.log(formFieldsQuestion);
+        // console.log(formFieldsQuiz[0].quizOpenDate.toString())
 
         const updatedQuiz = {
             quizID: selectedQuiz?.quizID,
@@ -193,8 +192,6 @@ const EditQuizModal: FC<EditQuizProps> = ({selectedQuiz, setEditModalIsOpen, onU
         <div>
             <form>
                 {formFieldsQuiz.map((form, index) => {
-                    // @ts-ignore
-                    // @ts-ignore
                     return (
                         <div key={index}>
                             <input

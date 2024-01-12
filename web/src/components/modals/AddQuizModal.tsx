@@ -40,7 +40,7 @@ const AddQuizModal: React.FC<AddQuizProps> = ({postNewQuiz, setAddModalIsOpen}) 
             data[index][event.target.name] = event.target.value;
         }
         setFormFieldsQuiz(data);
-        console.log(data)
+        // console.log(data)
     };
 
     const handleQuestionFormChange = (event, index) => {
@@ -94,8 +94,8 @@ const AddQuizModal: React.FC<AddQuizProps> = ({postNewQuiz, setAddModalIsOpen}) 
             }
         }
 
-        console.log(formFieldsQuiz);
-        console.log(formFieldsQuestion);
+        // console.log(formFieldsQuiz);
+        // console.log(formFieldsQuestion);
 
         const newQuiz: Quiz = {
             quizID: 0,
@@ -114,7 +114,7 @@ const AddQuizModal: React.FC<AddQuizProps> = ({postNewQuiz, setAddModalIsOpen}) 
                 };
             }),
         };
-        console.log(formFieldsQuiz[0].quizOpenDate)
+        // console.log(formFieldsQuiz[0].quizOpenDate)
         postNewQuiz(newQuiz)
         setAddModalIsOpen(false)
 
