@@ -2,6 +2,8 @@ import {FC, useEffect, useState} from "react";
 import Modal from "react-modal";
 import {api} from "../../../api/api.config.ts";
 import * as styles from "./styles";
+import AddQuizModal from "../../../components/modals/AddQuizModal.tsx";
+import EditQuizModal from "../../../components/modals/EditQuizModal.tsx";
 
 interface Answer {
     answerContent: string;
@@ -65,6 +67,46 @@ const AdminQuizzes: FC = () => {
         setEditModalIsOpen(true);
     };
 
+    const postNewQuiz = async (newQuiz: Quiz) => {
+        try {
+            await api.post("/quizzes", newQuiz);
+            api.get("/quizzes")
+                .then(response => setQuizzes(response.data))
+        } catch (error) {
+            console.error('Error', error);
+        }
+    }
+
+    const postUpdatedQuiz = async (updatedQuiz: Quiz) => {
+        const quizGeneralInfo = {
+            quizTitle: updatedQuiz.quizTitle,
+            quizOpenDate: updatedQuiz.quizOpenDate
+        }
+
+        const quizModifiedQuestions = {
+            listOfQuestions: updatedQuiz.listOfQuestions
+        }
+
+        console.log(updatedQuiz.quizID)
+        console.table(updatedQuiz.listOfQuestions)
+        console.log(quizModifiedQuestions)
+
+        try {
+            await api.put(`/quizzes/id/${Number(updatedQuiz.quizID)}/modify-general`, quizGeneralInfo)
+        } catch (error) {
+            console.error('Error', error);
+        }
+
+        try {
+            await api.put(`/quizzes/id/${Number(updatedQuiz.quizID)}/modify-questions`, quizModifiedQuestions)
+        } catch (error) {
+            console.error('Error', error);
+        } finally {
+            api.get("/quizzes/correct")
+                .then(response => setQuizzes(response.data))
+        }
+    }
+
     const closeEditQuizModal = () => {
         setSelectedQuiz(null);
         setEditModalIsOpen(false);
@@ -126,495 +168,6 @@ const AdminQuizzes: FC = () => {
             }
         }
     };
-
-    function AddQuiz() {
-        const [formFieldsQuiz, setFormFieldsQuiz] = useState([
-            {quizTitle: "", quizCreator: "", quizOpenDate: new Date()},
-        ]);
-
-        const [formFieldsQuestion, setFormFieldsQuestion] = useState([
-            {questionContent: "", questionAnswers: [{answerContent: "", correct: false}]},
-        ]);
-
-        const handleQuizFormChange = (event, index) => {
-            let data = [...formFieldsQuiz];
-            data[index][event.target.name] = event.target.value;
-            setFormFieldsQuiz(data);
-        };
-
-        const handleQuestionFormChange = (event, index) => {
-            let data = [...formFieldsQuestion];
-            data[index][event.target.name] = event.target.value;
-            setFormFieldsQuestion(data);
-        };
-
-        const handleAnswerFormChange = (event, questionIndex, answerIndex) => {
-            let data = [...formFieldsQuestion];
-            if (event.target.type === "checkbox") {
-                data[questionIndex].questionAnswers[answerIndex][event.target.name] = event.target.checked;
-            } else {
-                data[questionIndex].questionAnswers[answerIndex][event.target.name] = event.target.value;
-            }
-            setFormFieldsQuestion(data);
-        };
-
-        const submit = (e) => {
-            e.preventDefault();
-
-            if (formFieldsQuiz[0].quizTitle.trim() === '') {
-                console.error('Quiz name is required.');
-                return;
-            }
-
-            if (formFieldsQuiz[0].quizCreator.trim() === '') {
-                console.error('Creator name is required.');
-                return;
-            }
-
-            if (!formFieldsQuiz[0].quizOpenDate) {
-                console.error('Quiz date is required.');
-                return;
-            }
-
-            if (formFieldsQuestion.length === 0 || formFieldsQuestion.length > 10) {
-                console.error('A quiz must contain between 1 and 10 questions.');
-                return;
-            }
-
-            for (const question of formFieldsQuestion) {
-                if (
-                    question.questionContent.trim() === '' ||
-                    question.questionAnswers.length < 2 ||
-                    question.questionAnswers.length > 5 ||
-                    !question.questionAnswers.some(answer => answer.correct)
-                ) {
-                    console.error('Each question must have a content, between 2 and 5 answers, and at least 1 correct answer.');
-                    return;
-                }
-            }
-
-            console.log(formFieldsQuiz);
-            console.log(formFieldsQuestion);
-
-            const newQuiz: Quiz = {
-                quizID: 0,
-                quizTitle: formFieldsQuiz[0].quizTitle,
-                quizCreatorName: formFieldsQuiz[0].quizCreator,
-                quizOpenDate: new Date(formFieldsQuiz[0].quizOpenDate),
-                listOfQuestions: formFieldsQuestion.map((question) => {
-                    return {
-                        questionContent: question.questionContent,
-                        listOfAnswers: question.questionAnswers.map((answer) => {
-                            return {
-                                answerContent: answer.answerContent,
-                                correct: answer.correct,
-                            };
-                        }),
-                    };
-                }),
-            };
-            postNewQuiz(newQuiz)
-            setAddModalIsOpen(false)
-        }
-
-        const postNewQuiz = async (newQuiz: Quiz) => {
-            try {
-                await api.post("/quizzes", newQuiz);
-                api.get("/quizzes")
-                    .then(response => setQuizzes(response.data))
-            } catch (error) {
-                console.error('Error', error);
-            }
-        }
-
-        const addQuestion = (e) => {
-            e.preventDefault();
-            let object = {
-                questionContent: "",
-                questionAnswers: [{answerContent: "", correct: false}],
-            };
-
-            setFormFieldsQuestion([...formFieldsQuestion, object]);
-        };
-
-        const addAnswer = (questionIndex) => {
-            let data = [...formFieldsQuestion];
-            data[questionIndex].questionAnswers.push({answerContent: "", correct: false});
-            setFormFieldsQuestion(data);
-        };
-
-        const removeQuestion = (index) => {
-            let data = [...formFieldsQuestion];
-            data.splice(index, 1);
-            setFormFieldsQuestion(data);
-        };
-
-        const removeAnswer = (questionIndex, answerIndex) => {
-            let data = [...formFieldsQuestion];
-            data[questionIndex].questionAnswers.splice(answerIndex, 1);
-            setFormFieldsQuestion(data);
-        };
-
-        return (
-            <div className="AddQuiz">
-                <form>
-                    {formFieldsQuiz.map((form, index) => {
-                        return (
-                            <div key={index}>
-                                <input
-                                    name="quizTitle"
-                                    placeholder="Treść pytania"
-                                    onChange={(event) => handleQuizFormChange(event, index)}
-                                    value={form.quizTitle}
-                                    required={true}
-                                />
-                                <br/>
-                                <input
-                                    name="quizCreator"
-                                    placeholder="Twórca Quizu"
-                                    onChange={(event) => handleQuizFormChange(event, index)}
-                                    value={form.quizCreator}
-                                    required={true}
-                                />
-                                <br/>
-                                <input
-                                    type="datetime-local"
-                                    onChange={(event) => handleQuizFormChange(event, index)}
-                                    defaultValue={form.quizOpenDate.toISOString().slice(0, 16)}
-                                    key={`quizOpenDate-${index}`}
-                                    required={true}
-                                />
-                            </div>
-                        );
-                    })}
-                </form>
-                <br/>
-                <br/>
-                <form>
-                    {formFieldsQuestion.map((form, questionIndex) => {
-                        return (
-                            <div key={questionIndex}>
-                                <input
-                                    name="questionContent"
-                                    placeholder="Treść Pytania"
-                                    onChange={(event) => handleQuestionFormChange(event, questionIndex)}
-                                    value={form.questionContent}
-                                />
-                                <br/>
-                                {form.questionAnswers.map((answer, answerIndex) => (
-                                    <div key={answerIndex}>
-                                        <input
-                                            name="answerContent"
-                                            placeholder="Treść Odpowiedzi"
-                                            onChange={(event) => handleAnswerFormChange(event, questionIndex, answerIndex)}
-                                            value={answer.answerContent}
-                                        />
-                                        <input
-                                            type="checkbox"
-                                            name="correct"
-                                            label="Czy poprawne?"
-                                            onChange={(event) => handleAnswerFormChange(event, questionIndex, answerIndex)}
-                                            checked={answer.correct}
-                                        />
-                                        <button type="button" onClick={() => removeAnswer(questionIndex, answerIndex)}>
-                                            Remove Answer
-                                        </button>
-                                        <br/>
-                                    </div>
-                                ))}
-                                <button type="button" onClick={() => addAnswer(questionIndex)}>
-                                    Add an Answer
-                                </button>
-                                <br/>
-                                <button type="button" onClick={() => removeQuestion(questionIndex)}>
-                                    Remove Question
-                                </button>
-                            </div>
-                        );
-                    })}
-                </form>
-                <br/>
-                <button onClick={addQuestion}>Add A Question</button>
-                <br/>
-                <button onClick={submit}>Submit</button>
-            </div>
-        );
-    }
-
-    function EditQuiz({selectedQuiz, isOpen, onClose, onUpdateQuiz}) {
-        const [formFieldsQuiz, setFormFieldsQuiz] = useState([
-            {
-                quizTitle: selectedQuiz?.quizTitle || "",
-                quizCreator: selectedQuiz?.quizCreatorName || "",
-                quizOpenDate: selectedQuiz?.quizOpenDate
-                    ? selectedQuiz.quizOpenDate
-                    : new Date().toISOString().slice(0, 16),
-            },
-        ]);
-
-        const [formFieldsQuestion, setFormFieldsQuestion] = useState(
-            selectedQuiz?.listOfQuestions.map((question) => {
-                return {
-                    questionContent: question.questionContent,
-                    questionNumber: question.questionNumber,
-                    questionAnswers: question.listOfAnswers.map((answer) => {
-                        return {
-                            answerContent: answer.answerContent,
-                            correct: answer.correct,
-                        };
-                    }),
-                };
-            }) || [
-                {questionContent: "", questionAnswers: [{answerContent: "", correct: false}]},
-            ]
-        );
-
-        const handleQuizFormChange = (event, index) => {
-            let data = [...formFieldsQuiz];
-            data[index][event.target.name] = event.target.value;
-            setFormFieldsQuiz(data);
-        };
-
-        const handleQuestionFormChange = (event, index) => {
-            let data = [...formFieldsQuestion];
-            data[index][event.target.name] = event.target.value;
-            setFormFieldsQuestion(data);
-        };
-
-        const handleAnswerFormChange = (event, questionIndex, answerIndex) => {
-            let data = [...formFieldsQuestion];
-            if (event.target.type === "checkbox") {
-                data[questionIndex].questionAnswers[answerIndex][event.target.name] =
-                    event.target.checked;
-            } else {
-                data[questionIndex].questionAnswers[answerIndex][event.target.name] =
-                    event.target.value;
-            }
-            setFormFieldsQuestion(data);
-        };
-
-        const submit = (e) => {
-            e.preventDefault();
-
-            if (formFieldsQuiz[0].quizTitle.trim() === '') {
-                console.error('Quiz name is required.');
-                return;
-            }
-
-            if (formFieldsQuiz[0].quizCreator.trim() === '') {
-                console.error('Creator name is required.');
-                return;
-            }
-
-            if (!formFieldsQuiz[0].quizOpenDate) {
-                console.error('Quiz date is required.');
-                return;
-            }
-
-            if (formFieldsQuestion.length === 0 || formFieldsQuestion.length > 10) {
-                console.error('A quiz must contain between 1 and 10 questions.');
-                return;
-            }
-
-            for (const question of formFieldsQuestion) {
-                if (
-                    question.questionContent.trim() === '' ||
-                    question.questionAnswers.length < 2 ||
-                    question.questionAnswers.length > 5 ||
-                    !question.questionAnswers.some(answer => answer.correct)
-                ) {
-                    console.error('Each question must have a content, between 2 and 5 answers, and at least 1 correct answer.');
-                    return;
-                }
-            }
-
-            console.log(formFieldsQuiz);
-            console.log(formFieldsQuestion);
-            console.log(formFieldsQuiz[0].quizOpenDate.toString())
-
-            const updatedQuiz = {
-                quizID: selectedQuiz?.quizID,
-                quizTitle: formFieldsQuiz[0].quizTitle,
-                quizCreatorName: formFieldsQuiz[0].quizCreator,
-                quizOpenDate: new Date(formFieldsQuiz[0].quizOpenDate),
-                listOfQuestions: formFieldsQuestion.map((question) => {
-                    return {
-                        questionContent: question.questionContent,
-                        questionNumber: question.questionNumber,
-                        listOfAnswers: question.questionAnswers.map((answer) => {
-                            return {
-                                answerContent: answer.answerContent,
-                                correct: answer.correct,
-                            };
-                        }),
-                    };
-                }),
-            };
-            onUpdateQuiz(updatedQuiz)
-            postUpdatedQuiz(updatedQuiz)
-        };
-
-        const postUpdatedQuiz = async (updatedQuiz: Quiz) => {
-            const quizGeneralInfo = {
-                quizTitle: updatedQuiz.quizTitle,
-                quizOpenDate: updatedQuiz.quizOpenDate
-            }
-
-            const quizModifiedQuestions = {
-                listOfQuestions: updatedQuiz.listOfQuestions
-            }
-
-            console.log(updatedQuiz.quizID)
-            console.table(updatedQuiz.listOfQuestions)
-            console.log(quizModifiedQuestions)
-
-            try {
-                await api.put(`/quizzes/id/${Number(updatedQuiz.quizID)}/modify-general`, quizGeneralInfo)
-            } catch (error) {
-                console.error('Error', error);
-            }
-
-            try {
-                await api.put(`/quizzes/id/${Number(updatedQuiz.quizID)}/modify-questions`, quizModifiedQuestions)
-            } catch (error) {
-                console.error('Error', error);
-            } finally {
-                api.get("/quizzes/correct")
-                    .then(response => setQuizzes(response.data))
-            }
-        }
-
-        const addQuestion = (e) => {
-            e.preventDefault();
-            let object = {
-                questionContent: "",
-                questionAnswers: [{answerContent: "", correct: false}],
-            };
-
-            setFormFieldsQuestion([...formFieldsQuestion, object]);
-        };
-
-        const addAnswer = (questionIndex) => {
-            let data = [...formFieldsQuestion];
-            data[questionIndex].questionAnswers.push({answerContent: "", correct: false});
-            setFormFieldsQuestion(data);
-        };
-
-        const removeQuestion = (index) => {
-            let data = [...formFieldsQuestion];
-            data.splice(index, 1);
-            setFormFieldsQuestion(data);
-        };
-
-        const removeAnswer = (questionIndex, answerIndex) => {
-            let data = [...formFieldsQuestion];
-            data[questionIndex].questionAnswers.splice(answerIndex, 1);
-            setFormFieldsQuestion(data);
-        };
-
-        return (
-            <Modal
-                isOpen={isOpen}
-                onRequestClose={onClose}
-                contentLabel="Edit Quiz"
-                style={styles.bigModalStyles}
-            >
-                <div>
-                    <h2 style={styles.headingStyles}>Edytuj Quiz</h2>
-
-                    <form>
-                        {formFieldsQuiz.map((form, index) => {
-                            return (
-                                <div key={index}>
-                                    <input
-                                        name="quizTitle"
-                                        placeholder="Treść pytania"
-                                        onChange={(event) => handleQuizFormChange(event, index)}
-                                        value={form.quizTitle}
-                                        required={true}
-                                    />
-                                    <br/>
-                                    <br/>
-                                    <input
-                                        type="datetime-local"
-                                        onChange={(event) => handleQuizFormChange(event, index)}
-                                        defaultValue={form.quizOpenDate}
-                                        key={`quizOpenDate-${index}`}
-                                        required={true}
-                                    />
-                                </div>
-                            );
-                        })}
-                    </form>
-                    <br/>
-                    <br/>
-                    <form>
-                        {formFieldsQuestion.map((form, questionIndex) => {
-                            return (
-                                <div key={questionIndex} style={{marginBottom: '10px'}}>
-                                    <input
-                                        style={{width: '80%', padding: '4px'}}
-                                        name="questionContent"
-                                        placeholder="Treść Pytania"
-                                        onChange={(event) => handleQuestionFormChange(event, questionIndex)}
-                                        value={form.questionContent}
-                                    />
-                                    <br/>
-                                    {form.questionAnswers.map((answer, answerIndex) => (
-                                        <div key={answerIndex} style={{marginBottom: '5px'}}>
-                                            <input
-                                                style={{width: '60%', padding: '4px'}}
-                                                name="answerContent"
-                                                placeholder="Treść Odpowiedzi"
-                                                onChange={(event) => handleAnswerFormChange(event, questionIndex, answerIndex)}
-                                                value={answer.answerContent}
-                                            />
-                                            <input
-                                                type="checkbox"
-                                                name="correct"
-                                                label="Czy poprawne?"
-                                                onChange={(event) => handleAnswerFormChange(event, questionIndex, answerIndex)}
-                                                checked={answer.correct}
-                                            />
-                                            <button type="button"
-                                                    onClick={() => removeAnswer(questionIndex, answerIndex)}>
-                                                Remove Answer
-                                            </button>
-                                            <br/>
-                                        </div>
-                                    ))}
-                                    <button type="button" onClick={() => addAnswer(questionIndex)}>
-                                        Add an Answer
-                                    </button>
-                                    <br/>
-                                    <button type="button" onClick={() => removeQuestion(questionIndex)}>
-                                        Remove Question
-                                    </button>
-                                </div>
-                            );
-                        })}
-                    </form>
-                    <br/>
-                    <button onClick={addQuestion}>Add A Question</button>
-                    <br/>
-                    <button onClick={submit}>Submit</button>
-
-                    <button
-                        style={{
-                            ...styles.buttonStyles,
-                            position: 'absolute',
-                            bottom: '10px',
-                            left: '50%',
-                            transform: 'translateX(-50%)',
-                        }}
-                        onClick={onClose}
-                    >
-                        Zamknij
-                    </button>
-                </div>
-            </Modal>
-        );
-    }
 
     const updateQuiz = (updatedQuiz: Quiz) => {
         console.log("Updated Quiz:", updatedQuiz);
@@ -688,6 +241,7 @@ const AdminQuizzes: FC = () => {
                 onRequestClose={closeSelectedQuizModal}
                 contentLabel="Selected Quiz"
                 style={styles.modalStyles}
+                ariaHideApp={false}
             >
                 {selectedQuiz && (
                     <div>
@@ -724,32 +278,11 @@ const AdminQuizzes: FC = () => {
                 )}
             </Modal>
             <Modal
-                isOpen={addModalIsOpen}
-                onRequestClose={() => setAddModalIsOpen(false)}
-                contentLabel="Add Quiz"
-                style={styles.modalStyles}
-            >
-                <h2 style={styles.headingStyles}>Dodaj Quiz</h2>
-                <h3 style={styles.headingStyles2}>Uzupełnij dane o quizie:</h3>
-                <AddQuiz/>
-                <button
-                    style={{
-                        ...styles.buttonStyles,
-                        position: 'absolute',
-                        bottom: '10px',
-                        left: '50%',
-                        transform: 'translateX(-50%)',
-                    }}
-                    onClick={() => setAddModalIsOpen(false)}
-                >
-                    Zamknij
-                </button>
-            </Modal>
-            <Modal
                 isOpen={deleteConfirmationModalIsOpen}
                 onRequestClose={() => setDeleteConfirmationModalIsOpen(false)}
                 contentLabel="Delete Confirmation"
                 style={styles.smallModalStyles}
+                ariaHideApp={false}
             >
                 <div style={{textAlign: 'center'}}>
                     <h2 style={styles.smallModalText}>
@@ -781,12 +314,53 @@ const AdminQuizzes: FC = () => {
                     )}
                 </div>
             </Modal>
-            <EditQuiz
-                selectedQuiz={selectedQuiz}
+            <Modal
+                isOpen={addModalIsOpen}
+                onRequestClose={() => setAddModalIsOpen(false)}
+                contentLabel="Add Quiz"
+                style={styles.bigModalStyles}
+                ariaHideApp={false}
+            >
+                <h2 style={styles.headingStyles}>Dodaj Quiz</h2>
+                <h3 style={styles.headingStyles2}>Uzupełnij dane o quizie:</h3>
+                <AddQuizModal postNewQuiz={postNewQuiz} setAddModalIsOpen={setAddModalIsOpen}/>
+                <button
+                    style={{
+                        ...styles.buttonStyles,
+                        position: 'absolute',
+                        bottom: '10px',
+                        left: '50%',
+                        transform: 'translateX(-50%)',
+                    }}
+                    onClick={() => setAddModalIsOpen(false)}
+                >
+                    Zamknij
+                </button>
+            </Modal>
+            <Modal
                 isOpen={editModalIsOpen}
-                onClose={closeEditQuizModal}
-                onUpdateQuiz={updateQuiz}
-            />
+                onRequestClose={() => setEditModalIsOpen(false)}
+                contentLabel="Edit Quiz"
+                style={styles.bigModalStyles}
+                ariaHideApp={false}
+            >
+                <h2 style={styles.headingStyles}>Edytuj Quiz</h2>
+                <h3 style={styles.headingStyles2}>Uzupełnij dane o quizie:</h3>
+                <EditQuizModal postUpdatedQuiz={postUpdatedQuiz} setEditModalIsOpen={setEditModalIsOpen}
+                               onUpdateQuiz={updateQuiz} selectedQuiz={selectedQuiz}/>
+                <button
+                    style={{
+                        ...styles.buttonStyles,
+                        position: 'absolute',
+                        bottom: '10px',
+                        left: '50%',
+                        transform: 'translateX(-50%)',
+                    }}
+                    onClick={() => setEditModalIsOpen(false)}
+                >
+                    Zamknij
+                </button>
+            </Modal>
             <button
                 style={{
                     ...styles.buttonStyles,

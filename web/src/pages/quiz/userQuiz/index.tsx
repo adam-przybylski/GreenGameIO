@@ -134,8 +134,15 @@ const Quizzes: FC = () => {
                 }
             });
 
+            const localStorageItem = localStorage.getItem("account");
+            // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+            // @ts-expect-error
+            const parsedData = JSON.parse(localStorageItem);
+            const idValue = parsedData.id;
+            console.log(idValue);
+
             const toSend = {
-                userID: 2,
+                userID: idValue,
                 listOfUserAnswers: listOfUserAnswers,
             }
 
@@ -150,6 +157,7 @@ const Quizzes: FC = () => {
                 onRequestClose={onClose}
                 contentLabel="Edit Correct Answers"
                 style={styles.bigModalStyles}
+                ariaHideApp={false}
             >
                 <div>
                     <form>
@@ -222,6 +230,7 @@ const Quizzes: FC = () => {
                 onRequestClose={closeModal}
                 contentLabel="Selected Quiz"
                 style={styles.modalStyles}
+                ariaHideApp={false}
             >
                 {selectedQuiz && (
                     <div>
