@@ -59,6 +59,6 @@ public class GameResultController {
 
     @PostMapping("plumber/{userId}/{plumberScore}")
     GameResult updatePlumberResult(@PathVariable Long userId,@PathVariable int plumberScore) {
-        return gameResultService.updateFruitCatcherResult(userId, plumberScore);
+        return gameResultService.updatePlumberResult(userId, plumberScore);
     }
 }
