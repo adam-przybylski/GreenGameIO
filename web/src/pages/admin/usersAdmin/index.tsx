@@ -18,8 +18,35 @@ const AdminUsers: FC = () => {
 
     const deleteUser = async (username: string | undefined) => {
         if (username !== undefined) {
-            await api.delete(`/users/username/${username}`);
-            setUsers(prevUsers => prevUsers.filter(user => user.username !== username));
+            try {
+                await api.delete(`/users/username/${username}`);
+                setUsers(prevUsers => prevUsers.filter(user => user.username !== username));
+            } catch (error) {
+                console.error(error);
+            }
+        }
+    }
+
+    const handleChange = (id: string, value: string | number, field: string) => {
+        setUsers(users.map(user => {
+            if (user.id === id) {
+                return {
+                    ...user,
+                    [field]: value
+                }
+            }
+            return user;
+        }));
+    }
+
+    const handleUpdate = async (id: string) => {
+        const user = users.find(user => user.id === id);
+        if (user !== undefined) {
+            try {
+                await api.put(`/users/id/${id}`, user);
+            } catch (error) {
+                console.error(error);
+            }
         }
     }
 
@@ -35,9 +62,22 @@ const AdminUsers: FC = () => {
                 <tbody className="bg-neutral-300">
                     {users.map(user => (
                         <tr key={user.id}>
-                            <td className="border border-slate-700 px-3 py-1">{user.username}</td>
-                            <td className="border border-slate-700 px-3 py-1">{user.email}</td>
-                            <td className="border hover:cursor-pointer hover:text-green-500 border-slate-700 text-center">Aktualizuj</td>
+                            <td className="border border-slate-700 px-3 py-1">
+                                <input className="w-full bg-transparent p-1" type="text" value={user.username}
+                                    onChange={v => {
+                                        handleChange(user.id, v.target.value, 'username');
+                                    }} />
+                            </td>
+                            <td className="border border-slate-700 px-3 py-1">
+                                <input className="w-full bg-transparent p-1" type="email" value={user.email}
+                                    onChange={v => {
+                                        handleChange(user.id, v.target.value, 'email');
+                                    }} />
+                            </td>
+                            <td className="border hover:cursor-pointer hover:text-green-500 border-slate-700 text-center"
+                                onClick={() => {
+                                    handleUpdate(user.id);
+                                }}>Aktualizuj</td>
                             <td className="border hover:cursor-pointer hover:text-green-500 border-slate-700 text-center">Ustaw nowe hasło</td>
                             <td className="border hover:cursor-pointer hover:text-green-500 border-slate-700 text-center"
                                 onClick={() => {

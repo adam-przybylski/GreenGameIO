@@ -1,6 +1,7 @@
 package io.greengame.greengameio.services;
 
 
+import io.greengame.greengameio.dtos.UpdateUserDto;
 import io.greengame.greengameio.entity.Odznaka;
 import io.greengame.greengameio.entity.User;
 import io.greengame.greengameio.friendmodule.exceptions.ErrorMessages;
@@ -73,6 +74,14 @@ public class UserService {
         user1.setType(user.getType());
         user1.setOdznaka(user.getOdznaka());
         return userRepository.save(user1);
+    }
+
+    public User updateUser(Long id, UpdateUserDto userDto) {
+        User user = userRepository.findById(id).orElseThrow(() -> new RuntimeException("User not found."));
+        user.setUsername(userDto.getUsername());
+        user.setEmail(userDto.getEmail());
+        user.setType(userDto.getType());
+        return userRepository.save(user);
     }
 
     private void createUserFM(Long id, String username) {

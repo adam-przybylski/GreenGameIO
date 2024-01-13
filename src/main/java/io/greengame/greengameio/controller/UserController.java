@@ -1,6 +1,7 @@
 package io.greengame.greengameio.controller;
 
 
+import io.greengame.greengameio.dtos.UpdateUserDto;
 import io.greengame.greengameio.entity.Odznaka;
 import io.greengame.greengameio.entity.User;
 import io.greengame.greengameio.services.UserService;
@@ -55,6 +56,11 @@ public class UserController {
     @PatchMapping("/id/{id}")
     User updateUsername(@PathVariable Long id, @RequestBody Map<String, String> username) {
         return userService.updateUsername(id, username.get("username"));
+    }
+
+    @PutMapping("/id/{id}")
+    User updateUser(@PathVariable Long id, @RequestBody UpdateUserDto user) {
+        return userService.updateUser(id, user);
     }
 
    /* @GetMapping("/awards/{id}")
