@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 @RestController
@@ -22,7 +23,7 @@ public class UserController {
     private final UserService userService;
 
     @DeleteMapping("/username/{username}")
-    boolean deleteUser(@PathVariable String username) {
+    long deleteUser(@PathVariable String username) {
         return userService.deleteUser(username);
     }
 
@@ -49,6 +50,11 @@ public class UserController {
     @PostMapping("/username/{username}")
     User updateUser(@PathVariable String username, @RequestBody User user) {
         return userService.updateUser(username, user);
+    }
+
+    @PatchMapping("/id/{id}")
+    User updateUsername(@PathVariable Long id, @RequestBody Map<String, String> username) {
+        return userService.updateUsername(id, username.get("username"));
     }
 
    /* @GetMapping("/awards/{id}")

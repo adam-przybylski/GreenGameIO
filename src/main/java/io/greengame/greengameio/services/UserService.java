@@ -33,7 +33,7 @@ public class UserService {
         return user1;
     }
 
-    public boolean deleteUser(String username) {
+    public long deleteUser(String username) {
         User user = userRepository.findByUsername(username).orElseThrow();
         return userRepository.deleteByUsername(username);
     }
@@ -52,6 +52,12 @@ public class UserService {
 
     public User getUserById(Long id) {
         return userRepository.findById(id).orElseThrow(() -> new RuntimeException("User not found."));
+    }
+
+    public User updateUsername(Long id, String username) {
+        User user = userRepository.findById(id).orElseThrow(() -> new RuntimeException("User not found."));
+        user.setUsername(username);
+        return userRepository.save(user);
     }
 
     public User updateUser(String username, User user) {
