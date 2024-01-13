@@ -41,7 +41,10 @@ public class UserService {
     }
 
     public List<User> getUsers() {
-        return userRepository.findAll();
+        List<User> users = userRepository.findAll();
+        return users.stream()
+                .filter(User::isEnabled)
+                .toList();
     }
 
     public User getUserByEmail(String email) {
