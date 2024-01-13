@@ -29,6 +29,7 @@ const DIRECTIONS = {
 
 class PipesGame {
     constructor() {
+        console.log(window.location);
         this.pipes = [];
         this.pipesHTML = document.getElementById("pipes");
         this.path = []
