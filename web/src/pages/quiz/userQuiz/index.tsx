@@ -1,7 +1,8 @@
-import {FC, useEffect, useState} from "react";
+import React, {FC, useEffect, useState} from "react";
 import Modal from "react-modal";
 import {api} from "../../../api/api.config.ts";
 import * as styles from "./styles";
+
 
 interface Answer {
     answerContent: string;
@@ -31,6 +32,8 @@ const Quizzes: FC = () => {
     const [selectedQuiz, setSelectedQuiz] = useState<Quiz | null>(null);
     const [modalIsOpen, setModalIsOpen] = useState(false);
     const [solveModalIsOpen, setSolveModalIsOpen] = useState(false);
+    // const [bestScore, setBestScore] = useState<number | null>(null);
+    // const [hasFetchedHiScore, setHasFetchedHiScore] = useState<{ [userId: number]: { [quizId: number]: boolean } }>({});
 
     useEffect(() => {
         api.get("/quizzes/correct")
@@ -44,6 +47,81 @@ const Quizzes: FC = () => {
             });
 
     }, []);
+
+    // function useFetchData(selectedQuiz) {
+    //     const [data1, setData] = React.useState([]);
+    //
+    //     const localStorageItem = localStorage.getItem("account");
+    //     const parsedData = JSON.parse(localStorageItem);
+    //     const userID = parsedData.id;
+    //
+    //     useEffect(() => {
+    //         api.get(`/quizzes/id/${selectedQuiz.quizID}/user-id/${userID}`)
+    //             .then((responseJson) => {
+    //                 setData(responseJson.data);
+    //             })
+    //             .catch((error) => {
+    //                 console.error(error);
+    //             });
+    //     }, []);
+    //
+    //     return {data1};
+    // }
+
+
+    // useEffect(() => {
+    //     const localStorageItem = localStorage.getItem("account");
+    //     if (localStorageItem) {
+    //         // @ts-ignore
+    //         const parsedData = JSON.parse(localStorageItem);
+    //         const userID = parsedData.id;
+    //         console.log(hasFetchedHiScore[userID])
+    //         if (!hasFetchedHiScore[userID]) {
+    //             const updatedFetchStatus = { ...hasFetchedHiScore };
+    //             if (selectedQuiz && !updatedFetchStatus[userID]?.[selectedQuiz.quizID]) {
+    //                 api.get(`/quizzes/id/${selectedQuiz.quizID}/user-id/${userID}`)
+    //                     .then((response) => {
+    //                         setBestScore(response.data || null);
+    //                         updatedFetchStatus[userID] = {
+    //                             ...(updatedFetchStatus[userID] || {}),
+    //                             [selectedQuiz.quizID]: true,
+    //                         };
+    //
+    //                         setHasFetchedHiScore(updatedFetchStatus);
+    //                     })
+    //                     .catch((error) => {
+    //                         console.error("Error fetching best score:", error);
+    //                         setBestScore(null);
+    //                     });
+    //             }
+    //         }
+    //     }
+    // }, [selectedQuiz, hasFetchedHiScore]);
+    //
+    // useEffect(() => {
+    //     const abortController = new AbortController();
+    //     const localStorageItem = localStorage.getItem("account");
+    //     if (localStorageItem) {
+    //         // @ts-ignore
+    //         const parsedData = JSON.parse(localStorageItem);
+    //         const userID = parsedData.id;
+    //
+    //         if (userID != null) {
+    //             if (selectedQuiz) {
+    //                 api.get(`/quizzes/id/${selectedQuiz.quizID}/user-id/${userID}`, {signal: abortController.signal})
+    //                     .then((response) => {
+    //                         setBestScore(response.data || null);
+    //                     })
+    //                     .catch((error) => {
+    //                         if (!abortController.signal.aborted) {
+    //                             console.error('Error:', error.message);
+    //                         }
+    //                         setBestScore(null);
+    //                     });
+    //             }
+    //         }
+    //     }
+    // }, [selectedQuiz])
 
     const openModal = (quiz: Quiz) => {
         setSelectedQuiz(quiz);
@@ -90,7 +168,7 @@ const Quizzes: FC = () => {
                     }),
                 };
             }) || [
-                { questionContent: "", questionAnswers: [{ answerContent: "", correct: false }] },
+                {questionContent: "", questionAnswers: [{answerContent: "", correct: false}]},
             ]
         );
 
@@ -224,7 +302,6 @@ const Quizzes: FC = () => {
                     <p>Brak Quizów.</p>
                 )}
             </div>
-
             <Modal
                 isOpen={modalIsOpen}
                 onRequestClose={closeModal}
@@ -237,7 +314,11 @@ const Quizzes: FC = () => {
                         <h2 style={styles.headingStyles}>{selectedQuiz.quizTitle}</h2>
                         <strong>Twórca:</strong> {selectedQuiz.quizCreatorName}<br/>
                         <strong>Data Otwarcia:</strong> {formatOpeningDate(selectedQuiz.quizOpenDate)}<br/>
+                        {/*<strong>Twój Najlepszy Wynik: </strong>{1}<br/><br/>*/}
+                        {/*<strong>Twój Najlepszy Wynik: </strong>{bestScore}<br/><br/>*/}
                         <strong>Twój Najlepszy Wynik: </strong>{1}<br/><br/>
+                        {/*<strong>Twój Najlepszy*/}
+                        {/*    Wynik: </strong>{bestScore !== null ? bestScore : "Brak danych"}<br/><br/>*/}
                         <button style={{
                             ...styles.buttonStyles2,
                             position: 'absolute',

@@ -51,8 +51,17 @@ const AddQuizModal: React.FC<AddQuizProps> = ({postNewQuiz, setAddModalIsOpen}) 
 
     const handleAnswerFormChange = (event, questionIndex, answerIndex) => {
         let data = [...formFieldsQuestion];
+
         if (event.target.type === "checkbox") {
             data[questionIndex].questionAnswers[answerIndex][event.target.name] = event.target.checked;
+
+            if (event.target.checked) {
+                data[questionIndex].questionAnswers.forEach((answer, index) => {
+                    if (index !== answerIndex) {
+                        answer.correct = false;
+                    }
+                });
+            }
         } else {
             data[questionIndex].questionAnswers[answerIndex][event.target.name] = event.target.value;
         }

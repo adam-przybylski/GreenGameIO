@@ -4,6 +4,7 @@ import {api} from "../../../api/api.config.ts";
 import * as styles from "./styles";
 import AddQuizModal from "../../../components/modals/AddQuizModal.tsx";
 import EditQuizModal from "../../../components/modals/EditQuizModal.tsx";
+import {FaCheck} from "react-icons/fa";
 
 interface Answer {
     answerContent: string;
@@ -87,10 +88,6 @@ const AdminQuizzes: FC = () => {
             listOfQuestions: updatedQuiz.listOfQuestions
         }
 
-        // console.log(updatedQuiz.quizID)
-        // console.table(updatedQuiz.listOfQuestions)
-        // console.log(quizModifiedQuestions)
-
         try {
             await api.put(`/quizzes/id/${Number(updatedQuiz.quizID)}/modify-general`, quizGeneralInfo)
         } catch (error) {
@@ -110,46 +107,6 @@ const AdminQuizzes: FC = () => {
     const closeEditQuizModal = () => {
         setSelectedQuiz(null);
         setEditModalIsOpen(false);
-    };
-    const addSampleQuiz = async () => {
-        try {
-
-            const answerYes: Answer = {
-                answerContent: "Tak", correct: true
-            }
-
-            const answerNo: Answer = {
-                answerContent: "Nie", correct: false
-            }
-
-            const question1: Question = {
-                questionContent: "Czy piwo jest dobre?",
-                listOfAnswers: [answerYes, answerNo],
-            }
-
-            const question2: Question = {
-                questionContent: "Czy wino jest dobre?",
-                listOfAnswers: [answerYes, answerNo],
-            }
-
-            const newTestQuiz: Quiz = {
-                quizID: 0,
-                quizTitle: "ReactAddQuizTest3",
-                quizCreatorName: "Tomek B",
-                quizOpenDate: new Date("2024-01-01T13:09:35.394Z"),
-                listOfQuestions: [question1, question2]
-            };
-
-            const responseQuiz = await api.post("/quizzes", newTestQuiz);
-
-            if (responseQuiz.status === 201) {
-                setQuizzes(prevQuizzes => [...(prevQuizzes || []), responseQuiz.data]);
-            } else {
-                console.error('Failed to add quiz:', responseQuiz.statusText);
-            }
-        } catch (error) {
-            console.error('Error adding quiz:', error);
-        }
     };
 
     const deleteQuiz = (quiz: Quiz) => {
@@ -182,11 +139,10 @@ const AdminQuizzes: FC = () => {
                 <button
                     style={{
                         ...styles.buttonStyles,
-                        backgroundColor: 'green',
                     }}
                     onClick={() => setAddModalIsOpen(true)}
                 >
-                    Dodaj Quiz
+                    <strong>Utwórz Nowy Quiz</strong>
                 </button>
             </div>
 
@@ -198,38 +154,39 @@ const AdminQuizzes: FC = () => {
                             onClick={() => openSelectedQuizModal(quiz)}
                             style={styles.squareStyles}
                         >
+                            <div style={{textAlign: 'center'}}>
+                                <h5 style={styles.headingStyles3}>{quiz.quizTitle}</h5>
+                            </div>
+                            <strong>Twórca:</strong> {quiz.quizCreatorName}<br/>
+                            <strong>Data Otwarcia:</strong> {formatOpeningDate(quiz.quizOpenDate)}<br/><br/>
+                            <strong>Liczba pytań:</strong> {quiz.listOfQuestions.length}<br/>
                             <button
                                 style={{
                                     ...styles.buttonStylesClose,
                                     backgroundColor: 'red',
-                                    marginTop: '10px'
+                                    marginTop: '20px',
+                                    marginLeft: '15%'
                                 }}
                                 onClick={(e) => {
                                     e.stopPropagation();
                                     deleteQuiz(quiz);
                                 }}
                             >
-                                Usuń
+                                <strong>Usuń</strong>
                             </button>
                             <button
                                 style={{
                                     ...styles.buttonStylesClose,
-                                    backgroundColor: 'blue',
-                                    marginTop: '10px',
+                                    marginTop: '20px',
+                                    marginLeft: '24%',
                                 }}
                                 onClick={(e) => {
                                     e.stopPropagation();
                                     openEditQuizModal(quiz);
                                 }}
                             >
-                                Edytuj
+                                <strong>Edytuj</strong>
                             </button>
-                            <div style={{textAlign: 'center'}}>
-                                <strong>{quiz.quizTitle}</strong><br/><br/>
-                            </div>
-                            <strong>Twórca:</strong> {quiz.quizCreatorName}<br/>
-                            <strong>Data Otwarcia:</strong> {formatOpeningDate(quiz.quizOpenDate)}<br/><br/>
-                            <strong>Liczba pytań:</strong> {quiz.listOfQuestions.length}<br/>
                         </div>
                     ))
                 ) : (
@@ -256,7 +213,16 @@ const AdminQuizzes: FC = () => {
                                     <strong>Odpowiedzi:</strong>
                                     <ul>
                                         {question.listOfAnswers.map(answer => (
-                                            <li key={answer.answerContent}>
+                                            <li
+                                                key={answer.answerContent}
+                                                style={{
+                                                    color: answer.correct ? 'green' : 'black',
+                                                    display: 'flex',
+                                                    alignItems: 'center'
+                                                }}
+                                            >
+                                                {answer.correct && <FaCheck
+                                                    style={{marginRight: '5px'}}/>}
                                                 {answer.answerContent}
                                             </li>
                                         ))}
@@ -272,7 +238,7 @@ const AdminQuizzes: FC = () => {
                             left: '50%',
                             transform: 'translateX(-50%)'
                         }} onClick={closeSelectedQuizModal}>
-                            Zamknij
+                            <strong>Zamknij</strong>
                         </button>
                     </div>
                 )}
@@ -298,7 +264,7 @@ const AdminQuizzes: FC = () => {
                                 }}
                                 onClick={confirmDeleteQuiz}
                             >
-                                Tak, usuń
+                                <strong>Tak, usuń</strong>
                             </button>
                             <button
                                 style={{
@@ -308,7 +274,7 @@ const AdminQuizzes: FC = () => {
                                 }}
                                 onClick={() => setDeleteConfirmationModalIsOpen(false)}
                             >
-                                Anuluj
+                                <strong>Anuluj</strong>
                             </button>
                         </div>
                     )}
@@ -321,20 +287,20 @@ const AdminQuizzes: FC = () => {
                 style={styles.bigModalStyles}
                 ariaHideApp={false}
             >
-                <h2 style={styles.headingStyles}>Dodaj Quiz</h2>
+                <h2 style={styles.headingStyles}>Utwórz Nowy Quiz</h2>
                 <h3 style={styles.headingStyles2}>Uzupełnij dane o quizie:</h3>
                 <AddQuizModal postNewQuiz={postNewQuiz} setAddModalIsOpen={setAddModalIsOpen}/>
                 <button
                     style={{
                         ...styles.buttonStyles,
                         position: 'absolute',
-                        bottom: '10px',
+                        bottom: '20px',
                         left: '50%',
                         transform: 'translateX(-50%)',
                     }}
                     onClick={() => setAddModalIsOpen(false)}
                 >
-                    Zamknij
+                    <strong>Zamknij</strong>
                 </button>
             </Modal>
             <Modal
@@ -358,19 +324,9 @@ const AdminQuizzes: FC = () => {
                     }}
                     onClick={() => setEditModalIsOpen(false)}
                 >
-                    Zamknij
+                    <strong>Zamknij</strong>
                 </button>
             </Modal>
-            <button
-                style={{
-                    ...styles.buttonStyles,
-                    backgroundColor: 'orange',
-                    marginLeft: '10px',
-                }}
-                onClick={addSampleQuiz}
-            >
-                Add Test Quiz
-            </button>
         </div>
     );
 };
