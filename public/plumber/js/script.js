@@ -208,9 +208,8 @@ class PipesGame {
         this.addExperience();
         clearInterval(this.intervalId)
         let bestScore = 0;
-        let scoreCopy = this.score;
+        this.scoreCopy = this.score;
         if(this.userId !== null){
-            console.log(this.userId);
             let xhttp = new XMLHttpRequest();
             xhttp.open("GET", "http://localhost:8081/api/v1/games/plumber/" + this.userId, true);
             xhttp.timeout = 2000;
@@ -219,7 +218,7 @@ class PipesGame {
                 if (xhttp.status === 200) {
                     bestScore = xhttp.responseText;
                     document.getElementById("showBestScore").innerText = bestScore;
-                    if (scoreCopy > bestScore) document.getElementById("saveButton").disabled = false;
+                    if (this.scoreCopy > bestScore) document.getElementById("saveButton").disabled = false;
                 } else if (xhttp.status === 500) {
                     document.getElementById("saveButton").disabled = false;
                 }
@@ -244,6 +243,8 @@ class PipesGame {
     }
 
     saveScore() {
+        console.log(this.score);
+        console.log(this.scoreCopy);
         if(this.userId === null) return;
         let xhttp = new XMLHttpRequest();
         xhttp.open("POST", "http://localhost:8081/api/v1/games/plumber/" + this.userId + "/" + this.scoreCopy, true);
@@ -275,6 +276,7 @@ class PipesGame {
         this.pipes = [];
         this.pipesHTML.textContent = '';
         this.score = 0;
+        this.scoreHTML.textContent="0";
         this.initGame();
     }
 }
