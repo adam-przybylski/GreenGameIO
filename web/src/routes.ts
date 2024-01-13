@@ -8,6 +8,7 @@ import GamePage from "./pages/games/game";
 import FriendPage from "./pages/friend-module";
 import AwardsPage from "./pages/awards";
 import Quizzes from "./pages/quiz/userQuiz";
+import Account from "./pages/account";
 
 export const UnprotectedRoutes = [
   { path: "/", Component: MainPage },
@@ -15,11 +16,9 @@ export const UnprotectedRoutes = [
   { path: "/user/notifications", Component: UserNotifications },
   { path: "/games", Component: GamesPage },
   { path: "/games/:name", Component: GamePage },
-  {path: "/awards", Component: AwardsPage},
-  {
-    path: "/quizzes",
-    Component: Quizzes,
-  }
+  { path: "/awards", Component: AwardsPage },
+  { path: "/quizzes", Component: Quizzes, },
+  { path: "/account", Component: Account },
 ] satisfies RouteObject[];
 export const ProtectedRoutes = [
   { path: ":id/friends", Component: FriendPage },
