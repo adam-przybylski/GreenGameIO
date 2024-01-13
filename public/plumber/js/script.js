@@ -214,7 +214,6 @@ class PipesGame {
             xhttp.open("GET", "http://localhost:8081/api/v1/games/plumber/" + this.userId, true);
             xhttp.timeout = 2000;
             xhttp.onload = () => {
-                console.log(xhttp);
                 if (xhttp.status === 200) {
                     bestScore = xhttp.responseText;
                     document.getElementById("showBestScore").innerText = bestScore;
@@ -243,8 +242,6 @@ class PipesGame {
     }
 
     saveScore() {
-        console.log(this.score);
-        console.log(this.scoreCopy);
         if(this.userId === null) return;
         let xhttp = new XMLHttpRequest();
         xhttp.open("POST", "http://localhost:8081/api/v1/games/plumber/" + this.userId + "/" + this.scoreCopy, true);
