@@ -13,9 +13,11 @@ import io.greengame.greengameio.friendmodule.repositories.ChatRepository;
 import io.greengame.greengameio.friendmodule.repositories.UserFMRepository;
 import io.greengame.greengameio.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.nio.CharBuffer;
 import java.util.List;
 
 @Service
@@ -27,6 +29,7 @@ public class UserService {
     private final UserFMRepository userFMRepository;
     private final ChatRepository chatRepository;
     private final AbstractChatHolderRepository abstractChatHolderRepository;
+    private final PasswordEncoder passwordEncoder;
 
     public User createUser(User user) {
         User user1 = userRepository.save(user);
@@ -63,6 +66,12 @@ public class UserService {
     public User updateUsername(Long id, String username) {
         User user = userRepository.findById(id).orElseThrow(() -> new RuntimeException("User not found."));
         user.setUsername(username);
+        return userRepository.save(user);
+    }
+
+    public User updatePassword(Long id, String password) {
+        User user = userRepository.findById(id).orElseThrow(() -> new RuntimeException("User not found."));
+        user.setPassword(passwordEncoder.encode(CharBuffer.wrap(password)));
         return userRepository.save(user);
     }
 

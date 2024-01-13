@@ -58,6 +58,11 @@ public class UserController {
         return userService.updateUsername(id, username.get("username"));
     }
 
+    @PatchMapping("/id/{id}/password")
+    User updatePassword(@PathVariable Long id, @RequestBody Map<String, String> password) {
+        return userService.updatePassword(id, password.get("password"));
+    }
+
     @PutMapping("/id/{id}")
     User updateUser(@PathVariable Long id, @RequestBody UpdateUserDto user) {
         return userService.updateUser(id, user);

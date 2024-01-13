@@ -1,10 +1,13 @@
 import { FC, useEffect, useState } from "react";
 import { api } from "../../../api/api.config";
 import { AccountType } from "../../../types/accountType";
+import NewPasswordModal from "../../../components/modals/NewPasswordModal";
 
 const AdminUsers: FC = () => {
 
     const [users, setUsers] = useState<AccountType[]>([]);
+    const [isOpen, setIsOpen] = useState(false);
+    const [id, setId] = useState<string>('');
 
     useEffect(() => {
         const fetchUsers = async () => {
@@ -78,7 +81,11 @@ const AdminUsers: FC = () => {
                                 onClick={() => {
                                     handleUpdate(user.id);
                                 }}>Aktualizuj</td>
-                            <td className="border hover:cursor-pointer hover:text-green-500 border-slate-700 text-center">Ustaw nowe hasło</td>
+                            <td className="border hover:cursor-pointer hover:text-green-500 border-slate-700 text-center"
+                                onClick={() => {
+                                    setId(user.id);
+                                    setIsOpen(true);
+                                }}>Ustaw nowe hasło</td>
                             <td className="border hover:cursor-pointer hover:text-green-500 border-slate-700 text-center"
                                 onClick={() => {
                                     deleteUser(user.username);
@@ -87,6 +94,7 @@ const AdminUsers: FC = () => {
                     ))}
                 </tbody>
             </table>
+            {isOpen && <NewPasswordModal id={id} reset={() => setIsOpen(false)} />}
         </div>
     );
 }
