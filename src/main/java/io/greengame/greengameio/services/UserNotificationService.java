@@ -19,17 +19,19 @@ public class UserNotificationService {
         return repository.findAllByUser(user);
     }
 
-    public UserNotification getNewest(User user) {
+    public List<UserNotification> getNewest(User user) {
         List<UserNotification> notifications = repository.findAllByUserAndSended(user, false);
 
         if (notifications.isEmpty()) {
             return null;
         }
 
-        UserNotification userNotification = notifications.get(0);
-        userNotification.setSended(true);
-        repository.save(userNotification);
-        return userNotification;
+        notifications.forEach(notification -> {
+            notification.setSended(true);
+            repository.save(notification);
+        });
+
+        return notifications;
     }
 
     public UserNotification create(User user, UserNotification userNotification) {

@@ -35,7 +35,7 @@ public class UserNotificationController {
     }
 
     @GetMapping("/newest")
-    public UserNotification getNewest(@RequestHeader("Authorization") String complexToken) {
+    public List<UserNotification> getNewest(@RequestHeader("Authorization") String complexToken) {
         User user = getUserFromComplexToken(complexToken);
         return userNotificationService.getNewest(user);
     }
