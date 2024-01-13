@@ -23,7 +23,7 @@ public class UserController {
     private final UserService userService;
 
     @DeleteMapping("/username/{username}")
-    long deleteUser(@PathVariable String username) {
+    boolean deleteUser(@PathVariable String username) {
         return userService.deleteUser(username);
     }
 

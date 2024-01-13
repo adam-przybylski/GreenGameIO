@@ -1,5 +1,6 @@
 package io.greengame.greengameio.controller;
 
+import io.greengame.greengameio.exceptions.AccountIsNotEnableException;
 import io.greengame.greengameio.exceptions.InvalidPasswordException;
 import io.greengame.greengameio.exceptions.LoginAlreadyExistsException;
 import io.greengame.greengameio.exceptions.UnknownUserException;
@@ -24,5 +25,10 @@ public class AuthenticationExceptionsHandler {
     @ExceptionHandler(UnknownUserException.class)
     public ResponseEntity<String> handleUnknownUserException(UnknownUserException e) {
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+    }
+
+    @ExceptionHandler(AccountIsNotEnableException.class)
+    public ResponseEntity<String> handleAccountIsNotEnableException(AccountIsNotEnableException e) {
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
     }
 }

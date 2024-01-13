@@ -4,10 +4,7 @@ import io.greengame.greengameio.dtos.LogInDto;
 import io.greengame.greengameio.dtos.SignUpDto;
 import io.greengame.greengameio.dtos.UserDto;
 import io.greengame.greengameio.dtos.UserMapper;
-import io.greengame.greengameio.exceptions.InvalidPasswordException;
-import io.greengame.greengameio.exceptions.LoginAlreadyExistsException;
-import io.greengame.greengameio.exceptions.Messages;
-import io.greengame.greengameio.exceptions.UnknownUserException;
+import io.greengame.greengameio.exceptions.*;
 import io.greengame.greengameio.repository.UserRepository;
 import io.greengame.greengameio.entity.User;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -52,6 +49,9 @@ public class AuthenticationService {
     public  UserDto loginUser(LogInDto logInDto) {
         User user = userRepository.findByUsername(logInDto.getLogin())
                 .orElseThrow(() -> new UnknownUserException(Messages.UNKNOWN_USER));
+        if(!user.isEnabled()) {
+            throw new AccountIsNotEnableException(Messages.ACCOUNT_IS_NOT_ENABLE);
+        }
 
         if (passwordEncoder.matches(CharBuffer.wrap(logInDto.getPassword()), user.getPassword())) {
             return userMapper.toUserDto(user);

@@ -33,9 +33,11 @@ public class UserService {
         return user1;
     }
 
-    public long deleteUser(String username) {
+    public boolean deleteUser(String username) {
         User user = userRepository.findByUsername(username).orElseThrow();
-        return userRepository.deleteByUsername(username);
+        user.setEnabled(false);
+        userRepository.save(user);
+        return user.isEnabled();
     }
 
     public List<User> getUsers() {
