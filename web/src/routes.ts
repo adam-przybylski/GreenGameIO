@@ -11,21 +11,20 @@ import Quizzes from "./pages/quiz/userQuiz";
 
 export const UnprotectedRoutes = [
   { path: "/", Component: MainPage },
-  { path: "/notifications", Component: Notifications },
-  { path: "/user/notifications", Component: UserNotifications },
   { path: "/games", Component: GamesPage },
   { path: "/games/:name", Component: GamePage },
-  {path: "/awards", Component: AwardsPage},
+  { path: "/awards", Component: AwardsPage },
+  { path: "/admin/notifications", Component: Notifications },
   {
     path: "/quizzes",
     Component: Quizzes,
-  }
+  },
 ] satisfies RouteObject[];
 export const ProtectedRoutes = [
   { path: ":id/friends", Component: FriendPage },
+  { path: "/user/notifications", Component: UserNotifications },
 ] satisfies RouteObject[];
 
 export const AdminRoutes = [
   { path: "/admin", Component: AdminLayout },
-
 ] satisfies RouteObject[];

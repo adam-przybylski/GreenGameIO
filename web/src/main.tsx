@@ -15,7 +15,6 @@ import AuthenticationLayout from "./pages/AuthenticationLayout";
 import AdminLayout from "./pages/admin/AdminLayout";
 import UserContextProvider from "./context/userContext";
 
-
 const router = createBrowserRouter([
   {
     path: "/",

@@ -2,9 +2,13 @@ import { FC, useEffect, useState } from "react";
 import { api } from "../../api/api.config";
 import { UserNotification } from "../../types/UserNotification";
 import Button from "../../components/Button";
+import NotificationPreferencesModal from "../../components/modals/NotificationPreferencesModal";
+import Notification from "../../components/Notification";
 
 const UserNotifications: FC = () => {
   const [data, setData] = useState<UserNotification[]>([]);
+  const [showEditPreferences, setShowEditPreferences] =
+    useState<boolean>(false);
 
   const handleGet = () => {
     api.get("/user/notifications").then((res) => {
@@ -23,12 +27,23 @@ const UserNotifications: FC = () => {
       });
   };
 
+  const closePreferencesModal = () => {
+    setShowEditPreferences(false);
+  };
+
   useEffect(() => {
     handleGet();
   }, []);
 
   return (
     <>
+      <div className="flex justify-center m-3">
+        <Button
+          label="Edytuj preferencje powiadomień"
+          onClick={() => setShowEditPreferences(true)}
+          className="bg-green-200 p-1 rounded text-black  mr-1 hover:text-white ease-in-out duration-100"
+        />
+      </div>
       <div className="flex justify-between font-bold p-2 bg-nice-green rounded-t-sm text-black">
         <div className="basis-3/12 text-center">TYTUŁ</div>
         <div className="basis-full text-center">OPIS</div>
@@ -60,6 +75,9 @@ const UserNotifications: FC = () => {
             </div>
           ))}
       </div>
+      {showEditPreferences && (
+        <NotificationPreferencesModal reset={closePreferencesModal} />
+      )}
     </>
   );
 };

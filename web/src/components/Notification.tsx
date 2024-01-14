@@ -9,7 +9,6 @@ const Notification: FC = () => {
     api
       .get("/user/notifications/newest")
       .then((res) => {
-        console.log(res.data);
         setData(res.data);
       })
       .finally(notify);
@@ -19,7 +18,6 @@ const Notification: FC = () => {
     if (data.length == 0) {
       return;
     }
-    console.log(data);
     data.map((notifiaction) => {
       toast(notifiaction.title + "\n\n" + notifiaction.content, {
         icon: "🔔",
