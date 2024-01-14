@@ -3,7 +3,6 @@ import { api } from "../../api/api.config";
 import { UserNotification } from "../../types/UserNotification";
 import Button from "../../components/Button";
 import NotificationPreferencesModal from "../../components/modals/NotificationPreferencesModal";
-import Notification from "../../components/Notification";
 
 const UserNotifications: FC = () => {
   const [data, setData] = useState<UserNotification[]>([]);
