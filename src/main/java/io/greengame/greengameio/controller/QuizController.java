@@ -12,6 +12,7 @@ import io.greengame.greengameio.dtos.quizzes.modification_dtos.QuizQuestionModif
 import io.greengame.greengameio.dtos.quizzes.output_dtos.QuizOutputDTO;
 import io.greengame.greengameio.dtos.quizzes.output_dtos.QuizWithCorrectAnswersDTO;
 import io.greengame.greengameio.entity.*;
+import io.greengame.greengameio.exceptions.hiScore.HiScoreNotFoundException;
 import io.greengame.greengameio.exceptions.quiz.QuizNotFoundException;
 import io.greengame.greengameio.services.*;
 import jakarta.transaction.Transactional;
@@ -112,8 +113,13 @@ public class QuizController {
         try {
             User user = userService.getUserById(userID);
             Quiz quiz = quizService.getQuiz(quizID);
-            HiScore hiScore = hiScoreService.getHighScoreByUserAndQuiz(user, quiz);
-            return ResponseEntity.ok().contentType(MediaType.APPLICATION_JSON).body(hiScore.getHiScore());
+            HiScore hiScore;
+            try {
+                hiScore = hiScoreService.getHighScoreByUserAndQuiz(user, quiz);
+                return ResponseEntity.ok().contentType(MediaType.APPLICATION_JSON).body(hiScore.getHiScore());
+            } catch (HiScoreNotFoundException exception) {
+                return ResponseEntity.badRequest().contentType(MediaType.APPLICATION_JSON).body(exception.getMessage());
+            }
         } catch (QuizNotFoundException exception) {
             return ResponseEntity.badRequest().contentType(MediaType.APPLICATION_JSON).body(exception.getMessage());
         }
@@ -212,16 +218,21 @@ public class QuizController {
             User user = userService.getUserById(quizCheckDTO.getUserID());
             Quiz quiz = quizService.getQuiz(quizID);
 
-            HiScore hiScore = hiScoreService.getHighScoreByUserAndQuiz(user, quiz);
-            if (hiScore == null) {
-                HiScore newHiScore = new HiScore(quiz, user, numberOfCorrectAnswers);
+            HiScore hiScore;
+            HiScore newHiScore;
+            try {
+                hiScore = hiScoreService.getHighScoreByUserAndQuiz(user, quiz);
+                if (hiScore.getHiScore() < numberOfCorrectAnswers) {
+                    hiScore.setHiScore(numberOfCorrectAnswers);
+                    hiScoreService.updateHiScore(hiScore);
+                }
+                newHiScore = hiScoreService.getHighScoreByUserAndQuiz(user, quiz);
+            } catch (HiScoreNotFoundException exception) {
+                newHiScore = new HiScore(quiz, user, numberOfCorrectAnswers);
                 hiScoreService.createHiScore(newHiScore);
-            } else if (hiScore.getHiScore() < numberOfCorrectAnswers) {
-                hiScore.setHiScore(numberOfCorrectAnswers);
-                hiScoreService.updateHiScore(hiScore);
             }
 
-            return ResponseEntity.ok().contentType(MediaType.APPLICATION_JSON).body(HiScoreMapper.toHiScoreOutputDTO(hiScoreService.getHighScoreByUserAndQuiz(user, quiz), numberOfCorrectAnswers));
+            return ResponseEntity.ok().contentType(MediaType.APPLICATION_JSON).body(HiScoreMapper.toHiScoreOutputDTO(newHiScore, numberOfCorrectAnswers));
         } catch (QuizNotFoundException exception) {
             return ResponseEntity.badRequest().contentType(MediaType.APPLICATION_JSON).body(exception.getMessage());
         }

@@ -24,8 +24,13 @@ public class HiScoreService {
 
     // Read
 
-    public HiScore getHighScoreByUserAndQuiz(User user, Quiz quiz) {
-        return hiScoreRepository.getHiScoreByUserAndQuiz(user, quiz);
+    public HiScore getHighScoreByUserAndQuiz(User user, Quiz quiz) throws HiScoreNotFoundException {
+        HiScore hiScore = hiScoreRepository.getHiScoreByUserAndQuiz(user, quiz);
+        if (hiScore != null) {
+            return hiScore;
+        } else {
+            throw new HiScoreNotFoundException("High score could not be found!");
+        }
     }
 
     public List<HiScore> getListOfHighScoresByUser(User user, int numberOfScores) {
