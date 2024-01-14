@@ -22,15 +22,16 @@ const NotificationPreferencesModal: FC<Props> = ({ reset }) => {
 
   const methods = useForm<UserPreferences>({
     values: {
-      getPopUpNotification: data?.getPopUpNotification || true,
-      getEmailNotification: data?.getEmailNotification || true,
-      getEventNotification: data?.getEventNotification || true,
+      getPopUpNotification: data?.getPopUpNotification ?? true,
+      getEmailNotification: data?.getEmailNotification ?? true,
+      getEventNotification: data?.getEventNotification ?? true,
     },
   });
 
   const { handleSubmit } = methods;
   const onSubmit = handleSubmit((values) => {
-    console.log(values);
+    console.log(data);
+    api.put("/user/preferences", values);
     setIsOpen(false);
     reset();
   });
