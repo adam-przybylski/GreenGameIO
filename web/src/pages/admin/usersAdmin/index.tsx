@@ -60,6 +60,7 @@ const AdminUsers: FC = () => {
                     <tr>
                         <th className="border border-slate-600 px-5 py-3">Nazwa użytkownika</th>
                         <th className="border border-slate-600 px-5 py-3">Email</th>
+                        <th colSpan={3}> Actions</th>
                     </tr>
                 </thead>
                 <tbody className="bg-neutral-300">
