@@ -28,7 +28,7 @@ public class ResetPasswordService {
 
         String token = authProvider.generatePasswordResetToken(user.getUsername());
 
-        String resetLink = "http://your-app-url/reset-password?token=" + token;
+        String resetLink = "http://localhost:3000/change-password/" + token;
         String emailBody = "Click the following link to reset your password: " + resetLink;
 
         emailService.sendEmail(email, "Password Reset", emailBody);

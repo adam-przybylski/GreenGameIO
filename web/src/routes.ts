@@ -10,6 +10,7 @@ import AwardsPage from "./pages/awards";
 import Quizzes from "./pages/quiz/userQuiz";
 import Account from "./pages/account";
 
+
 export const UnprotectedRoutes = [
   { path: "/", Component: MainPage },
   { path: "/notifications", Component: Notifications },
@@ -19,6 +20,7 @@ export const UnprotectedRoutes = [
   { path: "/awards", Component: AwardsPage },
   { path: "/quizzes", Component: Quizzes, },
   { path: "/account", Component: Account },
+
 ] satisfies RouteObject[];
 export const ProtectedRoutes = [
   { path: ":id/friends", Component: FriendPage },
