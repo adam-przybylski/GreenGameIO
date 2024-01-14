@@ -2,7 +2,9 @@ package io.greengame.greengameio.services;
 
 import io.greengame.greengameio.entity.User;
 import io.greengame.greengameio.entity.UserNotification;
+import io.greengame.greengameio.entity.UserPreferences;
 import io.greengame.greengameio.repository.UserNotificationRepository;
+import io.greengame.greengameio.repository.UserPreferencesRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -14,6 +16,7 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class UserNotificationService {
     private final UserNotificationRepository repository;
+    private final UserPreferencesService preferencesService;
 
     public List<UserNotification> getByUserId(User user) {
         return repository.findAllByUser(user);
@@ -30,6 +33,12 @@ public class UserNotificationService {
             notification.setSended(true);
             repository.save(notification);
         });
+
+        UserPreferences preferences = preferencesService.getUserPreferencesByUser(user);
+
+        if (!preferences.isGetPopUpNotification()) {
+            return null;
+        }
 
         return notifications;
     }
