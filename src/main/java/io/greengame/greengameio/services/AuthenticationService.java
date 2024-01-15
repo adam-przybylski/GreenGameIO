@@ -11,6 +11,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.nio.CharBuffer;
+import java.util.Arrays;
 import java.util.Optional;
 
 @Service
@@ -27,7 +28,8 @@ public class AuthenticationService {
     }
 
     public UserDto findByLogin(String username) {
-        User user = userRepository.findByUsername(username).orElseThrow(() -> new RuntimeException("User not found."));
+        User user = userRepository.findByUsername(username)
+                .orElseThrow(() -> new UnknownUserException(Messages.UNKNOWN_USER));
         return userMapper.toUserDto(user);
     }
 
@@ -36,6 +38,10 @@ public class AuthenticationService {
 
         if (optionalUser.isPresent()) {
             throw new LoginAlreadyExistsException(Messages.LOGIN_ALREADY_EXISTS);
+        }
+
+        if(!validatePassword(Arrays.toString(userDto.getPassword()))) {
+            throw new PasswordIsToWeekException(Messages.PASSWORD_IS_TO_WEEK);
         }
 
         User user = userMapper.signUpToUser(userDto);
@@ -57,5 +63,25 @@ public class AuthenticationService {
             return userMapper.toUserDto(user);
         }
         throw new InvalidPasswordException(Messages.INVALID_PASSWORD);
+    }
+
+    private boolean validatePassword(String password) {
+        if(password.length() < 8) {
+            return false;
+        }
+
+        boolean containsLowerCase  = false;
+        boolean containsUpperCase  = false;
+
+        for(int i = 0; i < password.length(); i++) {
+            if(Character.isLowerCase(password.charAt(i))) {
+                containsLowerCase = true;
+            }
+            if(Character.isUpperCase(password.charAt(i))) {
+                containsUpperCase = true;
+            }
+        }
+
+        return containsLowerCase && containsUpperCase;
     }
 }

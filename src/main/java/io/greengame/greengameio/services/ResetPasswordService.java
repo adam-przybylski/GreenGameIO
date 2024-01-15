@@ -1,7 +1,8 @@
 package io.greengame.greengameio.services;
 
 import io.greengame.greengameio.entity.User;
-import io.greengame.greengameio.friendmodule.exceptions.NotFoundException;
+import io.greengame.greengameio.exceptions.Messages;
+import io.greengame.greengameio.exceptions.UnknownUserException;
 import io.greengame.greengameio.security.UserAuthProvider;
 import org.springframework.stereotype.Service;
 
@@ -23,7 +24,7 @@ public class ResetPasswordService {
     public void sendPasswordResetEmail(String email) {
         User user = userService.getUserByEmail(email);
         if (user == null) {
-            throw new NotFoundException("User not found");
+            throw new UnknownUserException(Messages.USER_WITH_GIVEN_EMAIL_DOES_NOT_EXIST);
         }
 
         String token = authProvider.generatePasswordResetToken(user.getUsername());

@@ -2,7 +2,6 @@ package io.greengame.greengameio.controller;
 
 import io.greengame.greengameio.entity.User;
 import io.greengame.greengameio.security.UserAuthProvider;
-import io.greengame.greengameio.services.AuthenticationService;
 import io.greengame.greengameio.services.UserService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
