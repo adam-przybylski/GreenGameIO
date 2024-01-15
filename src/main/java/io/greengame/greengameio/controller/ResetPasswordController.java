@@ -31,6 +31,7 @@ public class ResetPasswordController {
             User user = userService.getUserByUsername(login);
 
             String newPassword = newPasswordMap.get("newPassword");
+
             userService.updatePassword(user.getId(), newPassword);
 
             return new ResponseEntity<>("Password reset successfully", HttpStatus.OK);

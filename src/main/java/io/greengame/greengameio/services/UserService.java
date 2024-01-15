@@ -5,6 +5,7 @@ import io.greengame.greengameio.dtos.UpdateUserDto;
 import io.greengame.greengameio.entity.Odznaka;
 import io.greengame.greengameio.entity.User;
 import io.greengame.greengameio.exceptions.Messages;
+import io.greengame.greengameio.exceptions.PasswordIsToWeekException;
 import io.greengame.greengameio.exceptions.UnknownUserException;
 import io.greengame.greengameio.exceptions.UsersNotFoundException;
 import io.greengame.greengameio.friendmodule.exceptions.ErrorMessages;
@@ -22,6 +23,8 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.nio.CharBuffer;
 import java.util.List;
+
+import static io.greengame.greengameio.services.PasswordValidator.validatePassword;
 
 @Service
 @RequiredArgsConstructor
@@ -84,6 +87,9 @@ public class UserService {
     public User updatePassword(Long id, String password) {
         User user = userRepository.findById(id)
                 .orElseThrow(() -> new UnknownUserException(Messages.USER_WITH_GIVEN_ID_DOES_NOT_EXIST));
+        if(!validatePassword(password)) {
+            throw new PasswordIsToWeekException(Messages.PASSWORD_IS_TO_WEEK);
+        }
         user.setPassword(passwordEncoder.encode(CharBuffer.wrap(password)));
         return userRepository.save(user);
     }
