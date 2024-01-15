@@ -56,4 +56,14 @@ public class UserAuthProvider {
         DecodedJWT decodedJWT = verifier.verify(token);
         return decodedJWT.getSubject();
     }
+
+    public String generatePasswordResetToken(String login) {
+        LocalDateTime now = LocalDateTime.now();
+        LocalDateTime validity = now.plusMinutes(15);
+        return JWT.create()
+                .withSubject(login)
+                .withIssuedAt(Date.from(now.atZone(ZoneId.systemDefault()).toInstant()))
+                .withExpiresAt(Date.from(validity.atZone(ZoneId.systemDefault()).toInstant()))
+                .sign(Algorithm.HMAC256(secretKey));
+    }
 }

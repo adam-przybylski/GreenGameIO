@@ -1,8 +1,6 @@
 package io.greengame.greengameio.controller;
 
-import io.greengame.greengameio.exceptions.InvalidPasswordException;
-import io.greengame.greengameio.exceptions.LoginAlreadyExistsException;
-import io.greengame.greengameio.exceptions.UnknownUserException;
+import io.greengame.greengameio.exceptions.*;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
@@ -24,5 +22,20 @@ public class AuthenticationExceptionsHandler {
     @ExceptionHandler(UnknownUserException.class)
     public ResponseEntity<String> handleUnknownUserException(UnknownUserException e) {
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+    }
+
+    @ExceptionHandler(AccountIsNotEnableException.class)
+    public ResponseEntity<String> handleAccountIsNotEnableException(AccountIsNotEnableException e) {
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+    }
+
+    @ExceptionHandler(PasswordIsToWeekException.class)
+    public ResponseEntity<String> handlePasswordIsToWeekException(PasswordIsToWeekException e) {
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+    }
+
+    @ExceptionHandler(UsersNotFoundException.class)
+    public ResponseEntity<String> handleUsersNotFoundException(UsersNotFoundException e) {
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).body(e.getMessage());
     }
 }

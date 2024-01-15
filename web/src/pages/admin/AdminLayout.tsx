@@ -9,6 +9,7 @@ import AdminTasks from "./tasksAdmin";
 import LogoutButton from "../../components/LogoutButton";
 import { logoutUser } from "../../api/logout";
 import AdminQuizzes from "./quizzesAdmin";
+import {ToastContainer} from "react-toastify";
 
 const panels = {
   users: <AdminUsers />,
@@ -38,7 +39,20 @@ const AdminLayout: FC = () => {
 
   return (
     <>
+
       <AdministrationNav>
+        <ToastContainer
+            position="top-center"
+            autoClose={3000}
+            hideProgressBar
+            newestOnTop={false}
+            closeOnClick
+            rtl={false}
+            pauseOnFocusLoss
+            draggable
+            pauseOnHover
+            theme="colored"
+        />
         <SubPanel onClick={handleSubPanelClick} message="users">
           <p>Użytkownicy</p>
         </SubPanel>

@@ -14,6 +14,8 @@ import "./index.css";
 import AuthenticationLayout from "./pages/AuthenticationLayout";
 import AdminLayout from "./pages/admin/AdminLayout";
 import UserContextProvider from "./context/userContext";
+import ResetPasswordEmail from "./pages/reset-password/send-email";
+import ChangePassword from "./pages/reset-password/change-password";
 
 const router = createBrowserRouter([
   {
@@ -34,6 +36,8 @@ const router = createBrowserRouter([
     children: [
       { path: "/register", Component: RegisterPage },
       { path: "/login", Component: LoginPage },
+      { path: "/reset", Component: ResetPasswordEmail},
+      {path: "/change-password/:token", Component: ChangePassword},
     ],
   },
   {
