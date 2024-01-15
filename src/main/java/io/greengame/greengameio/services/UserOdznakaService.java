@@ -58,7 +58,7 @@ public class UserOdznakaService {
         return userRepository.findById(id);
     }
 
-    public void dodajOdznakeDlaUzytkownika() {
-        userOdznakaRepository.save(new UserOdznaka(5L, 5L));
+    public void dodajOdznakeDlaUzytkownika(Long idUsera, Long idOdznaka) {
+        userOdznakaRepository.save(new UserOdznaka(idUsera, idOdznaka));
     }
 }

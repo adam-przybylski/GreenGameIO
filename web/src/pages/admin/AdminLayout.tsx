@@ -9,11 +9,13 @@ import AdminTasks from "./tasksAdmin";
 import LogoutButton from "../../components/LogoutButton";
 import { logoutUser } from "../../api/logout";
 import AdminQuizzes from "./quizzesAdmin";
+import AdminAwards from "./awardsAdmin";
 
 const panels = {
   users: <AdminUsers />,
   tasks: <AdminTasks />,
   quizzes: <AdminQuizzes />,
+  awards: <AdminAwards />
 } as const;
 
 export type Panel = keyof typeof panels;
@@ -47,6 +49,9 @@ const AdminLayout: FC = () => {
         </SubPanel>
         <SubPanel onClick={handleSubPanelClick} message="tasks">
           <p>Zadania codzienne</p>
+        </SubPanel>
+        <SubPanel onClick={handleSubPanelClick} message="awards">
+          <p>Nagrody</p>
         </SubPanel>
         <LogoutButton logoutUser={logoutUser}></LogoutButton>
       </AdministrationNav>
