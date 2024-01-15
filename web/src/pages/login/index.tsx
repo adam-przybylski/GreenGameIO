@@ -4,8 +4,9 @@ import Input from "../../components/fields/Input";
 import Button from "../../components/Button";
 import { api, setAuthHeader } from "../../api/api.config.ts";
 import { LoginRequest } from "../../types/loginRequest.ts";
-import {NavLink, useNavigate} from "react-router-dom";
+import { NavLink, useNavigate } from "react-router-dom";
 import { useUserContext } from "../../context/userContext.tsx";
+import { toast } from "react-toastify";
 
 
 const LoginPage: FC = () => {
@@ -36,7 +37,7 @@ const LoginPage: FC = () => {
         navigation("/");
       })
       .catch(error => {
-        console.error(error);
+        toast.error(error.response.data);
       })
   });
 

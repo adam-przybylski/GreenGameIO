@@ -2,7 +2,13 @@ import { FC, useEffect, useState } from "react";
 import { api } from "../../../api/api.config";
 import { AccountType } from "../../../types/accountType";
 import NewPasswordModal from "../../../components/modals/NewPasswordModal";
-import {toast} from "react-toastify";
+import { toast } from "react-toastify";
+
+interface errorType {
+    response: {
+        data: string;
+    }
+}
 
 const AdminUsers: FC = () => {
 
@@ -24,12 +30,10 @@ const AdminUsers: FC = () => {
         if (username !== undefined) {
             try {
                 await api.delete(`/users/username/${username}`)
-                toast.success("usunięcto użytkownika");
+                toast.success("usunięto użytkownika");
                 setUsers(prevUsers => prevUsers.filter(user => user.username !== username));
             } catch (error) {
-                console.log("blad");
-                toast.error("błąd");
-                console.error(error);
+                toast.error((error as errorType).response.data);
             }
         }
     }
@@ -53,8 +57,7 @@ const AdminUsers: FC = () => {
                 await api.put(`/users/id/${id}`, user);
                 toast.success("Zaktualizowano użytkownika");
             } catch (error) {
-                toast.error("blad");
-                console.error(error);
+                toast.error((error as errorType).response.data);
             }
         }
     }

@@ -7,6 +7,7 @@ import { FormProvider, useForm } from "react-hook-form";
 import { api } from "../../api/api.config";
 import { logoutUser } from "../../api/logout";
 import { toast } from "react-toastify";
+
 interface Props {
     reset: () => void;
 }
@@ -37,10 +38,10 @@ const AccountModal: FC<Props> = ({ reset }) => {
     const deleteAccount = async () => {
         await api.delete("users/username/" + account.username).then(
             (() => {
-                  toast.success("account deleted");
+                toast.success("Konto usunięte");
             }),
             (error => {
-               toast.error(error.response.data)
+                toast.error(error.response.data)
             })
         );
         logoutUser();

@@ -1,7 +1,7 @@
 import { Dialog } from "@headlessui/react";
 import { FC, useState } from "react";
 import { api } from "../../api/api.config";
-import {toast} from "react-toastify";
+import { toast } from "react-toastify";
 
 interface Props {
     reset: () => void;
@@ -13,17 +13,13 @@ const NewPasswordModal: FC<Props> = ({ reset, id }) => {
     const [password, setPassword] = useState<string>('');
 
     const handleUpdatePassword = async (id: string, password: string) => {
-        try {
-            await api.patch(`/users/id/${id}/password`, { password: password }).then(
-                ( () => {
-                    toast.success("hasło zostało zmienione");
-                }),
-                (() => {
-                    toast.error("błąd");
-                }));
-        } catch (error) {
-            console.error(error);
-        }
+        await api.patch(`/users/id/${id}/password`, { password: password }).then(
+            (() => {
+                toast.success("hasło zostało zmienione");
+            }),
+            ((error) => {
+                toast.error(error.response.data);
+            }));
     }
 
 
