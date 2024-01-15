@@ -9,13 +9,13 @@ import org.springframework.stereotype.Service;
 @Service
 public class ResetPasswordService {
 
-    private final EmailServiceImpl emailService;
+    private final EmailNotificationService emailService;
 
     private final UserService userService;
 
     private final UserAuthProvider authProvider;
 
-    public ResetPasswordService(EmailServiceImpl emailService, UserService userService, UserAuthProvider authProvider) {
+    public ResetPasswordService(EmailNotificationService emailService, UserService userService, UserAuthProvider authProvider) {
         this.emailService = emailService;
         this.userService = userService;
         this.authProvider = authProvider;
