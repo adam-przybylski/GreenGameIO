@@ -18,7 +18,7 @@ public class UserNotificationService {
     private final UserNotificationRepository repository;
     private final UserPreferencesService preferencesService;
 
-    public List<UserNotification> getByUserId(User user) {
+    public List<UserNotification> getByUser(User user) {
         return repository.findAllByUser(user);
     }
 
