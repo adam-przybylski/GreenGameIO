@@ -1,5 +1,6 @@
 package io.greengame.greengameio.services;
 
+import io.greengame.greengameio.controller.OdznakaUserController;
 import io.greengame.greengameio.entity.GameResult;
 import io.greengame.greengameio.repository.GameResultRepository;
 import lombok.RequiredArgsConstructor;
@@ -12,6 +13,7 @@ import java.util.Optional;
 public class GameResultService {
 
     private final GameResultRepository gameResultRepository;
+    private final UserOdznakaService odznakaService;
 
     public GameResult createGameResult(GameResult gameResult) {
         return gameResultRepository.save(gameResult);
@@ -46,6 +48,9 @@ public class GameResultService {
         if (optionalGameResult.isPresent()) {
             GameResult gameResult = optionalGameResult.get();
             if(gameResult.getSnakeScore() < score){
+                if(score > 10) {
+                    odznakaService.dodajOdznakeDlaUzytkownika(userId, 4L);
+                }
                 gameResult.setSnakeScore(score);
                 gameResultRepository.save(gameResult);
                 return gameResult;
