@@ -3,6 +3,7 @@ import {useNavigate, useParams} from "react-router-dom";
 import {FormProvider, useForm} from "react-hook-form";
 import Button from "../../../components/Button.tsx";
 import {api} from "../../../api/api.config.ts";
+import {toast} from "react-toastify";
 
 
 
@@ -23,10 +24,12 @@ const ChangePasswordMail : FC = () => {
 
         api.post(`/reset/password?token=${token}`, values)
             .then(response => {
-                console.log(response.data.message);
+                console.log(response.data.data);
                 navigation("/login");
+                toast.success("Hasło zostało zaktualizowane");
             })
             .catch(error => {
+                toast.error(error.response.data);
                 console.error(error);
             })
     });

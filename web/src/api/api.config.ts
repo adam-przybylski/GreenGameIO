@@ -39,5 +39,6 @@ api.interceptors.response.use(
         if (error.response.status === 403 || error.response.status === 401) {
             logoutUser();
         }
+        return Promise.reject(error);
     }
 )
