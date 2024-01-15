@@ -205,7 +205,7 @@ const AdminQuizzes: FC = () => {
                         <h2 style={styles.headingStyles}>{selectedQuiz.quizTitle}</h2>
                         <strong>Twórca:</strong> {selectedQuiz.quizCreatorName}<br/>
                         <strong>Data Otwarcia:</strong> {formatOpeningDate(selectedQuiz.quizOpenDate)}<br/><br/>
-                        <h3 style={styles.headingStyles2}>Pytania</h3>
+                        <h3 style={styles.headingStyles2}>Pytania:</h3>
                         <ul>
                             {selectedQuiz.listOfQuestions.map((question, index) => (
                                 <li key={question.questionContent}>

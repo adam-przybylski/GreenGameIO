@@ -162,22 +162,25 @@ const AddQuizModal: React.FC<AddQuizProps> = ({postNewQuiz, setAddModalIsOpen}) 
                 {formFieldsQuiz.map((form, index) => {
                     return (
                         <div key={index}>
+                            <strong>Nazwa Quizu: </strong>
                             <input
                                 name="quizTitle"
-                                placeholder="Treść pytania"
+                                placeholder="..."
                                 onChange={(event) => handleQuizFormChange(event, index)}
                                 value={form.quizTitle}
                                 required={true}
                             />
                             <br/>
+                            <strong>Twórca Quizu: </strong>
                             <input
                                 name="quizCreator"
-                                placeholder="Twórca Quizu"
+                                placeholder="..."
                                 onChange={(event) => handleQuizFormChange(event, index)}
                                 value={form.quizCreator}
                                 required={true}
                             />
                             <br/>
+                            <strong>Data Otwarcia Quizu: </strong>
                             <input
                                 type="datetime-local"
                                 onChange={(event) => handleQuizFormChange(event, index)}
