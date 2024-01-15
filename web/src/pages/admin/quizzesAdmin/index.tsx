@@ -284,7 +284,7 @@ const AdminQuizzes: FC = () => {
                 isOpen={addModalIsOpen}
                 onRequestClose={() => setAddModalIsOpen(false)}
                 contentLabel="Add Quiz"
-                style={styles.bigModalStyles}
+                style={styles.modalStyles}
                 ariaHideApp={false}
             >
                 <h2 style={styles.headingStyles}>Utwórz Nowy Quiz</h2>
@@ -307,7 +307,7 @@ const AdminQuizzes: FC = () => {
                 isOpen={editModalIsOpen}
                 onRequestClose={() => setEditModalIsOpen(false)}
                 contentLabel="Edit Quiz"
-                style={styles.bigModalStyles}
+                style={styles.modalStyles}
                 ariaHideApp={false}
             >
                 <h2 style={styles.headingStyles}>Edytuj Quiz</h2>
