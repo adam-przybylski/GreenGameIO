@@ -16,6 +16,9 @@ public interface GameResultRepository extends JpaRepository<GameResult, Long> {
     @Query("SELECT gr.fruitCatcher FROM GameResult gr WHERE gr.userId = ?1")
     int findFruitCatcherScoreByUserId(Long userId);
 
+    @Query("SELECT gr.plumber FROM GameResult gr WHERE gr.userId = ?1")
+    int findPlumberScoreByUserId(Long userId);
+
     Optional<GameResult> findByUserId(Long userId);
 
 }

@@ -96,6 +96,10 @@ public class GameResultService {
         return gameResultRepository.findFruitCatcherScoreByUserId(userId);
     }
 
+    public int getPlumberScoreByUserId(Long userId) {
+        return gameResultRepository.findPlumberScoreByUserId(userId);
+    }
+
     public GameResult updateFruitCatcherResult(Long userId, int score) {
         Optional<GameResult> optionalGameResult = gameResultRepository.findByUserId(userId);
         if (optionalGameResult.isPresent()) {
@@ -110,6 +114,25 @@ public class GameResultService {
             GameResult newGameResult = new GameResult();
             newGameResult.setUserId(userId);
             newGameResult.setFruitCatcher(score);
+            gameResultRepository.save(newGameResult);
+            return newGameResult;
+        }
+    }
+
+    public GameResult updatePlumberResult(Long userId, int score) {
+        Optional<GameResult> optionalGameResult = gameResultRepository.findByUserId(userId);
+        if (optionalGameResult.isPresent()) {
+            GameResult gameResult = optionalGameResult.get();
+            if(gameResult.getPlumber() < score){
+                gameResult.setPlumber(score);
+                gameResultRepository.save(gameResult);
+                return gameResult;
+            }
+            return gameResult;
+        } else {
+            GameResult newGameResult = new GameResult();
+            newGameResult.setUserId(userId);
+            newGameResult.setPlumber(score);
             gameResultRepository.save(newGameResult);
             return newGameResult;
         }
