@@ -44,13 +44,13 @@ public class GameResultService {
 
 
     public GameResult updateSnakeResult(Long userId, int score) {
+        if(score > 5) {
+            odznakaService.dodajOdznakeDlaUzytkownika(userId, 4L);
+        }
         Optional<GameResult> optionalGameResult = gameResultRepository.findByUserId(userId);
         if (optionalGameResult.isPresent()) {
             GameResult gameResult = optionalGameResult.get();
             if(gameResult.getSnakeScore() < score){
-                if(score > 10) {
-                    odznakaService.dodajOdznakeDlaUzytkownika(userId, 4L);
-                }
                 gameResult.setSnakeScore(score);
                 gameResultRepository.save(gameResult);
                 return gameResult;
@@ -66,6 +66,9 @@ public class GameResultService {
     }
 
     public GameResult updateLightsOutResult(Long userId, int score) {
+        if(score > 5) {
+            odznakaService.dodajOdznakeDlaUzytkownika(userId, 1L);
+        }
         Optional<GameResult> optionalGameResult = gameResultRepository.findByUserId(userId);
         if (optionalGameResult.isPresent()) {
             GameResult gameResult = optionalGameResult.get();
