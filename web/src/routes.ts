@@ -8,6 +8,7 @@ import GamePage from "./pages/games/game";
 import FriendPage from "./pages/friend-module";
 import AwardsPage from "./pages/awards";
 import Quizzes from "./pages/quiz/userQuiz";
+import {Leaderboard} from "./pages/leaderboard/leaderboard.tsx";
 
 export const UnprotectedRoutes = [
   { path: "/", Component: MainPage },
@@ -15,6 +16,7 @@ export const UnprotectedRoutes = [
   { path: "/user/notifications", Component: UserNotifications },
   { path: "/games", Component: GamesPage },
   { path: "/games/:name", Component: GamePage },
+  {path: "/leaderboard", Component: Leaderboard},
   {path: "/awards", Component: AwardsPage},
   {
     path: "/quizzes",

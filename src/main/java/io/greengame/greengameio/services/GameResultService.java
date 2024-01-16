@@ -20,7 +20,12 @@ public class GameResultService {
     }
 
     public double  getXpByUserId(Long userId) {
-        return gameResultRepository.findXpByUserId(userId);
+        Optional<Long> optionalLong = gameResultRepository.findXpByUserId(userId);
+        if (optionalLong.isPresent()) {
+            return optionalLong.get();
+        } else {
+            return 0;
+        }
     }
 
     public GameResult updateUserXP(Long userId,double xp) {
@@ -96,11 +101,13 @@ public class GameResultService {
     }
 
     public int getFruitCatcherScoreByUserId(Long userId) {
-        return gameResultRepository.findFruitCatcherScoreByUserId(userId);
+        Optional<GameResult> optionalGameResult = gameResultRepository.findByUserId(userId);
+        return optionalGameResult.map(GameResult::getFruitCatcher).orElse(0);
     }
 
     public int getPlumberScoreByUserId(Long userId) {
-        return gameResultRepository.findPlumberScoreByUserId(userId);
+        Optional<GameResult> optionalGameResult = gameResultRepository.findByUserId(userId);
+        return optionalGameResult.map(GameResult::getPlumber).orElse(0);
     }
 
     public GameResult updateFruitCatcherResult(Long userId, int score) {
