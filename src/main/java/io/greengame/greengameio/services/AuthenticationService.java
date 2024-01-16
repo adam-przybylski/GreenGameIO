@@ -42,6 +42,12 @@ public class AuthenticationService {
             throw new LoginAlreadyExistsException(Messages.LOGIN_ALREADY_EXISTS);
         }
 
+        Optional<User> optionalUser1 = userRepository.findByEmail(userDto.getEmail());
+
+        if(optionalUser1.isPresent()) {
+            throw new EmailAlreadyExistsException(Messages.EMAIL_ALREADY_EXISTS);
+        }
+
         if(!validatePassword(Arrays.toString(userDto.getPassword()))) {
             throw new PasswordIsToWeekException(Messages.PASSWORD_IS_TO_WEEK);
         }

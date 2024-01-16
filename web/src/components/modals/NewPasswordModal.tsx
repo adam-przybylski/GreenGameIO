@@ -32,7 +32,7 @@ const NewPasswordModal: FC<Props> = ({ reset, id }) => {
             <div className="fixed inset-0 flex w-screen items-center justify-center p-4">
                 <Dialog.Panel className="w-full max-w-sm rounded bg-white shadow-md">
                     <Dialog.Title className="border-b-[1px] border-gray-400 p-4 font-bold">
-                        Account
+                        Zmień hasło
                     </Dialog.Title>
                     <div className="p-4">
                         <form>

@@ -38,4 +38,14 @@ public class AuthenticationExceptionsHandler {
     public ResponseEntity<String> handleUsersNotFoundException(UsersNotFoundException e) {
         return ResponseEntity.status(HttpStatus.NO_CONTENT).body(e.getMessage());
     }
+
+    @ExceptionHandler(EmailAlreadyExistsException.class)
+    public ResponseEntity<String> handleEmailAlreadyExistsException(EmailAlreadyExistsException e) {
+        return ResponseEntity.status(HttpStatus.CONFLICT).body(e.getMessage());
+    }
+
+    @ExceptionHandler(NotUniqueException.class)
+    public ResponseEntity<String> handleNotUniqueException(NotUniqueException e) {
+        return ResponseEntity.status(HttpStatus.CONFLICT).body(e.getMessage());
+    }
 }

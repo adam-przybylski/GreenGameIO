@@ -15,12 +15,14 @@ const AdminUsers: FC = () => {
     const [users, setUsers] = useState<AccountType[]>([]);
     const [isOpen, setIsOpen] = useState(false);
     const [id, setId] = useState<string>('');
+    const [filteredUsers, setFilteredUsers] = useState<AccountType[]>();
 
     useEffect(() => {
         const fetchUsers = async () => {
             const response = await api.get('/users');
             const data = response.data as AccountType[];
             setUsers(data.filter(user => user.type !== 'ADMINISTRATOR'));
+            setFilteredUsers(data.filter(user => user.type !== 'ADMINISTRATOR'));
         }
 
         fetchUsers();
@@ -30,8 +32,10 @@ const AdminUsers: FC = () => {
         if (username !== undefined) {
             try {
                 await api.delete(`/users/username/${username}`)
-                toast.success("usunięto użytkownika");
-                setUsers(prevUsers => prevUsers.filter(user => user.username !== username));
+                toast.success("Dezaktywowano użytkownika");
+                const response = await api.get('/users');
+                const data = response.data as AccountType[];
+                setUsers(data.filter(user => user.type !== 'ADMINISTRATOR'));
             } catch (error) {
                 toast.error((error as errorType).response.data);
             }
@@ -55,6 +59,9 @@ const AdminUsers: FC = () => {
         if (user !== undefined) {
             try {
                 await api.put(`/users/id/${id}`, user);
+                const response = await api.get('/users');
+                const data = response.data as AccountType[];
+                setUsers(data.filter(user => user.type !== 'ADMINISTRATOR'));
                 toast.success("Zaktualizowano użytkownika");
             } catch (error) {
                 toast.error((error as errorType).response.data);
@@ -64,6 +71,16 @@ const AdminUsers: FC = () => {
 
     return (
         <div className="bg-neutral-200 flex justify-center flex-col w-full">
+            <input className="w-1/2 mx-auto my-5 p-1 border border-slate-500 rounded-md" type="text" placeholder="Wyszukaj użytkownika"
+                onChange={v => {
+                    const value = v.target.value.toLowerCase();
+                    if (value === '') {
+                        setFilteredUsers(users);
+                        return;
+                    }
+                    setFilteredUsers(users.filter(user => user.username.toLowerCase().includes(value)));
+
+                }} />
             <table className="mx-20 table-fixed border-collapse border border-slate-500 min-w-max">
                 <thead className="bg-neutral-400">
                     <tr>
@@ -73,7 +90,7 @@ const AdminUsers: FC = () => {
                     </tr>
                 </thead>
                 <tbody className="bg-neutral-300">
-                    {users.map(user => (
+                    {filteredUsers?.map(user => (
                         <tr key={user.id}>
                             <td className="border border-slate-700 px-3 py-1">
                                 <input className="w-full bg-transparent p-1" type="text" value={user.username}
@@ -99,7 +116,7 @@ const AdminUsers: FC = () => {
                             <td className="border hover:cursor-pointer hover:text-green-500 border-slate-700 text-center"
                                 onClick={() => {
                                     deleteUser(user.username);
-                                }}>Usuń</td>
+                                }}>Dezaktywuj</td>
                         </tr>
                     ))}
                 </tbody>

@@ -4,10 +4,7 @@ package io.greengame.greengameio.services;
 import io.greengame.greengameio.dtos.UpdateUserDto;
 import io.greengame.greengameio.entity.Odznaka;
 import io.greengame.greengameio.entity.User;
-import io.greengame.greengameio.exceptions.Messages;
-import io.greengame.greengameio.exceptions.PasswordIsToWeekException;
-import io.greengame.greengameio.exceptions.UnknownUserException;
-import io.greengame.greengameio.exceptions.UsersNotFoundException;
+import io.greengame.greengameio.exceptions.*;
 import io.greengame.greengameio.friendmodule.exceptions.ErrorMessages;
 import io.greengame.greengameio.friendmodule.exceptions.NotFoundException;
 import io.greengame.greengameio.friendmodule.model.Group;
@@ -23,6 +20,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.nio.CharBuffer;
 import java.util.List;
+import java.util.Optional;
 
 import static io.greengame.greengameio.services.PasswordValidator.validatePassword;
 
@@ -80,6 +78,10 @@ public class UserService {
     public User updateUsername(Long id, String username) {
         User user = userRepository.findById(id)
                 .orElseThrow(() -> new UnknownUserException(Messages.USER_WITH_GIVEN_ID_DOES_NOT_EXIST));
+        Optional<User> user1 = userRepository.findByUsername(username);
+        if(user1.isPresent()) {
+            throw new LoginAlreadyExistsException(Messages.LOGIN_ALREADY_EXISTS);
+        }
         user.setUsername(username);
         return userRepository.save(user);
     }
@@ -97,6 +99,9 @@ public class UserService {
     public User updateUser(String username, User user) {
         User user1 = userRepository.findByUsername(username)
                 .orElseThrow(() -> new UnknownUserException(Messages.USER_WITH_GIVEN_ID_DOES_NOT_EXIST));
+        if(!isUsernameAndEmailUnique(user.getUsername(), user.getEmail(), user)) {
+            throw new NotUniqueException(Messages.USER_ALREADY_EXISTS);
+        }
         user1.setUsername(user.getUsername());
         user1.setPassword(user.getPassword());
         user1.setEmail(user.getEmail());
@@ -108,6 +113,9 @@ public class UserService {
     public User updateUser(Long id, UpdateUserDto userDto) {
         User user = userRepository.findById(id)
                 .orElseThrow(() -> new UnknownUserException(Messages.USER_WITH_GIVEN_ID_DOES_NOT_EXIST));
+        if(!isUsernameAndEmailUnique(userDto.getUsername(), userDto.getEmail(), user)) {
+            throw new NotUniqueException(Messages.USER_ALREADY_EXISTS);
+        }
         user.setUsername(userDto.getUsername());
         user.setEmail(userDto.getEmail());
         user.setType(userDto.getType());
@@ -160,5 +168,11 @@ public class UserService {
                 });
         abstractChatHolderRepository.deleteAllById(friendList);
         userFMRepository.deleteById(id);
+    }
+
+    private boolean isUsernameAndEmailUnique(String username, String email, User user) {
+        Optional<User> user1 = userRepository.findByUsername(username);
+        Optional<User> user2 = userRepository.findByEmail(email);
+        return (user1.isEmpty() || user1.get().getId().equals(user.getId())) && (user2.isEmpty() || user2.get().getId().equals(user.getId()));
     }
 }
