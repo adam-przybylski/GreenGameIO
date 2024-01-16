@@ -22,11 +22,13 @@ public class AuthenticationService {
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
     private final UserMapper userMapper;
+    private final UserTaskService userTaskService;
 
-    public AuthenticationService(UserRepository userRepository, PasswordEncoder passwordEncoder, UserMapper userMapper) {
+    public AuthenticationService(UserRepository userRepository, PasswordEncoder passwordEncoder, UserMapper userMapper, UserTaskService userTaskService) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
         this.userMapper = userMapper;
+        this.userTaskService = userTaskService;
     }
 
     public UserDto findByLogin(String username) {
@@ -45,6 +47,8 @@ public class AuthenticationService {
         user.setPassword(passwordEncoder.encode(CharBuffer.wrap(userDto.getPassword())));
 
         User savedUser = userRepository.save(user);
+
+        userTaskService.generateUserTasksForUser(savedUser.getId());
 
         return userMapper.toUserDto(savedUser);
     }

@@ -17,7 +17,7 @@ public class UserTask {
     @Column(name = "id", nullable = false)
     private Long id;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "taskId", nullable = false)
     @NotNull(message = "TaskId is mandatory")
     private Task task;
