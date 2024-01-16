@@ -78,8 +78,7 @@ public class UserService {
     public User updateUsername(Long id, String username) {
         User user = userRepository.findById(id)
                 .orElseThrow(() -> new UnknownUserException(Messages.USER_WITH_GIVEN_ID_DOES_NOT_EXIST));
-        Optional<User> user1 = userRepository.findByUsername(username);
-        if(user1.isPresent()) {
+        if(!isUsernameAndEmailUnique(username, "", user)) {
             throw new LoginAlreadyExistsException(Messages.LOGIN_ALREADY_EXISTS);
         }
         user.setUsername(username);

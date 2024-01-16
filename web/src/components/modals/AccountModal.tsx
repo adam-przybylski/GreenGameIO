@@ -37,6 +37,7 @@ const AccountModal: FC<Props> = ({ reset }) => {
     const onsubmit = handleSubmit(async (values) => {
         try {
             await api.patch("users/id/" + account?.id, { username: values.username });
+            toast.success("Poprawnie zmieniono nazwę użytkownika");
             logoutUser();
             setIsOpen(false);
             reset();
