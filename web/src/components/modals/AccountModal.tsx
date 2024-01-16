@@ -82,7 +82,10 @@ const AccountModal: FC<Props> = ({ reset }) => {
                                         label="Zapisz"
                                     />
                                     {account?.type === "USER" && <Button
-                                        onClick={deleteAccount}
+                                        onClick={e => {
+                                            e.preventDefault();
+                                            deleteAccount();
+                                        }}
                                         className="text-white bg-red-500 px-4 py-2 rounded"
                                         label="Dezaktywuj konto"
                                     />}
