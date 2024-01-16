@@ -7,7 +7,9 @@ const GamesPage: FC = () => {
     <div>
       {Object.entries(games).map(([key, game]) => (
         <div key={key}>
+          <button className="button">
           <NavLink to={`/games/${key}`}>{game.name}</NavLink>
+          </button>
         </div>
       ))}
     </div>
