@@ -11,7 +11,8 @@ const LogoutButton: FC<LogoutButtonProps> = ({ logoutUser, className }) => {
 
     const handleLogout = () => {
         logoutUser();
-        navigation("/login");
+        navigation("/");
+        window.location.reload();
     }
 
     return (
