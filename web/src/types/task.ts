@@ -1,4 +1,4 @@
-export interface TaskType {
+export interface Task {
     id: number | undefined;
     name: string;
     description: string;

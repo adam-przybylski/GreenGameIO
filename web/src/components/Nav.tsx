@@ -9,6 +9,7 @@ import { logoutUser } from "../api/logout"
 import LoginButton from "./LoginButton";
 import {BiAward} from "react-icons/bi";
 import {IoNotificationsSharp} from "react-icons/io5";
+import { FaTasks } from "react-icons/fa";
 
 type MenuItem = {
     to: string;
@@ -22,6 +23,7 @@ const Nav: FC = () => {
     { to: "quizzes", icon: MdQuiz, label: "Quizes" },
     //{ to: "account", icon: FaUser, label: "Profile" },
       { to: "user/notifications", icon: IoNotificationsSharp, label: "Notifications" },
+      { to: "user/tasks", icon: FaTasks, label: "Daily Tasks" },
       { to: "awards", icon: BiAward, label: "Awards" },
     { to: "admin", icon: FaWrench, label: "Admin" },
   ];

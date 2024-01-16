@@ -1,6 +1,6 @@
 import React from "react";
 import { MdDeleteForever, MdEdit } from "react-icons/md";
-import { TaskType } from "../types/taskType";
+import { TaskType } from "../types/task";
 
 interface TaskTableProps {
     tasks: TaskType[];

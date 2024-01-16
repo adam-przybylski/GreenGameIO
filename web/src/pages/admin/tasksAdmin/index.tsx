@@ -1,6 +1,6 @@
 import { FC, useEffect, useState } from "react";
 import { api } from "../../../api/api.config.ts";
-import { TaskType } from "../../../types/taskType.ts";
+import { TaskType } from "../../../types/task.ts";
 import { MdAdd } from "react-icons/md";
 import TaskTable from "../../../components/TaskTable.tsx";
 import TaskForm from "../../../components/TaskForm.tsx";
