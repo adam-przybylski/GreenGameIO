@@ -31,10 +31,8 @@ const Nav: FC = () => {
     { to: "games", icon: FaGamepad, label: "Gry" },
     { to: "quizzes", icon: MdQuiz, label: "Quizy" },
     { to: "user/notifications", icon: IoNotificationsSharp,label: "Powiadomienia" },
-    { to: "user/tasks", icon: FaTasks, label: "Daily Tasks" },
-    { to: "awards", icon: BiAward, label: "Odznaki" },
-    { to: "games", icon: FaGamepad, label: "Games" },
-    { to: "quizzes", icon: MdQuiz, label: "Quizes" },
+    { to: "user/tasks", icon: FaTasks, label: "Zadania" },
+    { to: "awards", icon: BiAward, label: "Odznaki" }
 
   ];
 
