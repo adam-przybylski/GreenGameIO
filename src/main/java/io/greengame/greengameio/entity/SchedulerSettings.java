@@ -19,6 +19,7 @@ public class SchedulerSettings {
     private Long id;
     private boolean isActive;
     private Date time;
+    private Date lastSended = null;
     private boolean isInfinite;
     private int repeat;
     @OneToOne

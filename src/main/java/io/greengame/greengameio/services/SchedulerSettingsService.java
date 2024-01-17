@@ -18,6 +18,10 @@ public class SchedulerSettingsService {
         return repository.findAll();
     }
 
+    public List<SchedulerSettings> getByActive(boolean value) {
+        return repository.findAllByIsActive(value);
+    }
+
     public SchedulerSettings getSchedulerSettingsByNotification(Notification notification) {
         Optional<SchedulerSettings> result = repository.findByNotification(notification);
 
@@ -37,11 +41,16 @@ public class SchedulerSettingsService {
             SchedulerSettings settings = result.get();
             settings.setActive(schedulerSettings.isActive());
             settings.setTime(schedulerSettings.getTime());
+            settings.setLastSended(schedulerSettings.getLastSended());
             settings.setInfinite(schedulerSettings.isInfinite());
             settings.setRepeat(schedulerSettings.getRepeat());
             repository.saveAndFlush(settings);
         }
 
         return repository.findByNotification(schedulerSettings.getNotification()).get();
+    }
+
+    public void delete(Notification notification) {
+        repository.deleteByNotification(notification);
     }
 }
