@@ -17,6 +17,10 @@ public class NotificationService {
         return repository.findAll();
     }
 
+    public Notification getById(Long id) {
+        return repository.findById(id).orElse(null);
+    }
+
     public Notification create(Notification notification) {
         return repository.save(notification);
     }
