@@ -1,6 +1,7 @@
 package io.greengame.greengameio.entity;
 
 
+import io.greengame.greengameio.exceptions.Messages;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
@@ -44,6 +45,9 @@ public class User {
 
     @Column(name = "odznaka", nullable = false)
     private Long odznaka;
+
+    @Column(name = "enabled", nullable = false)
+    private boolean enabled = true;
 
 
     public User(String username, String password, String email, UserType type) {

@@ -37,10 +37,9 @@ public class TestDataTasksSeeder {
 
         Task sampleTask = new Task(null,"Sample Task", "Sample Description", 10, true);
         Task sampleTaskInactive = new Task(null,"Sample Task2", "Sample Description", 10, false);
-        var admin = userService.createUser(new User("adminn", "$2b$12$6J4h6z.Er73Ud7zWhUT4yueCCFl2xCLkUZGHi8JtJYYwxp3NHtbBK", "adminn@email.com",
-                UserType.ADMINISTRATOR));
-        var user = userService.createUser(new User("userr", "$2b$12$6J4h6z.Er73Ud7zWhUT4yueCCFl2xCLkUZGHi8JtJYYwxp3NHtbBK", "userr@email.com",
-                UserType.USER));
+        User admin = new User(1L, "adminn", "$2b$12$6J4h6z.Er73Ud7zWhUT4yueCCFl2xCLkUZGHi8JtJYYwxp3NHtbBK", "admin@email.com", UserType.ADMINISTRATOR, null, null, true);
+        User user = new User(2L, "userr", "$2b$12$6J4h6z.Er73Ud7zWhUT4yueCCFl2xCLkUZGHi8JtJYYwxp3NHtbBK", "user@email.com", UserType.USER, null, null, true);
+
         return args -> {
             userRepository.save(admin);
             userRepository.save(user);

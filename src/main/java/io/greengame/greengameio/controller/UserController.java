@@ -1,6 +1,7 @@
 package io.greengame.greengameio.controller;
 
 
+import io.greengame.greengameio.dtos.UpdateUserDto;
 import io.greengame.greengameio.entity.Odznaka;
 import io.greengame.greengameio.entity.User;
 import io.greengame.greengameio.services.UserService;
@@ -11,6 +12,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 @RestController
@@ -49,6 +51,21 @@ public class UserController {
     @PostMapping("/username/{username}")
     User updateUser(@PathVariable String username, @RequestBody User user) {
         return userService.updateUser(username, user);
+    }
+
+    @PatchMapping("/id/{id}")
+    User updateUsername(@PathVariable Long id, @RequestBody Map<String, String> username) {
+        return userService.updateUsername(id, username.get("username"));
+    }
+
+    @PatchMapping("/id/{id}/password")
+    User updatePassword(@PathVariable Long id, @RequestBody Map<String, String> password) {
+        return userService.updatePassword(id, password.get("password"));
+    }
+
+    @PutMapping("/id/{id}")
+    User updateUser(@PathVariable Long id, @RequestBody UpdateUserDto user) {
+        return userService.updateUser(id, user);
     }
 
    /* @GetMapping("/awards/{id}")

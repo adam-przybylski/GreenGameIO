@@ -1,8 +1,10 @@
 package io.greengame.greengameio.services;
 
 
+import io.greengame.greengameio.dtos.UpdateUserDto;
 import io.greengame.greengameio.entity.Odznaka;
 import io.greengame.greengameio.entity.User;
+import io.greengame.greengameio.exceptions.*;
 import io.greengame.greengameio.friendmodule.exceptions.ErrorMessages;
 import io.greengame.greengameio.friendmodule.exceptions.NotFoundException;
 import io.greengame.greengameio.friendmodule.model.Group;
@@ -12,10 +14,15 @@ import io.greengame.greengameio.friendmodule.repositories.ChatRepository;
 import io.greengame.greengameio.friendmodule.repositories.UserFMRepository;
 import io.greengame.greengameio.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.nio.CharBuffer;
 import java.util.List;
+import java.util.Optional;
+
+import static io.greengame.greengameio.services.PasswordValidator.validatePassword;
 
 @Service
 @RequiredArgsConstructor
@@ -26,6 +33,7 @@ public class UserService {
     private final UserFMRepository userFMRepository;
     private final ChatRepository chatRepository;
     private final AbstractChatHolderRepository abstractChatHolderRepository;
+    private final PasswordEncoder passwordEncoder;
 
     public User createUser(User user) {
         User user1 = userRepository.save(user);
@@ -34,34 +42,83 @@ public class UserService {
     }
 
     public boolean deleteUser(String username) {
-        User user = userRepository.findByUsername(username).orElseThrow();
-        return userRepository.deleteByUsername(username);
+        User user = userRepository.findByUsername(username)
+                .orElseThrow(() -> new UnknownUserException(Messages.USER_WITH_GIVEN_USERNAME_DOES_NOT_EXIST));
+        user.setEnabled(false);
+        userRepository.save(user);
+        return user.isEnabled();
     }
 
     public List<User> getUsers() {
-        return userRepository.findAll();
+        List<User> users = userRepository.findAll();
+        List<User> newUsers = users.stream()
+                .filter(User::isEnabled)
+                .toList();
+        if(newUsers.isEmpty()) {
+            throw new UsersNotFoundException(Messages.USERS_NOT_FOUND);
+        }
+        return newUsers;
     }
 
     public User getUserByEmail(String email) {
-        return userRepository.findByEmail(email).orElseThrow(() -> new RuntimeException("User not found."));
+        return userRepository.findByEmail(email)
+                .orElseThrow(() -> new UnknownUserException(Messages.USER_WITH_GIVEN_EMAIL_DOES_NOT_EXIST));
     }
 
     public User getUserByUsername(String username) {
-        return userRepository.findByUsername(username).orElseThrow(() -> new RuntimeException("User not found."));
+        return userRepository.findByUsername(username)
+                .orElseThrow(() -> new UnknownUserException(Messages.USER_WITH_GIVEN_USERNAME_DOES_NOT_EXIST));
     }
 
     public User getUserById(Long id) {
-        return userRepository.findById(id).orElseThrow(() -> new RuntimeException("User not found."));
+        return userRepository.findById(id)
+                .orElseThrow(() -> new UnknownUserException(Messages.USER_WITH_GIVEN_ID_DOES_NOT_EXIST));
+    }
+
+    public User updateUsername(Long id, String username) {
+        User user = userRepository.findById(id)
+                .orElseThrow(() -> new UnknownUserException(Messages.USER_WITH_GIVEN_ID_DOES_NOT_EXIST));
+        if(!isUsernameAndEmailUnique(username, "", user)) {
+            throw new LoginAlreadyExistsException(Messages.LOGIN_ALREADY_EXISTS);
+        }
+        user.setUsername(username);
+        return userRepository.save(user);
+    }
+
+    public User updatePassword(Long id, String password) {
+        User user = userRepository.findById(id)
+                .orElseThrow(() -> new UnknownUserException(Messages.USER_WITH_GIVEN_ID_DOES_NOT_EXIST));
+        if(!validatePassword(password)) {
+            throw new PasswordIsToWeekException(Messages.PASSWORD_IS_TO_WEEK);
+        }
+        user.setPassword(passwordEncoder.encode(CharBuffer.wrap(password)));
+        return userRepository.save(user);
     }
 
     public User updateUser(String username, User user) {
-        User user1 = userRepository.findByUsername(username).orElseThrow(() -> new RuntimeException("User not found."));
+        User user1 = userRepository.findByUsername(username)
+                .orElseThrow(() -> new UnknownUserException(Messages.USER_WITH_GIVEN_ID_DOES_NOT_EXIST));
+        if(!isUsernameAndEmailUnique(user.getUsername(), user.getEmail(), user)) {
+            throw new NotUniqueException(Messages.USER_ALREADY_EXISTS);
+        }
         user1.setUsername(user.getUsername());
         user1.setPassword(user.getPassword());
         user1.setEmail(user.getEmail());
         user1.setType(user.getType());
         user1.setOdznaka(user.getOdznaka());
         return userRepository.save(user1);
+    }
+
+    public User updateUser(Long id, UpdateUserDto userDto) {
+        User user = userRepository.findById(id)
+                .orElseThrow(() -> new UnknownUserException(Messages.USER_WITH_GIVEN_ID_DOES_NOT_EXIST));
+        if(!isUsernameAndEmailUnique(userDto.getUsername(), userDto.getEmail(), user)) {
+            throw new NotUniqueException(Messages.USER_ALREADY_EXISTS);
+        }
+        user.setUsername(userDto.getUsername());
+        user.setEmail(userDto.getEmail());
+        user.setType(userDto.getType());
+        return userRepository.save(user);
     }
 
     private void createUserFM(Long id, String username) {
@@ -110,5 +167,11 @@ public class UserService {
                 });
         abstractChatHolderRepository.deleteAllById(friendList);
         userFMRepository.deleteById(id);
+    }
+
+    private boolean isUsernameAndEmailUnique(String username, String email, User user) {
+        Optional<User> user1 = userRepository.findByUsername(username);
+        Optional<User> user2 = userRepository.findByEmail(email);
+        return (user1.isEmpty() || user1.get().getId().equals(user.getId())) && (user2.isEmpty() || user2.get().getId().equals(user.getId()));
     }
 }

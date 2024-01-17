@@ -9,7 +9,7 @@ const LoginButton: FC = () => {
     }
 
     return (
-        <button onClick={handleClick}>
+        <button className="hover:text-green-500 w-full flex items-center flex-col p-2" onClick={handleClick}>
             Zaloguj się
         </button>
     );

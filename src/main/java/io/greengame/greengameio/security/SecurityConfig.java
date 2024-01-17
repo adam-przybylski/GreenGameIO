@@ -38,7 +38,7 @@ public class SecurityConfig {
                 .sessionManagement(sessionManagement -> sessionManagement.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests((requests) -> { requests
                         .requestMatchers("/api/v1/games/**").permitAll()
-                        .requestMatchers(HttpMethod.POST, "/api/v1/authentication/login", "/api/v1/authentication/register").permitAll()
+                        .requestMatchers(HttpMethod.POST, "/api/v1/authentication/login", "/api/v1/authentication/register", "api/v1/authentication/reset-password", "api/v1/reset/password").permitAll()
                         .requestMatchers("/api/v1/**").authenticated()
                         .requestMatchers("/api/v1/tasks/**").hasAuthority("ROLE_ADMINISTRATOR")
                         .requestMatchers("/**").permitAll();
