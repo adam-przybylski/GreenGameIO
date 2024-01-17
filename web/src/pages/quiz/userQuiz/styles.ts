@@ -18,6 +18,16 @@ export const smallModalStyles = {
     },
 };
 
+export const smallModalStyles2 = {
+    content: {
+        width: '40%',
+        height: '20%',
+        margin: 'auto',
+        padding: '20px',
+        paddingBottom: '10px',
+    },
+};
+
 export const headingStyles2 = {
     fontSize: '1.5em',
     fontWeight: 'bold',

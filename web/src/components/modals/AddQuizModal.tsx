@@ -73,30 +73,41 @@ const AddQuizModal: React.FC<AddQuizProps> = ({postNewQuiz, setAddModalIsOpen}) 
 
         if (formFieldsQuiz[0].quizTitle.trim() === '') {
             const errorMessage = 'Quiz musi mieć zdefiniowaną nazwę.';
-            console.error(errorMessage);
             alert(errorMessage);
             return;
         }
 
         if (formFieldsQuiz[0].quizCreator.trim() === '') {
             const errorMessage = 'Quiz musi mieć zdefiniowanego twórcę.';
-            console.error(errorMessage);
             alert(errorMessage);
             return;
         }
 
         if (!formFieldsQuiz[0].quizOpenDate) {
             const errorMessage = 'Quiz musi mieć zdefiniowaną datę otwarcia.';
-            console.error(errorMessage);
             alert(errorMessage);
             return;
         }
 
         if (formFieldsQuestion.length === 0 || formFieldsQuestion.length > 10) {
             const errorMessage = 'Quiz musi składać się przynajmniej z 1 pytania.';
-            console.error(errorMessage);
             alert(errorMessage);
             return;
+        }
+
+        let hasEmptyAnswer: boolean
+        for (const question of formFieldsQuestion) {
+            for (const answer of question.questionAnswers) {
+                if (answer.answerContent.trim() === '') {
+                    const errorMessage = 'Każda odpowiedź musi mieć zdefiniowaną nazwę.';
+                    alert(errorMessage);
+                    hasEmptyAnswer = true;
+                    break;
+                }
+            }
+            if (hasEmptyAnswer) {
+                return;
+            }
         }
 
         for (const question of formFieldsQuestion) {
@@ -107,7 +118,6 @@ const AddQuizModal: React.FC<AddQuizProps> = ({postNewQuiz, setAddModalIsOpen}) 
                 !question.questionAnswers.some(answer => answer.correct)
             ) {
                 const errorMessage = 'Żadne pytanie nie może mieć mniej niż 2 odpowiedzi';
-                console.error(errorMessage);
                 alert(errorMessage);
                 return;
             }
@@ -140,7 +150,6 @@ const AddQuizModal: React.FC<AddQuizProps> = ({postNewQuiz, setAddModalIsOpen}) 
 
         if (formFieldsQuestion.length >= 10) {
             const errorMessage = 'Quiz nie może mieć więcej niż 10 pytań.';
-            console.error(errorMessage);
             alert(errorMessage);
             return;
         }
@@ -156,7 +165,6 @@ const AddQuizModal: React.FC<AddQuizProps> = ({postNewQuiz, setAddModalIsOpen}) 
         let data = [...formFieldsQuestion];
         if (data[questionIndex].questionAnswers.length >= 5) {
             const errorMessage = 'Pytanie może mieć więcej niż 5 odpowiedzi';
-            console.error(errorMessage);
             alert(errorMessage);
             return;
         }
@@ -238,6 +246,7 @@ const AddQuizModal: React.FC<AddQuizProps> = ({postNewQuiz, setAddModalIsOpen}) 
                                 onChange={(event) => handleQuestionFormChange(event, questionIndex)}
                                 value={form.questionContent}
                                 style={{width: '45%'}}
+                                required={true}
                             />
                             <br/>
                             <br/>
@@ -258,6 +267,7 @@ const AddQuizModal: React.FC<AddQuizProps> = ({postNewQuiz, setAddModalIsOpen}) 
                                         onChange={(event) => handleAnswerFormChange(event, questionIndex, answerIndex)}
                                         value={answer.answerContent}
                                         style={{width: '25%'}}
+                                        required={true}
                                     />
                                     <input
                                         type="checkbox"

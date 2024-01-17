@@ -214,10 +214,12 @@ public class QuizController {
                 Optional<HiScore> newHiScoreOpt;
 
                 Optional<HiScore> hiScoreOpt = hiScoreService.getHighScoreByUserAndQuiz(user, quiz);
-                if (hiScoreOpt.isPresent() && hiScoreOpt.get().getHiScore() < numberOfCorrectAnswers) {
+                if (hiScoreOpt.isPresent()) {
                     hiScore = hiScoreOpt.get();
-                    hiScore.setHiScore(numberOfCorrectAnswers);
-                    hiScoreService.updateHiScore(hiScore);
+                    if (hiScore.getHiScore() < numberOfCorrectAnswers) {
+                        hiScore.setHiScore(numberOfCorrectAnswers);
+                        hiScoreService.updateHiScore(hiScore);
+                    }
                 } else {
                     hiScore = new HiScore(quiz, user, numberOfCorrectAnswers);
                     hiScoreService.createHiScore(hiScore);

@@ -32,6 +32,9 @@ const Quizzes: FC = () => {
     const [modalIsOpen, setModalIsOpen] = useState(false);
     const [solveModalIsOpen, setSolveModalIsOpen] = useState(false);
     const [bestScore, setBestScore] = useState<number | null>(null);
+    const [hiScore, setHiScore] = useState<number | null>(null);
+    const [currentScore, setCurrentScore] = useState<number | null>(null);
+    const [resultModalIsOpen, setResultModalIsOpen] = useState(false);
 
     useEffect(() => {
         api.get("/quizzes/correct")
@@ -57,6 +60,9 @@ const Quizzes: FC = () => {
                     api.get(`/quizzes/id/${selectedQuiz.quizID}/user-id/${userID}`)
                         .then((response) => {
                             setBestScore(response.data || null);
+                            if (response.data == "No high score for given user was found.") {
+                                setBestScore(0)
+                            }
                         })
                         .catch((error) => {
                             console.error('Error:', error.message);
@@ -96,6 +102,7 @@ const Quizzes: FC = () => {
     const closeSolveQuizModal = () => {
         setSelectedQuiz(null);
         setSolveModalIsOpen(false);
+        setResultModalIsOpen(true);
     };
 
     function SolveQuiz({selectedQuiz, isOpen, onClose}) {
@@ -131,7 +138,9 @@ const Quizzes: FC = () => {
 
         const postAnswers: (listOfUserAnswers, selectedQuizID) => Promise<void> = async (listOfUserAnswers, selectedQuizID) => {
             try {
-                await api.post(`/quizzes/id/${Number(selectedQuizID)}/check`, listOfUserAnswers)
+                const response = await api.post(`/quizzes/id/${Number(selectedQuizID)}/check`, listOfUserAnswers)
+                setHiScore(response.data.hiScore);
+                setCurrentScore(response.data.currentScore);
             } catch (error) {
                 console.error('Error', error);
             } finally {
@@ -144,11 +153,10 @@ const Quizzes: FC = () => {
         }
         const submit = (e) => {
             e.preventDefault();
-
             const listOfUserAnswers: UserAnswer[] = [];
 
-            selectedQuiz.listOfQuestions.forEach((question) => {
-                const correctAnswerIndex = question.listOfAnswers.findIndex((answer) => answer.correct);
+            formFieldsQuestion.forEach((question) => {
+                const correctAnswerIndex = question.questionAnswers.findIndex(answer => answer.correct);
 
                 if (correctAnswerIndex !== -1) {
                     listOfUserAnswers.push({
@@ -171,67 +179,109 @@ const Quizzes: FC = () => {
 
             postAnswers(toSend, selectedQuiz.quizID);
             closeSolveQuizModal()
+            setResultModalIsOpen(true)
+        };
+
+        const closeResultModal = () => {
+            setResultModalIsOpen(false);
+            setHiScore(null);
+            setCurrentScore(null);
         };
 
         return (
-            <Modal
-                isOpen={isOpen}
-                onRequestClose={onClose}
-                contentLabel="Edit Correct Answers"
-                style={styles.bigModalStyles}
-                ariaHideApp={false}
-            >
-                <div>
-                    <h2 style={styles.headingStyles}>Rozwiązywanie quizu</h2>
-                    <form>
-                        {formFieldsQuestion.map((form, questionIndex) => {
-                            return (
-                                <div key={questionIndex} style={{marginBottom: '10px'}}>
-                                    <br/>
-                                    <text style={{fontSize: "1.1em", fontWeight:"bold"}}>Pytanie {form.questionNumber}: </text>
-                                    <text style={{fontSize: "1.1em", fontWeight:"bold"}}>{form.questionContent}</text>
-                                    {form.questionAnswers.map((answer, answerIndex) => (
-                                        <div key={answerIndex}
-                                             style={{marginBottom: '5px', display: 'flex', alignItems: 'center'}}>
-                                            <p style={{marginRight: '10px'}}>{answer.answerContent}</p>
-                                            <input
-                                                type="checkbox"
-                                                name="correct"
-                                                onChange={() => handleCorrectChange(questionIndex, answerIndex)}
-                                                checked={answer.correct}
-                                            />
-                                        </div>
-                                    ))}
-                                </div>
-                            );
-                        })}
-                    </form>
-                    <br/>
-                    <button
-                        style={{
-                            ...styles.buttonStyles,
-                            bottom: '20px',
-                            left: '50%',
-                            backgroundColor: "red"
-                        }}
-                        onClick={submit}
-                    >
-                        <strong>Zapisz Podejście</strong>
-                    </button>
-                    <br/>
-                    <br/>
-                    <button
-                        style={{
-                            ...styles.buttonStyles,
-                            bottom: '20px',
-                            left: '50%',
-                        }}
-                        onClick={() => setSolveModalIsOpen(false)}
-                    >
-                        <strong>Anuluj</strong>
-                    </button>
-                </div>
-            </Modal>
+            <div>
+                <Modal
+                    isOpen={resultModalIsOpen}
+                    onRequestClose={closeResultModal}
+                    currentScore={currentScore}
+                    style={styles.smallModalStyles2}
+                    ariaHideApp={false}
+                >
+                    <div>
+                        <h2 style={styles.headingStyles}>Wyniki quizu</h2>
+                        {currentScore !== null && (
+                            <div>
+                                <strong>Ilość poprawnych odpowiedzi: {currentScore}</strong><br/><br/>
+                            </div>
+                        )}
+                        <button
+                            style={{
+                                ...styles.buttonStyles,
+                                bottom: "20px",
+                                left: "50%",
+                            }}
+                            onClick={closeResultModal}
+                        >
+                            <strong>Zamknij</strong>
+                        </button>
+                    </div>
+                </Modal>
+                <Modal
+                    isOpen={isOpen}
+                    onRequestClose={onClose}
+                    contentLabel="Edit Correct Answers"
+                    style={styles.bigModalStyles}
+                    ariaHideApp={false}
+                >
+                    <div>
+                        <h2 style={styles.headingStyles}>Rozwiązywanie quizu</h2>
+                        <form>
+                            {formFieldsQuestion.map((form, questionIndex) => {
+                                return (
+                                    <div key={questionIndex} style={{marginBottom: '10px'}}>
+                                        <br/>
+                                        <text style={{
+                                            fontSize: "1.1em",
+                                            fontWeight: "bold"
+                                        }}>Pytanie {form.questionNumber}:
+                                        </text>
+                                        <text style={{
+                                            fontSize: "1.1em",
+                                            fontWeight: "bold"
+                                        }}>{form.questionContent}</text>
+                                        {form.questionAnswers.map((answer, answerIndex) => (
+                                            <div key={answerIndex}
+                                                 style={{marginBottom: '5px', display: 'flex', alignItems: 'center'}}>
+                                                <p style={{marginRight: '10px'}}>{answer.answerContent}</p>
+                                                <input
+                                                    type="checkbox"
+                                                    name="correct"
+                                                    onChange={() => handleCorrectChange(questionIndex, answerIndex)}
+                                                    checked={answer.correct}
+                                                />
+                                            </div>
+                                        ))}
+                                    </div>
+                                );
+                            })}
+                        </form>
+                        <br/>
+                        <button
+                            style={{
+                                ...styles.buttonStyles,
+                                bottom: '20px',
+                                left: '50%',
+                                backgroundColor: "red"
+                            }}
+                            onClick={submit}
+                        >
+                            <strong>Zapisz Podejście</strong>
+                        </button>
+                        <br/>
+                        <br/>
+                        <button
+                            style={{
+                                ...styles.buttonStyles,
+                                bottom: '20px',
+                                left: '50%',
+                            }}
+                            onClick={() => setSolveModalIsOpen(false)}
+                        >
+                            <strong>Anuluj</strong>
+                        </button>
+                    </div>
+                </Modal>
+            </div>
         );
     }
 
@@ -271,7 +321,7 @@ const Quizzes: FC = () => {
                         <strong>Data otwarcia:</strong> {formatOpeningDate(selectedQuiz.quizOpenDate)}<br/>
                         <strong>Liczba pytań:</strong> {selectedQuiz.listOfQuestions.length}<br/><br/>
                         <strong>Najlepszy osiągnięty
-                            wynik: </strong>{bestScore !== null ? bestScore : "0"} poprawne odpowiedzi<br/><br/><br/>
+                            wynik: </strong>{bestScore !== null ? bestScore : "0"}<br/><br/><br/>
 
                         <button style={{
                             ...styles.buttonStyles2,

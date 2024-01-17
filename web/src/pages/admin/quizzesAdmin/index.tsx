@@ -254,7 +254,7 @@ const AdminQuizzes: FC = () => {
                 style={styles.smallModalStyles}
                 ariaHideApp={false}
             >
-            <div style={{textAlign: 'center'}}>
+                <div style={{textAlign: 'center'}}>
                     <h2 style={styles.smallModalText}>
                         Czy na pewno chcesz usunąć quiz "{quizToDelete?.quizTitle}"?
                     </h2>
