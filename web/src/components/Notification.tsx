@@ -1,23 +1,21 @@
-import { FC, useEffect, useState } from "react";
+import { FC, useCallback, useEffect, useState } from "react";
 import toast, { Toaster } from "react-hot-toast";
 import { UserNotification } from "../types/UserNotification";
 import { api } from "../api/api.config";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 
 const Notification: FC = () => {
   const [data, setData] = useState<UserNotification[]>([]);
   const navigation = useNavigate();
+  const location = useLocation();
 
-  const handleGet = () => {
-    api
-      .get("/user/notifications/newest")
-      .then((res) => {
-        setData(res.data);
-      })
-      .finally(notify);
-  };
+  const handleGet = useCallback(() => {
+    api.get("/user/notifications/newest").then((res) => {
+      setData(res.data);
+    });
+  }, []);
 
-  const notify = () => {
+  const notify = useCallback(() => {
     if (data.length == 0) {
       return;
     }
@@ -39,15 +37,15 @@ const Notification: FC = () => {
         </div>
       ));
     });
-  };
+  }, [data, navigation]);
 
   useEffect(() => {
     handleGet();
-  }, []);
+  }, [location, handleGet]);
 
   useEffect(() => {
     notify();
-  }, [data]);
+  }, [data, notify]);
 
   return (
     <div>
