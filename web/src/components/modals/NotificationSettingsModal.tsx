@@ -29,8 +29,6 @@ const NotificationSettingsModal: FC<Props> = ({ reset, id }) => {
     });
   }, [id]);
 
-  console.log(data);
-
   const methods = useForm<SchedulerSettingsUpdate>({
     values: {
       active: data?.active ?? true,
@@ -41,9 +39,9 @@ const NotificationSettingsModal: FC<Props> = ({ reset, id }) => {
   });
 
   const onSubmit = methods.handleSubmit((values) => {
-    console.log(values);
     api.put(`/scheduler/settings/${id}`, values);
     setIsOpen(false);
+    reset();
   });
 
   const formValues = methods.watch();
