@@ -2,6 +2,7 @@ package io.greengame.greengameio.services;
 
 import io.greengame.greengameio.entity.Notification;
 import io.greengame.greengameio.repository.NotificationRepository;
+import io.greengame.greengameio.repository.SchedulerSettingsRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -12,6 +13,7 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class NotificationService {
     private final NotificationRepository repository;
+    private final SchedulerSettingsService schedulerSettingsService;
 
     public List<Notification> get() {
         return repository.findAll();
@@ -39,6 +41,7 @@ public class NotificationService {
 
     public void delete(Long id) {
         Notification result = repository.findById(id).orElseThrow();
+        schedulerSettingsService.delete(result);
         repository.delete(result);
     }
 }

@@ -32,4 +32,9 @@ public class UserNotification extends Notification {
         this.sended = sended;
         this.user = user;
     }
+
+    public UserNotification(Notification notification, Boolean sended) {
+        super(notification.getId(), notification.getTitle(), notification.getContent());
+        this.sended = sended;
+    }
 }
