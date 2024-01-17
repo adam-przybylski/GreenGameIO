@@ -34,7 +34,7 @@ const router = createBrowserRouter([
     Component: AuthenticationLayout,
     children: [
       { path: "/register", Component: RegisterPage },
-      { path: "/login", Component: LoginPage },
+      { path: "/login", Component: LoginPage }
     ],
   },
   {

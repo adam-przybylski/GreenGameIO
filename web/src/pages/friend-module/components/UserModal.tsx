@@ -12,7 +12,7 @@ const UserModal = ({user, close, users}) => {
                 </div>
                 <div id="user-data">
                     <div id="user-friends">
-                        <h2>Friends</h2>
+                        <h2>Znajomi</h2>
                         <ul>
                             {user.friends.map((x, i) => {
                                 return <li>{x}</li>
@@ -20,7 +20,7 @@ const UserModal = ({user, close, users}) => {
                         </ul>
                     </div>
                     <div id="user-groups">
-                        <h2>Groups</h2>
+                        <h2>Grupy</h2>
                         <ul>
                             {user.groups.map((x, _i) => {
                                 return <li>{x}</li>

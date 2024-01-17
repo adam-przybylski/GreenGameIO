@@ -19,10 +19,11 @@ export const UnprotectedRoutes = [
   {
     path: "/quizzes",
     Component: Quizzes,
-  }
+  },
+  { path: "/friends", Component: FriendPage }
 ] satisfies RouteObject[];
 export const ProtectedRoutes = [
-  { path: ":id/friends", Component: FriendPage },
+  
 ] satisfies RouteObject[];
 
 export const AdminRoutes = [

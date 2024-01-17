@@ -1,6 +1,6 @@
 import { FC } from "react";
 import { NavLink } from "react-router-dom";
-import { FaGamepad, FaWrench } from "react-icons/fa";
+import { FaGamepad, FaWrench, FaUser } from "react-icons/fa";
 import { MdQuiz } from "react-icons/md";
 import { IconType } from "react-icons";
 import { classNames } from "../utils/tailwind";
@@ -24,6 +24,7 @@ const Nav: FC = () => {
       { to: "user/notifications", icon: IoNotificationsSharp, label: "Notifications" },
       { to: "awards", icon: BiAward, label: "Awards" },
     { to: "admin", icon: FaWrench, label: "Admin" },
+    { to: "friends", icon: FaUser, label: "Znajomi" }
   ];
 
   return (
