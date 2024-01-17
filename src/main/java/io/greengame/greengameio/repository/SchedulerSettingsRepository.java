@@ -12,5 +12,5 @@ import java.util.Optional;
 public interface SchedulerSettingsRepository extends JpaRepository<SchedulerSettings, Long> {
     Optional<SchedulerSettings> findByNotification(Notification notification);
 
-    Optional<SchedulerSettings> findByNotificationId(Long notificationId);
+    Optional<SchedulerSettings> findByNotification_Id(Long notificationId);
 }

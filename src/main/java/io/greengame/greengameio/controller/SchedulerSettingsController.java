@@ -14,17 +14,10 @@ import org.springframework.web.bind.annotation.*;
 @RequiredArgsConstructor
 public class SchedulerSettingsController {
     private final SchedulerSettingsService schedulerSettingsService;
-    private final NotificationService notificationService;
 
     @GetMapping("{notificationId}")
     public SchedulerSettings get(@PathVariable Long notificationId) {
-        Notification notification = notificationService.getById(notificationId);
-
-        if (notification == null) {
-            return null;
-        }
-
-        return schedulerSettingsService.getSchedulerSettingsByNotification(notification);
+        return schedulerSettingsService.getSchedulerSettingsByNotificationId(notificationId);
     }
 
     @PutMapping("{notificationId}")

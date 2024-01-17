@@ -13,25 +13,38 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class SchedulerSettingsService {
     private final SchedulerSettingsRepository repository;
+    private final NotificationService notificationService;
 
     public List<SchedulerSettings> get() {
         return repository.findAll();
     }
 
-    public SchedulerSettings getSchedulerSettingsByNotification(Notification notification) {
-        Optional<SchedulerSettings> result = repository.findByNotification(notification);
+    public SchedulerSettings getSchedulerSettingsByNotificationId(Long notificationId) {
+        Optional<SchedulerSettings> result = repository.findByNotification_Id(notificationId);
+        Notification notification = notificationService.getById(notificationId);
+
+        if (notification == null) {
+            return null;
+        }
 
         return result.orElseGet(() -> SchedulerSettings.getDefaultSettings(notification));
     }
 
     public SchedulerSettings update(Long notificationId, SchedulerSettings schedulerSettings) {
-        Optional<SchedulerSettings> result = repository.findByNotificationId(notificationId);
+        Notification notification = notificationService.getById(notificationId);
+
+        if (notification == null) {
+            return null;
+        }
+
+        Optional<SchedulerSettings> result = repository.findByNotification_Id(notificationId);
 
         if (result.isEmpty()) {
             repository.saveAndFlush(new SchedulerSettings(schedulerSettings.isActive(),
                     schedulerSettings.getTime(),
                     schedulerSettings.isInfinite(),
-                    schedulerSettings.getRepeat()));
+                    schedulerSettings.getRepeat(),
+                    notification));
         } else {
             SchedulerSettings settings = result.get();
             settings.setActive(schedulerSettings.isActive());
@@ -41,6 +54,6 @@ public class SchedulerSettingsService {
             repository.saveAndFlush(settings);
         }
 
-        return repository.findByNotification(schedulerSettings.getNotification()).get();
+        return repository.findByNotification_Id(notificationId).get();
     }
 }
