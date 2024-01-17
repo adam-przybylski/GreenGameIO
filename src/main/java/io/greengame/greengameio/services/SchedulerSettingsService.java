@@ -2,6 +2,7 @@ package io.greengame.greengameio.services;
 
 import io.greengame.greengameio.entity.Notification;
 import io.greengame.greengameio.entity.SchedulerSettings;
+import io.greengame.greengameio.repository.NotificationRepository;
 import io.greengame.greengameio.repository.SchedulerSettingsRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -13,7 +14,7 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class SchedulerSettingsService {
     private final SchedulerSettingsRepository repository;
-    private final NotificationService notificationService;
+    private final NotificationRepository notificationRepository;
 
     public List<SchedulerSettings> get() {
         return repository.findAll();
@@ -24,22 +25,21 @@ public class SchedulerSettingsService {
     }
     public SchedulerSettings getSchedulerSettingsByNotificationId(Long notificationId) {
         Optional<SchedulerSettings> result = repository.findByNotification_Id(notificationId);
-        Notification notification = notificationService.getById(notificationId);
+        Optional<Notification> notification = notificationRepository.findById(notificationId);
 
-        if (notification == null) {
+        if (notification.isEmpty()) {
             return null;
         }
 
-        return result.orElseGet(() -> SchedulerSettings.getDefaultSettings(notification));
+        return result.orElseGet(() -> SchedulerSettings.getDefaultSettings(notification.get()));
     }
 
     public SchedulerSettings update(Long notificationId, SchedulerSettings schedulerSettings) {
-        Notification notification = notificationService.getById(notificationId);
+        Optional<Notification> notification = notificationRepository.findById(notificationId);
 
-        if (notification == null) {
+        if (notification.isEmpty()) {
             return null;
         }
-
         Optional<SchedulerSettings> result = repository.findByNotification_Id(notificationId);
 
         if (result.isEmpty()) {
@@ -47,7 +47,7 @@ public class SchedulerSettingsService {
                     schedulerSettings.getTime(),
                     schedulerSettings.isInfinite(),
                     schedulerSettings.getRepeat(),
-                    notification));
+                    notification.get()));
         } else {
             SchedulerSettings settings = result.get();
             settings.setActive(schedulerSettings.isActive());

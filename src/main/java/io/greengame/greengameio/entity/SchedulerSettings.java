@@ -19,7 +19,7 @@ public class SchedulerSettings {
     @Column(name = "id", nullable = false)
     private Long id;
     private boolean isActive;
-    private Date lastSended = null;
+    private LocalDateTime lastSended = null;
     private LocalDateTime time;
     private boolean isInfinite;
     private int repeat;
