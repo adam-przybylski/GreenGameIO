@@ -24,15 +24,14 @@ public class SchedulerSettingsService {
         return result.orElseGet(() -> SchedulerSettings.getDefaultSettings(notification));
     }
 
-    public SchedulerSettings update(SchedulerSettings schedulerSettings) {
-        Optional<SchedulerSettings> result = repository.findByNotification(schedulerSettings.getNotification());
+    public SchedulerSettings update(Long notificationId, SchedulerSettings schedulerSettings) {
+        Optional<SchedulerSettings> result = repository.findByNotificationId(notificationId);
 
         if (result.isEmpty()) {
             repository.saveAndFlush(new SchedulerSettings(schedulerSettings.isActive(),
                     schedulerSettings.getTime(),
                     schedulerSettings.isInfinite(),
-                    schedulerSettings.getRepeat(),
-                    schedulerSettings.getNotification()));
+                    schedulerSettings.getRepeat()));
         } else {
             SchedulerSettings settings = result.get();
             settings.setActive(schedulerSettings.isActive());

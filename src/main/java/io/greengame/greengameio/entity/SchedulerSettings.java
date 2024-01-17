@@ -32,6 +32,13 @@ public class SchedulerSettings {
         this.notification = notification;
     }
 
+    public SchedulerSettings(boolean isActive, Date time, boolean isInfinite, int repeat) {
+        this.isActive = isActive;
+        this.time = time;
+        this.isInfinite = isInfinite;
+        this.repeat = repeat;
+    }
+
     public static SchedulerSettings getDefaultSettings(Notification notification) {
         return new SchedulerSettings(false, null, false, 0, notification);
     }

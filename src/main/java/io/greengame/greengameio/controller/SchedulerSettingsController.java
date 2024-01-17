@@ -16,8 +16,8 @@ public class SchedulerSettingsController {
     private final SchedulerSettingsService schedulerSettingsService;
     private final NotificationService notificationService;
 
-    @GetMapping
-    public SchedulerSettings get(@RequestBody Long notificationId) {
+    @GetMapping("{notificationId}")
+    public SchedulerSettings get(@PathVariable Long notificationId) {
         Notification notification = notificationService.getById(notificationId);
 
         if (notification == null) {
@@ -27,8 +27,8 @@ public class SchedulerSettingsController {
         return schedulerSettingsService.getSchedulerSettingsByNotification(notification);
     }
 
-    @PutMapping
-    public SchedulerSettings update(@RequestBody SchedulerSettings schedulerSettings) {
-        return schedulerSettingsService.update(schedulerSettings);
+    @PutMapping("{notificationId}")
+    public SchedulerSettings update(@PathVariable Long notificationId, @RequestBody SchedulerSettings schedulerSettings) {
+        return schedulerSettingsService.update(notificationId, schedulerSettings);
     }
 }

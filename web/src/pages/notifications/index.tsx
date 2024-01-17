@@ -3,10 +3,13 @@ import { api } from "../../api/api.config";
 import { Notification } from "../../types/Notification";
 import NotificationModal from "../../components/modals/NotificationModal";
 import Button from "../../components/Button";
+import NotificationSettingsModal from "../../components/modals/NotificationSettingsModal";
 
 const Notifications: FC = () => {
   const [data, setData] = useState<Notification[]>([]);
   const [notificationToEdit, setNotificationToEdit] = useState<Notification>();
+  const [schedulerSettingsToEdit, setSchedulerSettingToEdit] =
+    useState<number>();
   const [isModalVisible, setModalVisibility] = useState<boolean>(false);
 
   const handleGet = () => {
@@ -107,6 +110,10 @@ const Notifications: FC = () => {
                   }}
                   className="bg-red-200 p-1 rounded text-black hover:text-white ease-in-out duration-100"
                 />
+                <Button
+                  label="Edytuj wysyłanie"
+                  onClick={() => setSchedulerSettingToEdit(not.id)}
+                />
               </div>
             </div>
           ))}
@@ -118,6 +125,12 @@ const Notifications: FC = () => {
             reset={() => {
               setNotificationToEdit(undefined);
             }}
+          />
+        )}
+        {schedulerSettingsToEdit && (
+          <NotificationSettingsModal
+            id={schedulerSettingsToEdit}
+            reset={() => setSchedulerSettingToEdit(undefined)}
           />
         )}
       </div>
