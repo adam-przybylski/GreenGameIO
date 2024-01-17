@@ -1,4 +1,4 @@
-import {FC, useEffect, useState} from "react";
+import React, {FC, useEffect, useState} from "react";
 import Modal from "react-modal";
 import {api} from "../../../api/api.config.ts";
 import * as styles from "./styles";
@@ -190,7 +190,7 @@ const AdminQuizzes: FC = () => {
                         </div>
                     ))
                 ) : (
-                    <p>Brak quizów.</p>
+                    <strong>Brak dostępnych quizów.</strong>
                 )}
             </div>
             <Modal
@@ -203,13 +203,16 @@ const AdminQuizzes: FC = () => {
                 {selectedQuiz && (
                     <div>
                         <h2 style={styles.headingStyles}>{selectedQuiz.quizTitle}</h2>
-                        <strong>Twórca:</strong> {selectedQuiz.quizCreatorName}<br/>
-                        <strong>Data Otwarcia:</strong> {formatOpeningDate(selectedQuiz.quizOpenDate)}<br/><br/>
-                        <h3 style={styles.headingStyles2}>Pytania:</h3>
+                        <strong>Twórca:</strong><br/>
+                        {selectedQuiz.quizCreatorName}<br/><br/>
+                        <strong>Data Otwarcia:</strong><br/> {formatOpeningDate(selectedQuiz.quizOpenDate)}<br/>
+                        <h3 style={styles.headingStyles2}>Lista pytań:</h3>
                         <ul>
                             {selectedQuiz.listOfQuestions.map((question, index) => (
                                 <li key={question.questionContent}>
-                                    <strong>Pytanie {index + 1}:</strong> {question.questionContent}<br/>
+                                    <strong style={{fontSize: "1.1em"}}>Pytanie {index + 1}:</strong>
+                                    <strong style={{fontSize: "1.1em"}}>  {question.questionContent}<br/></strong>
+
                                     <strong>Odpowiedzi:</strong>
                                     <ul>
                                         {question.listOfAnswers.map(answer => (
@@ -231,13 +234,14 @@ const AdminQuizzes: FC = () => {
                                 </li>
                             ))}
                         </ul>
-                        <button style={{
-                            ...styles.buttonStyles,
-                            position: 'absolute',
-                            bottom: '10px',
-                            left: '50%',
-                            transform: 'translateX(-50%)'
-                        }} onClick={closeSelectedQuizModal}>
+                        <button
+                            style={{
+                                ...styles.buttonStyles,
+                                bottom: '20px',
+                                left: '50%',
+                            }}
+                            onClick={() => closeSelectedQuizModal()}
+                        >
                             <strong>Zamknij</strong>
                         </button>
                     </div>
@@ -250,7 +254,7 @@ const AdminQuizzes: FC = () => {
                 style={styles.smallModalStyles}
                 ariaHideApp={false}
             >
-                <div style={{textAlign: 'center'}}>
+            <div style={{textAlign: 'center'}}>
                     <h2 style={styles.smallModalText}>
                         Czy na pewno chcesz usunąć quiz "{quizToDelete?.quizTitle}"?
                     </h2>
@@ -288,20 +292,8 @@ const AdminQuizzes: FC = () => {
                 ariaHideApp={false}
             >
                 <h2 style={styles.headingStyles}>Utwórz Nowy Quiz</h2>
-                <h3 style={styles.headingStyles2}>Uzupełnij dane o quizie:</h3>
+                <h3 style={styles.headingStyles2}>Informacje ogólne o quizie:</h3>
                 <AddQuizModal postNewQuiz={postNewQuiz} setAddModalIsOpen={setAddModalIsOpen}/>
-                <button
-                    style={{
-                        ...styles.buttonStyles,
-                        position: 'absolute',
-                        bottom: '20px',
-                        left: '50%',
-                        transform: 'translateX(-50%)',
-                    }}
-                    onClick={() => setAddModalIsOpen(false)}
-                >
-                    <strong>Zamknij</strong>
-                </button>
             </Modal>
             <Modal
                 isOpen={editModalIsOpen}
@@ -311,21 +303,9 @@ const AdminQuizzes: FC = () => {
                 ariaHideApp={false}
             >
                 <h2 style={styles.headingStyles}>Edytuj Quiz</h2>
-                <h3 style={styles.headingStyles2}>Uzupełnij dane o quizie:</h3>
+                <h3 style={styles.headingStyles2}>Informacje ogólne o quizie:</h3>
                 <EditQuizModal postUpdatedQuiz={postUpdatedQuiz} setEditModalIsOpen={setEditModalIsOpen}
                                onUpdateQuiz={updateQuiz} selectedQuiz={selectedQuiz}/>
-                <button
-                    style={{
-                        ...styles.buttonStyles,
-                        position: 'absolute',
-                        bottom: '10px',
-                        left: '50%',
-                        transform: 'translateX(-50%)',
-                    }}
-                    onClick={() => setEditModalIsOpen(false)}
-                >
-                    <strong>Zamknij</strong>
-                </button>
             </Modal>
         </div>
     );

@@ -1,4 +1,5 @@
 import React, {FC, useState} from 'react';
+import * as styles from "../../pages/admin/quizzesAdmin/styles.ts";
 
 interface Answer {
     answerContent: string;
@@ -47,10 +48,6 @@ const EditQuizModal: FC<EditQuizProps> = ({selectedQuiz, setEditModalIsOpen, onU
             quizOpenDate: selectedQuiz?.quizOpenDate,
         },
     ]);
-
-    // console.log("EDIT QUIZ")
-    // console.table(selectedQuiz)
-    // console.table(formFieldsQuiz)
 
     const [formFieldsQuestion, setFormFieldsQuestion] = useState(
         selectedQuiz?.listOfQuestions.map((question) => {
@@ -108,22 +105,30 @@ const EditQuizModal: FC<EditQuizProps> = ({selectedQuiz, setEditModalIsOpen, onU
         e.preventDefault();
 
         if (formFieldsQuiz[0].quizTitle.trim() === '') {
-            console.error('Quiz name is required.');
+            const errorMessage = 'Quiz musi mieć zdefiniowaną nazwę.';
+            console.error(errorMessage);
+            alert(errorMessage);
             return;
         }
 
         if (formFieldsQuiz[0].quizCreator.trim() === '') {
-            console.error('Creator name is required.');
+            const errorMessage = 'Quiz musi mieć zdefiniowanego twórcę.';
+            console.error(errorMessage);
+            alert(errorMessage);
             return;
         }
 
         if (!formFieldsQuiz[0].quizOpenDate) {
-            console.error('Quiz date is required.');
+            const errorMessage = 'Quiz musi mieć zdefiniowaną datę otwarcia.';
+            console.error(errorMessage);
+            alert(errorMessage);
             return;
         }
 
         if (formFieldsQuestion.length === 0 || formFieldsQuestion.length > 10) {
-            console.error('A quiz must contain between 1 and 10 questions.');
+            const errorMessage = 'Quiz musi składać się przynajmniej z 1 pytania.';
+            console.error(errorMessage);
+            alert(errorMessage);
             return;
         }
 
@@ -134,14 +139,12 @@ const EditQuizModal: FC<EditQuizProps> = ({selectedQuiz, setEditModalIsOpen, onU
                 question.questionAnswers.length > 5 ||
                 !question.questionAnswers.some(answer => answer.correct)
             ) {
-                console.error('Each question must have a content, between 2 and 5 answers, and at least 1 correct answer.');
+                const errorMessage = 'Żadne pytanie nie może mieć mniej niż 2 odpowiedzi';
+                console.error(errorMessage);
+                alert(errorMessage);
                 return;
             }
         }
-
-        // console.log(formFieldsQuiz);
-        // console.log(formFieldsQuestion);
-        // console.log(formFieldsQuiz[0].quizOpenDate.toString())
 
         const updatedQuiz = {
             quizID: selectedQuiz?.quizID,
@@ -168,6 +171,14 @@ const EditQuizModal: FC<EditQuizProps> = ({selectedQuiz, setEditModalIsOpen, onU
 
     const addQuestion = (e) => {
         e.preventDefault();
+
+        if (formFieldsQuestion.length >= 10) {
+            const errorMessage = 'Quiz nie może mieć więcej niż 10 pytań.';
+            console.error(errorMessage);
+            alert(errorMessage);
+            return;
+        }
+
         let object = {
             questionContent: "",
             questionAnswers: [{answerContent: "", correct: false}],
@@ -178,6 +189,12 @@ const EditQuizModal: FC<EditQuizProps> = ({selectedQuiz, setEditModalIsOpen, onU
 
     const addAnswer = (questionIndex) => {
         let data = [...formFieldsQuestion];
+        if (data[questionIndex].questionAnswers.length >= 5) {
+            const errorMessage = 'Pytanie może mieć więcej niż 5 odpowiedzi';
+            console.error(errorMessage);
+            alert(errorMessage);
+            return;
+        }
         data[questionIndex].questionAnswers.push({answerContent: "", correct: false});
         setFormFieldsQuestion(data);
     };
@@ -201,15 +218,17 @@ const EditQuizModal: FC<EditQuizProps> = ({selectedQuiz, setEditModalIsOpen, onU
                 {formFieldsQuiz.map((form, index) => {
                     return (
                         <div key={index}>
+                            <strong>Nazwa Quizu: </strong><br/>
                             <input
                                 name="quizTitle"
-                                placeholder="Treść pytania"
+                                placeholder="..."
                                 onChange={(event) => handleQuizFormChange(event, index)}
                                 value={form.quizTitle}
                                 required={true}
+                                style={{width: '45%'}}
                             />
-                            <br/>
-                            <br/>
+                            <br/><br/>
+                            <strong>Data Otwarcia Quizu: </strong><br/>
                             <input
                                 type="datetime-local"
                                 onChange={(event) => handleQuizFormChange(event, index)}
@@ -219,30 +238,50 @@ const EditQuizModal: FC<EditQuizProps> = ({selectedQuiz, setEditModalIsOpen, onU
                                 //key={form.quizOpenDate}
                                 required={true}
                             />
+                            <h3 style={styles.headingStyles2}>Lista pytań:</h3>
                         </div>
                     );
                 })}
             </form>
             <br/>
-            <br/>
             <form>
                 {formFieldsQuestion.map((form, questionIndex) => {
                     return (
                         <div key={questionIndex} style={{marginBottom: '10px'}}>
+                            <br/>
+                            <strong style={{fontSize: "1.2em"}}>Pytanie {questionIndex + 1} </strong>
+                            <button
+                                type="button"
+                                onClick={() => removeQuestion(questionIndex)}
+                                style={{border: 'none', background: 'none', cursor: 'pointer'}}
+                            >
+                                <span style={{fontSize: '1.1em'}}>&#10006;</span>
+                            </button>
+                            <br/>
                             <input
-                                style={{width: '80%', padding: '4px'}}
                                 name="questionContent"
-                                placeholder="Treść Pytania"
+                                placeholder="Treść pytania"
                                 onChange={(event) => handleQuestionFormChange(event, questionIndex)}
                                 value={form.questionContent}
+                                style={{width: '45%'}}
                             />
                             <br/>
+                            <br/>
                             {form.questionAnswers.map((answer, answerIndex) => (
-                                <div key={answerIndex} style={{marginBottom: '5px'}}>
+                                <div key={answerIndex}>
+                                    <strong>Odpowiedź {answerIndex + 1}  </strong>
+                                    <button
+                                        type="button"
+                                        onClick={() => removeAnswer(questionIndex, answerIndex)}
+                                        style={{border: 'none', background: 'none', cursor: 'pointer'}}
+                                    >
+                                        <span style={{fontSize: '1em'}}>&#10006;</span>
+                                    </button>
+                                    <br/>
                                     <input
-                                        style={{width: '60%', padding: '4px'}}
+                                        style={{width: '25%'}}
                                         name="answerContent"
-                                        placeholder="Treść Odpowiedzi"
+                                        placeholder="Treść odpowiedzi"
                                         onChange={(event) => handleAnswerFormChange(event, questionIndex, answerIndex)}
                                         value={answer.answerContent}
                                     />
@@ -253,28 +292,47 @@ const EditQuizModal: FC<EditQuizProps> = ({selectedQuiz, setEditModalIsOpen, onU
                                         onChange={(event) => handleAnswerFormChange(event, questionIndex, answerIndex)}
                                         checked={answer.correct}
                                     />
-                                    <button type="button"
-                                            onClick={() => removeAnswer(questionIndex, answerIndex)}>
-                                        Remove Answer
-                                    </button>
+                                    <br/>
                                     <br/>
                                 </div>
                             ))}
                             <button type="button" onClick={() => addAnswer(questionIndex)}>
-                                Add an Answer
+                                <strong>Dodaj odpowiedź</strong>
                             </button>
                             <br/>
-                            <button type="button" onClick={() => removeQuestion(questionIndex)}>
-                                Remove Question
-                            </button>
+                            <br/>
                         </div>
                     );
                 })}
             </form>
+            <button onClick={addQuestion}>
+                <strong style={{color: "black", fontSize: "1.1em"}}>Dodaj pytanie</strong>
+            </button>
             <br/>
-            <button onClick={addQuestion}>Add A Question</button>
             <br/>
-            <button onClick={submit}>Submit</button>
+            <button
+                style={{
+                    ...styles.buttonStyles,
+                    bottom: '20px',
+                    left: '50%',
+                    backgroundColor: "red"
+                }}
+                onClick={submit}
+            >
+                <strong>Zapisz Quiz</strong>
+            </button>
+            <br/>
+            <br/>
+            <button
+                style={{
+                    ...styles.buttonStyles,
+                    bottom: '20px',
+                    left: '50%',
+                }}
+                onClick={() => setEditModalIsOpen(false)}
+            >
+                <strong>Anuluj</strong>
+            </button>
         </div>
     );
 }

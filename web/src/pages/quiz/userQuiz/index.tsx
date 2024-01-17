@@ -3,7 +3,6 @@ import Modal from "react-modal";
 import {api} from "../../../api/api.config.ts";
 import * as styles from "./styles";
 
-
 interface Answer {
     answerContent: string;
     correct: boolean;
@@ -33,7 +32,6 @@ const Quizzes: FC = () => {
     const [modalIsOpen, setModalIsOpen] = useState(false);
     const [solveModalIsOpen, setSolveModalIsOpen] = useState(false);
     const [bestScore, setBestScore] = useState<number | null>(null);
-    // const [hasFetchedHiScore, setHasFetchedHiScore] = useState<{ [userId: number]: { [quizId: number]: boolean } }>({});
 
     useEffect(() => {
         api.get("/quizzes/correct")
@@ -48,60 +46,9 @@ const Quizzes: FC = () => {
 
     }, []);
 
-    // function useFetchData(selectedQuiz) {
-    //     const [data1, setData] = React.useState([]);
-    //
-    //     const localStorageItem = localStorage.getItem("account");
-    //     const parsedData = JSON.parse(localStorageItem);
-    //     const userID = parsedData.id;
-    //
-    //     useEffect(() => {
-    //         api.get(`/quizzes/id/${selectedQuiz.quizID}/user-id/${userID}`)
-    //             .then((responseJson) => {
-    //                 setData(responseJson.data);
-    //             })
-    //             .catch((error) => {
-    //                 console.error(error);
-    //             });
-    //     }, []);
-    //
-    //     return {data1};
-    // }
-
-
-    // useEffect(() => {
-    //     const localStorageItem = localStorage.getItem("account");
-    //     if (localStorageItem) {
-    //         // @ts-ignore
-    //         const parsedData = JSON.parse(localStorageItem);
-    //         const userID = parsedData.id;
-    //         console.log(hasFetchedHiScore[userID])
-    //         if (!hasFetchedHiScore[userID]) {
-    //             const updatedFetchStatus = { ...hasFetchedHiScore };
-    //             if (selectedQuiz && !updatedFetchStatus[userID]?.[selectedQuiz.quizID]) {
-    //                 api.get(`/quizzes/id/${selectedQuiz.quizID}/user-id/${userID}`)
-    //                     .then((response) => {
-    //                         setBestScore(response.data || null);
-    //                         updatedFetchStatus[userID] = {
-    //                             ...(updatedFetchStatus[userID] || {}),
-    //                             [selectedQuiz.quizID]: true,
-    //                         };
-    //
-    //                         setHasFetchedHiScore(updatedFetchStatus);
-    //                     })
-    //                     .catch((error) => {
-    //                         console.error("Error fetching best score:", error);
-    //                         setBestScore(null);
-    //                     });
-    //             }
-    //         }
-    //     }
-    // }, [selectedQuiz, hasFetchedHiScore]);
-    //
     useEffect(() => {
         const localStorageItem = localStorage.getItem("account");
         if (localStorageItem) {
-            // @ts-ignore
             const parsedData = JSON.parse(localStorageItem);
             const userID = parsedData.id;
 
@@ -171,9 +118,15 @@ const Quizzes: FC = () => {
 
         const handleCorrectChange = (questionIndex, answerIndex) => {
             let data = [...formFieldsQuestion];
+
+            data[questionIndex].questionAnswers.forEach((answer, index) => {
+                if (index !== answerIndex) {
+                    answer.correct = false;
+                }
+            });
+
             data[questionIndex].questionAnswers[answerIndex].correct = !data[questionIndex].questionAnswers[answerIndex].correct;
             setFormFieldsQuestion(data);
-            console.log('Updated State:', data);
         };
 
         const postAnswers: (listOfUserAnswers, selectedQuizID) => Promise<void> = async (listOfUserAnswers, selectedQuizID) => {
@@ -195,11 +148,7 @@ const Quizzes: FC = () => {
             const listOfUserAnswers: UserAnswer[] = [];
 
             selectedQuiz.listOfQuestions.forEach((question) => {
-                console.log('Question Number:', question.questionNumber);
-                console.table('List of Answers:', question.listOfAnswers);
-
                 const correctAnswerIndex = question.listOfAnswers.findIndex((answer) => answer.correct);
-                console.log('Correct Answer Index:', correctAnswerIndex);
 
                 if (correctAnswerIndex !== -1) {
                     listOfUserAnswers.push({
@@ -214,14 +163,12 @@ const Quizzes: FC = () => {
             // @ts-expect-error
             const parsedData = JSON.parse(localStorageItem);
             const idValue = parsedData.id;
-            console.log(idValue);
 
             const toSend = {
                 userID: idValue,
                 listOfUserAnswers: listOfUserAnswers,
             }
 
-            console.log('List of User Answers:', toSend);
             postAnswers(toSend, selectedQuiz.quizID);
             closeSolveQuizModal()
         };
@@ -235,12 +182,14 @@ const Quizzes: FC = () => {
                 ariaHideApp={false}
             >
                 <div>
+                    <h2 style={styles.headingStyles}>Rozwiązywanie quizu</h2>
                     <form>
                         {formFieldsQuestion.map((form, questionIndex) => {
                             return (
                                 <div key={questionIndex} style={{marginBottom: '10px'}}>
-                                    <strong>Pytanie {form.questionNumber}: </strong>
-                                    <strong>{form.questionContent}</strong>
+                                    <br/>
+                                    <text style={{fontSize: "1.1em", fontWeight:"bold"}}>Pytanie {form.questionNumber}: </text>
+                                    <text style={{fontSize: "1.1em", fontWeight:"bold"}}>{form.questionContent}</text>
                                     {form.questionAnswers.map((answer, answerIndex) => (
                                         <div key={answerIndex}
                                              style={{marginBottom: '5px', display: 'flex', alignItems: 'center'}}>
@@ -258,19 +207,28 @@ const Quizzes: FC = () => {
                         })}
                     </form>
                     <br/>
-                    <button onClick={submit}>Submit</button>
-
                     <button
                         style={{
                             ...styles.buttonStyles,
-                            position: 'absolute',
-                            bottom: '10px',
+                            bottom: '20px',
                             left: '50%',
-                            transform: 'translateX(-50%)',
+                            backgroundColor: "red"
                         }}
-                        onClick={onClose}
+                        onClick={submit}
                     >
-                        Close
+                        <strong>Zapisz Podejście</strong>
+                    </button>
+                    <br/>
+                    <br/>
+                    <button
+                        style={{
+                            ...styles.buttonStyles,
+                            bottom: '20px',
+                            left: '50%',
+                        }}
+                        onClick={() => setSolveModalIsOpen(false)}
+                    >
+                        <strong>Anuluj</strong>
                     </button>
                 </div>
             </Modal>
@@ -289,33 +247,32 @@ const Quizzes: FC = () => {
                             style={styles.squareStyles}
                         >
                             <div style={{textAlign: 'center'}}>
-                                <strong>{quiz.quizTitle}</strong><br/><br/>
+                                <h3 style={styles.headingStyles3}>{quiz.quizTitle}</h3><br/>
                             </div>
                             <strong>Data Otwarcia:</strong> {formatOpeningDate(quiz.quizOpenDate)}<br/><br/>
                             <strong>Liczba pytań:</strong> {quiz.listOfQuestions.length}<br/>
                         </div>
                     ))
                 ) : (
-                    <p>Brak Quizów.</p>
+                    <strong>Brak dostępnych quizów.</strong>
                 )}
             </div>
             <Modal
                 isOpen={modalIsOpen}
                 onRequestClose={closeModal}
                 contentLabel="Selected Quiz"
-                style={styles.modalStyles}
+                style={styles.smallModalStyles}
                 ariaHideApp={false}
             >
                 {selectedQuiz && (
                     <div>
                         <h2 style={styles.headingStyles}>{selectedQuiz.quizTitle}</h2>
                         <strong>Twórca:</strong> {selectedQuiz.quizCreatorName}<br/>
-                        <strong>Data Otwarcia:</strong> {formatOpeningDate(selectedQuiz.quizOpenDate)}<br/>
-                        {/*<strong>Twój Najlepszy Wynik: </strong>{1}<br/><br/>*/}
-                        {/*<strong>Twój Najlepszy Wynik: </strong>{bestScore}<br/><br/>*/}
-                        <strong>Twój Najlepszy Wynik: </strong>{1}<br/><br/>
-                        <strong>Twój Najlepszy
-                            Wynik: </strong>{bestScore !== null ? bestScore : "Brak danych"}<br/><br/>
+                        <strong>Data otwarcia:</strong> {formatOpeningDate(selectedQuiz.quizOpenDate)}<br/>
+                        <strong>Liczba pytań:</strong> {selectedQuiz.listOfQuestions.length}<br/><br/>
+                        <strong>Najlepszy osiągnięty
+                            wynik: </strong>{bestScore !== null ? bestScore : "0"} poprawne odpowiedzi<br/><br/><br/>
+
                         <button style={{
                             ...styles.buttonStyles2,
                             position: 'absolute',
