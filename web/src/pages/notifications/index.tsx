@@ -78,7 +78,7 @@ const Notifications: FC = () => {
         <div className="basis-1/12 text-center">ID</div>
         <div className="basis-3/12 text-center">TYTUŁ</div>
         <div className="basis-full text-center">OPIS</div>
-        <div className="basis-2/12 text-center">AKCJE</div>
+        <div className="basis-6/12 text-center">AKCJE</div>
       </div>
       <div className="rounded-b-sm bg-white">
         {data
@@ -97,7 +97,7 @@ const Notifications: FC = () => {
               <div className="basis-full flex items-center break-keep">
                 {not.content}
               </div>
-              <div className="basis-6/12 flex justify-end items-center text-center gap-2">
+              <div className="basis-6/12 flex justify-center items-center text-center gap-2">
                 <Button
                   label="Modyfikuj"
                   onClick={() => setNotificationToEdit(not)}
