@@ -12,8 +12,6 @@ import io.greengame.greengameio.dtos.quizzes.modification_dtos.QuizQuestionModif
 import io.greengame.greengameio.dtos.quizzes.output_dtos.QuizOutputDTO;
 import io.greengame.greengameio.dtos.quizzes.output_dtos.QuizWithCorrectAnswersDTO;
 import io.greengame.greengameio.entity.*;
-import io.greengame.greengameio.exceptions.hiScore.HiScoreNotFoundException;
-import io.greengame.greengameio.exceptions.quiz.QuizNotFoundException;
 import io.greengame.greengameio.services.*;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -25,6 +23,7 @@ import org.springframework.web.bind.annotation.*;
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @Validated
@@ -58,34 +57,26 @@ public class QuizController {
 
     @GetMapping("/id/{id}")
     public ResponseEntity<?> getQuizByID(@PathVariable Long id) {
-        Quiz quiz = null;
-        try {
-            quiz = quizService.getQuiz(id);
-            return ResponseEntity.ok().contentType(MediaType.APPLICATION_JSON).body(QuizMapper.toQuizOutputDTO(quiz));
-        } catch (QuizNotFoundException exception) {
-            return ResponseEntity.notFound().build();
-        }
+        Optional<Quiz> quiz = quizService.getQuiz(id);
+        return quiz
+                .map(value -> ResponseEntity.ok().contentType(MediaType.APPLICATION_JSON).body(QuizMapper.toQuizOutputDTO(value)))
+                .orElseGet(() -> ResponseEntity.ok().contentType(MediaType.APPLICATION_JSON).body(null));
     }
 
     @GetMapping("/id/{id}/correct")
     public ResponseEntity<?> getQuizWithCorrectAnswersByID(@PathVariable Long id) {
-        Quiz quiz = null;
-        try {
-            quiz = quizService.getQuiz(id);
-            return ResponseEntity.ok().contentType(MediaType.APPLICATION_JSON).body(QuizMapper.toQuizWithCorrectAnswersDTO(quiz));
-        } catch (QuizNotFoundException exception) {
-            return ResponseEntity.notFound().build();
-        }
+        Optional<Quiz> quiz = quizService.getQuiz(id);
+        return quiz
+                .map(value -> ResponseEntity.ok().contentType(MediaType.APPLICATION_JSON).body(QuizMapper.toQuizWithCorrectAnswersDTO(value)))
+                .orElseGet(() -> ResponseEntity.ok().contentType(MediaType.APPLICATION_JSON).body(null));
     }
 
     @GetMapping("/title/{title}")
     public ResponseEntity<?> getQuizByTitle(@PathVariable String title) {
-        try {
-            Quiz quiz = quizService.getQuizByQuizTitle(title);
-            return ResponseEntity.ok().contentType(MediaType.APPLICATION_JSON).body(QuizMapper.toQuizOutputDTO(quiz));
-        } catch (QuizNotFoundException exception) {
-            return ResponseEntity.notFound().build();
-        }
+        Optional<Quiz> quiz = quizService.getQuizByQuizTitle(title);
+        return quiz
+                .map(value -> ResponseEntity.ok().contentType(MediaType.APPLICATION_JSON).body(QuizMapper.toQuizOutputDTO(value)))
+                .orElseGet(() -> ResponseEntity.ok().contentType(MediaType.APPLICATION_JSON).body(null));
     }
 
     @GetMapping
@@ -110,42 +101,39 @@ public class QuizController {
 
     @GetMapping("/id/{quizID}/user-id/{userID}")
     public ResponseEntity<?> getHiScoreForUserInCertainQuiz(@PathVariable Long userID, @PathVariable Long quizID) {
-        try {
-            User user = userService.getUserById(userID);
-            Quiz quiz = quizService.getQuiz(quizID);
-            HiScore hiScore;
-            try {
-                hiScore = hiScoreService.getHighScoreByUserAndQuiz(user, quiz);
-                return ResponseEntity.ok().contentType(MediaType.APPLICATION_JSON).body(hiScore.getHiScore());
-            } catch (HiScoreNotFoundException exception) {
-                return ResponseEntity.badRequest().contentType(MediaType.APPLICATION_JSON).body(exception.getMessage());
+        User user = userService.getUserById(userID);
+        Optional<Quiz> quiz = quizService.getQuiz(quizID);
+        if (quiz.isPresent()) {
+            Optional<HiScore> hiScore = hiScoreService.getHighScoreByUserAndQuiz(user, quiz.get());
+            if (hiScore.isPresent()) {
+                return ResponseEntity.ok().contentType(MediaType.APPLICATION_JSON).body(hiScore.get().getHiScore());
             }
-        } catch (QuizNotFoundException exception) {
-            return ResponseEntity.badRequest().contentType(MediaType.APPLICATION_JSON).body(exception.getMessage());
         }
+        return ResponseEntity.ok().contentType(MediaType.APPLICATION_JSON).body("No high score for given user was found.");
     }
 
     // Update methods
 
     @PutMapping("/id/{quizID}/modify-general")
     public ResponseEntity<?> modifyQuizGeneralInfo(@PathVariable Long quizID, @RequestBody QuizGeneralInfoModificationDTO quizGeneralInfoModificationDTO) {
-        try {
-            Quiz existingQuiz = quizService.getQuiz(quizID);
+        Optional<Quiz> existingQuizOpt = quizService.getQuiz(quizID);
+        if (existingQuizOpt.isPresent()) {
+            Quiz existingQuiz = existingQuizOpt.get();
             existingQuiz.setQuizTitle(quizGeneralInfoModificationDTO.getQuizTitle());
             existingQuiz.setQuizOpenDate(quizGeneralInfoModificationDTO.getQuizOpenDate());
             quizService.updateQuiz(existingQuiz);
             return ResponseEntity.ok().contentType(MediaType.APPLICATION_JSON).body(QuizMapper.toQuizOutputDTO(existingQuiz));
-        } catch (QuizNotFoundException exception) {
-            return ResponseEntity.badRequest().contentType(MediaType.APPLICATION_JSON).body(exception.getMessage());
+        } else {
+            return ResponseEntity.ok().contentType(MediaType.APPLICATION_JSON).body("Quiz general information could not be modified.");
         }
     }
 
     @PutMapping("/id/{quizID}/modify-questions")
     @Transactional
     public ResponseEntity<?> modifyQuizQuestions(@PathVariable Long quizID, @RequestBody QuizQuestionModificationDTO quizQuestionModificationDTO) {
-        try {
-            Quiz existingQuiz = quizService.getQuiz(quizID);
-
+        Optional<Quiz> existingQuizOpt = quizService.getQuiz(quizID);
+        if (existingQuizOpt.isPresent()) {
+            Quiz existingQuiz = existingQuizOpt.get();
             for (Question question : existingQuiz.getListOfQuestions()) {
                 for (Answer answer : question.getListOfAnswers()) {
                     answerService.deleteAnswer(answer);
@@ -167,8 +155,8 @@ public class QuizController {
             existingQuiz.setListOfQuestions(newListOfQuestions);
             quizService.updateQuiz(existingQuiz);
             return ResponseEntity.ok().contentType(MediaType.APPLICATION_JSON).body(QuizMapper.toQuizOutputDTO(existingQuiz));
-        } catch (QuizNotFoundException exception) {
-            return ResponseEntity.badRequest().contentType(MediaType.APPLICATION_JSON).body(exception.getMessage());
+        } else {
+            return ResponseEntity.ok().contentType(MediaType.APPLICATION_JSON).body("Quiz questions could not be updated.");
         }
     }
 
@@ -177,22 +165,22 @@ public class QuizController {
     @DeleteMapping("/id/{quizID}")
     @Transactional
     public ResponseEntity<?> deleteQuiz(@PathVariable Long quizID) {
-        try {
-            Quiz quizToBeDeleted = quizService.getQuiz(quizID);
+        Optional<Quiz> quizToBeDeletedOpt = quizService.getQuiz(quizID);
+        if (quizToBeDeletedOpt.isPresent()) {
+            Quiz quizToBeDeleted = quizToBeDeletedOpt.get();
             hiScoreService.deleteAllHiScoresByQuizId(quizID);
             List<Question> listOfQuestionToBeDeleted = quizToBeDeleted.getListOfQuestions();
             quizService.deleteQuizByQuizId(quizID);
             for (Question question : listOfQuestionToBeDeleted) {
                 List<Answer> listOfAnswersToBeDeleted = question.getListOfAnswers();
                 questionService.deleteQuestion(question);
-                for (Answer answer : listOfAnswersToBeDeleted){
+                for (Answer answer : listOfAnswersToBeDeleted) {
                     answerService.deleteAnswer(answer);
                 }
             }
-
             return ResponseEntity.ok().contentType(MediaType.APPLICATION_JSON).body("Quiz was deleted successfully.");
-        } catch (QuizNotFoundException exception) {
-            return ResponseEntity.badRequest().contentType(MediaType.APPLICATION_JSON).body(exception.getMessage());
+        } else {
+            return ResponseEntity.ok().contentType(MediaType.APPLICATION_JSON).body("Quiz could not be updated since it does not exist.");
         }
     }
 
@@ -201,8 +189,9 @@ public class QuizController {
     @PostMapping("/id/{quizID}/check")
     @Transactional
     public ResponseEntity<?> checkQuiz(@PathVariable Long quizID, @RequestBody QuizCheckDTO quizCheckDTO) {
-        try {
-            Quiz quizFromDB = quizService.getQuiz(quizID);
+        Optional<Quiz> quizFromDBOpt = quizService.getQuiz(quizID);
+        if (quizFromDBOpt.isPresent()) {
+            Quiz quizFromDB = quizFromDBOpt.get();
             int numberOfCorrectAnswers = 0;
 
             for (QuestionAnswersDTO questionAnswersDTO : quizCheckDTO.getListOfUserAnswers()) {
@@ -216,25 +205,30 @@ public class QuizController {
             }
 
             User user = userService.getUserById(quizCheckDTO.getUserID());
-            Quiz quiz = quizService.getQuiz(quizID);
+            Optional<Quiz> quizOpt = quizService.getQuiz(quizID);
 
-            HiScore hiScore;
-            HiScore newHiScore;
-            try {
-                hiScore = hiScoreService.getHighScoreByUserAndQuiz(user, quiz);
-                if (hiScore.getHiScore() < numberOfCorrectAnswers) {
+            if (quizOpt.isPresent()) {
+                Quiz quiz = quizOpt.get();
+
+                HiScore hiScore;
+                Optional<HiScore> newHiScoreOpt;
+
+                Optional<HiScore> hiScoreOpt = hiScoreService.getHighScoreByUserAndQuiz(user, quiz);
+                if (hiScoreOpt.isPresent() && hiScoreOpt.get().getHiScore() < numberOfCorrectAnswers) {
+                    hiScore = hiScoreOpt.get();
                     hiScore.setHiScore(numberOfCorrectAnswers);
                     hiScoreService.updateHiScore(hiScore);
+                } else {
+                    hiScore = new HiScore(quiz, user, numberOfCorrectAnswers);
+                    hiScoreService.createHiScore(hiScore);
                 }
-                newHiScore = hiScoreService.getHighScoreByUserAndQuiz(user, quiz);
-            } catch (HiScoreNotFoundException exception) {
-                newHiScore = new HiScore(quiz, user, numberOfCorrectAnswers);
-                hiScoreService.createHiScore(newHiScore);
-            }
 
-            return ResponseEntity.ok().contentType(MediaType.APPLICATION_JSON).body(HiScoreMapper.toHiScoreOutputDTO(newHiScore, numberOfCorrectAnswers));
-        } catch (QuizNotFoundException exception) {
-            return ResponseEntity.badRequest().contentType(MediaType.APPLICATION_JSON).body(exception.getMessage());
+                newHiScoreOpt = hiScoreService.getHighScoreByUserAndQuiz(user, quiz);
+                if (newHiScoreOpt.isPresent()) {
+                    return ResponseEntity.ok().contentType(MediaType.APPLICATION_JSON).body(HiScoreMapper.toHiScoreOutputDTO(newHiScoreOpt.get(), numberOfCorrectAnswers));
+                }
+            }
         }
+        return ResponseEntity.ok().contentType(MediaType.APPLICATION_JSON).body(0);
     }
 }
