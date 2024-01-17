@@ -13,9 +13,9 @@ interface Props {
 }
 
 type SchedulerSettingsUpdate = {
-  isActive: boolean;
+  active: boolean;
   time?: Date;
-  isInfinite: boolean;
+  infinite: boolean;
   repeat?: number;
 };
 
@@ -33,9 +33,9 @@ const NotificationSettingsModal: FC<Props> = ({ reset, id }) => {
 
   const methods = useForm<SchedulerSettingsUpdate>({
     values: {
-      isActive: data?.isActive ?? true,
+      active: data?.active ?? true,
       time: data?.time ?? undefined,
-      isInfinite: data?.isInfinite ?? true,
+      infinite: data?.infinite ?? true,
       repeat: data?.repeat || undefined,
     },
   });
@@ -63,33 +63,41 @@ const NotificationSettingsModal: FC<Props> = ({ reset, id }) => {
             className="w-full max-w-sm rounded bg-white shadow-md"
             aria-hidden="true"
           >
-            <Dialog.Title>Ustawienia schedulera</Dialog.Title>
+            <Dialog.Title className="border-b-[1px] border-gray-400 p-4 font-bold">
+              Ustawienia schedulera
+            </Dialog.Title>
             <FormProvider {...methods}>
               <form onSubmit={onSubmit}>
                 <div className="p-4 flex flex-col gap-3">
                   <div>
-                    <Checkbox name="isActive" label="Powiadomienie aktywne" />
+                    <Checkbox name="active" label="Powiadomienie aktywne" />
                   </div>
-                  {formValues.isActive && (
+                  {formValues.active && (
                     <>
                       <div>
                         <Input type="datetime-local" name="time" label="Czas" />
                       </div>
                       <div>
-                        <Checkbox name="isInfinite" label="Czy nieskończone" />
+                        <Checkbox name="infinite" label="Czy nieskończone" />
                       </div>
                       <div>
                         <Input
                           type="number"
                           name="repeat"
                           label="Powtórzenia"
-                          disabled={formValues.isInfinite}
+                          disabled={formValues.infinite}
                         />
                       </div>
                     </>
                   )}
                 </div>
-                <Button type="submit" label="Update" />
+                <div className="flex border-t p-4 justify-end">
+                  <Button
+                    className="bg-nice-green p-1 rounded text-white mr-1 hover:text-black ease-in-out duration-100"
+                    type="submit"
+                    label="Update"
+                  />
+                </div>
               </form>
             </FormProvider>
           </Dialog.Panel>

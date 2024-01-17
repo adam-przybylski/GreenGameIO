@@ -5,6 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDateTime;
 import java.util.Date;
 
 @Data
@@ -18,13 +19,13 @@ public class SchedulerSettings {
     @Column(name = "id", nullable = false)
     private Long id;
     private boolean isActive;
-    private Date time;
+    private LocalDateTime time;
     private boolean isInfinite;
     private int repeat;
     @OneToOne
     private Notification notification;
 
-    public SchedulerSettings(boolean isActive, Date time, boolean isInfinite, int repeat, Notification notification) {
+    public SchedulerSettings(boolean isActive, LocalDateTime time, boolean isInfinite, int repeat, Notification notification) {
         this.isActive = isActive;
         this.time = time;
         this.isInfinite = isInfinite;
@@ -32,7 +33,7 @@ public class SchedulerSettings {
         this.notification = notification;
     }
 
-    public SchedulerSettings(boolean isActive, Date time, boolean isInfinite, int repeat) {
+    public SchedulerSettings(boolean isActive, LocalDateTime time, boolean isInfinite, int repeat) {
         this.isActive = isActive;
         this.time = time;
         this.isInfinite = isInfinite;

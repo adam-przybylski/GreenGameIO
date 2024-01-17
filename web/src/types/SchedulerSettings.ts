@@ -1,6 +1,6 @@
 export type SchedulerSettings = {
-  isActive: boolean;
+  active: boolean;
   time: Date;
-  isInfinite: boolean;
+  infinite: boolean;
   repeat: number;
 };

@@ -97,11 +97,16 @@ const Notifications: FC = () => {
               <div className="basis-full flex items-center break-keep">
                 {not.content}
               </div>
-              <div className="basis-2/12 flex justify-center items-center text-center">
+              <div className="basis-6/12 flex justify-end items-center text-center gap-2">
                 <Button
                   label="Modyfikuj"
                   onClick={() => setNotificationToEdit(not)}
-                  className="bg-green-200 p-1 rounded text-black  mr-1 hover:text-white ease-in-out duration-100"
+                  className="bg-green-200 p-1 rounded text-black hover:text-white ease-in-out duration-100"
+                />
+                <Button
+                  label="Edytuj wysyłanie"
+                  onClick={() => setSchedulerSettingToEdit(not.id)}
+                  className="bg-green-200 p-1 rounded text-black hover:text-white ease-in-out duration-100"
                 />
                 <Button
                   label="Usuń"
@@ -109,10 +114,6 @@ const Notifications: FC = () => {
                     handleRemove(not);
                   }}
                   className="bg-red-200 p-1 rounded text-black hover:text-white ease-in-out duration-100"
-                />
-                <Button
-                  label="Edytuj wysyłanie"
-                  onClick={() => setSchedulerSettingToEdit(not.id)}
                 />
               </div>
             </div>
