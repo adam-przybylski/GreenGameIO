@@ -1,6 +1,7 @@
 import { FC } from "react";
 import { Outlet } from "react-router-dom";
 import Nav from "../components/Nav";
+import Notification from "../components/Notification";
 
 const Layout: FC = () => {
   return (
@@ -11,6 +12,7 @@ const Layout: FC = () => {
       <div className="flex-1 bg-transparent h-full w-full">
         <Outlet />
       </div>
+      <Notification />
     </div>
   );
 };

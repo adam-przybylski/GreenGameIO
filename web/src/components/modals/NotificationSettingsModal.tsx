@@ -43,6 +43,7 @@ const NotificationSettingsModal: FC<Props> = ({ reset, id }) => {
   const onSubmit = methods.handleSubmit((values) => {
     console.log(values);
     api.put(`/scheduler/settings/${id}`, values);
+    setIsOpen(false);
   });
 
   const formValues = methods.watch();
