@@ -60,8 +60,4 @@ public class SchedulerSettingsService {
 
         return repository.findByNotification_Id(notificationId).get();
     }
-
-    public void delete(Notification notification) {
-        repository.deleteByNotification(notification);
-    }
 }
