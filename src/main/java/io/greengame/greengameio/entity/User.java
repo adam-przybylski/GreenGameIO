@@ -1,6 +1,7 @@
 package io.greengame.greengameio.entity;
 
 
+import io.greengame.greengameio.exceptions.Messages;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;

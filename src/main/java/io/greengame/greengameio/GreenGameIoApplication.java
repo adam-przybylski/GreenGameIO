@@ -6,7 +6,9 @@ import io.greengame.greengameio.friendmodule.managers.FriendManager;
 import io.greengame.greengameio.friendmodule.model.Group;
 import io.greengame.greengameio.repository.*;
 import io.greengame.greengameio.services.GameResultService;
+import io.greengame.greengameio.services.TaskService;
 import io.greengame.greengameio.services.UserService;
+import io.greengame.greengameio.services.UserTaskService;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -16,6 +18,7 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 import java.time.LocalDateTime;
 import java.util.List;
 
+@EnableScheduling
 @SpringBootApplication
 @EnableScheduling
 public class GreenGameIoApplication {
@@ -36,19 +39,44 @@ public class GreenGameIoApplication {
                                         FriendManager friendManager,
                                         UserService userService,
                                         UserOdznakaRepository userOdznakaRepository,
-                                        OdznakaRepository odznakaRepository) {
+                                        OdznakaRepository odznakaRepository,
+                                        TaskService taskService,
+                                        UserTaskService userTaskService) {
         return args -> {
+            taskService.create(new Task(null,"Wyłącz światło", "Użyj przełącznika, aby wyłączyć światło", 1, true));
+            taskService.create(new Task(null,"Posegreguj śmieci", "Wyrzuć śmieci do odpowiednich pojemników", 5, true));
+            taskService.create(new Task(null,"Oszczędzaj wodę", "Upewnij się, że w twoim domu nie marnowana jest właśnie woda", 1, true));
+            taskService.create(new Task(null,"Umyj się w zimnej wodzie", "Skorzystaj z zimnej wody, aby oszczędzić energię", 2, true));
+            taskService.create(new Task(null, "Zbieraj i segreguj makulaturę", "Zbieraj gazety, kartony i inne papierowe produkty, a następnie posegreguj je do odpowiednich pojemników na makulaturę.", 10, true));
+            taskService.create(new Task(null, "Sadź drzewa wokół domu", "Zorganizuj akcję sadzenia drzew wokół swojego domu lub w szkolnym ogrodzie, aby przyczynić się do zwiększenia ilości zieleni.", 100, true));
+            taskService.create(new Task(null, "Organizuj zbiórki elektrośmieci", "Zachęcaj rodziny i znajomych do oddawania nieużywanych elektronicznych urządzeń do recyklingu poprzez organizowanie zbiórek elektrośmieci.", 1000, true));
+            taskService.create(new Task(null, "Stwórz kompostownik", "Rozpocznij projekt kompostowania w ogrodzie szkolnym lub w domu. Zbieraj odpady organiczne i twórz własny kompost.", 500, true));
+            taskService.create(new Task(null, "Przeprowadź akcję sprzątania wokół szkoły", "Zorganizuj zespół uczniów do wspólnego sprzątania terenu szkoły i jej otoczenia, usuwając śmieci i dbając o czystość.", 200, true));
+            taskService.create(new Task(null, "Opracuj projekt oszczędzania energii w szkole", "Przygotuj prezentację lub plakat z sugestiami dotyczącymi oszczędzania energii w szkole, a następnie podziel się pomysłami z uczniami i nauczycielami.", 50, true));
+            taskService.create(new Task(null, "Zbieraj deszczówkę do podlewania roślin", "Zainstaluj beczki na deszczówkę w szkolnym ogrodzie lub w domu i używaj zgromadzonej wody do podlewania roślin zamiast korzystać z wodociągu.", 20, true));
+            taskService.create(new Task(null, "Twórz przedmioty z recyklingu", "Zbieraj różne materiały do recyklingu i używaj ich do tworzenia kreatywnych przedmiotów, takich jak ozdoby, biżuteria czy dekoracje.", 15, true));
+            taskService.create(new Task(null, "Monitoruj zużycie energii w domu", "Przeprowadź audyt energetyczny w swoim domu, identyfikując obszary, w których można zaoszczędzić energię, np. poprzez wymianę żarówek na energooszczędne.", 30, true));
+
             //password is password
             var admin = userService.createUser(new User("admin", "$2b$12$6J4h6z.Er73Ud7zWhUT4yueCCFl2xCLkUZGHi8JtJYYwxp3NHtbBK", "admin@email.com",
                     UserType.ADMINISTRATOR));
+            userTaskService.generateUserTasksForUser(admin.getId());
+            UserTask task = userTaskService.getAllActiveUserTasks(admin.getId()).get(0);
+            userTaskService.completeTask(task.getId());
             var user = userService.createUser(new User("user", "$2b$12$6J4h6z.Er73Ud7zWhUT4yueCCFl2xCLkUZGHi8JtJYYwxp3NHtbBK", "user@email.com",
                     UserType.USER));
+            userTaskService.generateUserTasksForUser(user.getId());
+            UserTask task2 = userTaskService.getAllActiveUserTasks(user.getId()).get(0);
+            userTaskService.completeTask(task.getId());
             User user3 = userService.createUser(new User("user11", "$2b$12$6J4h6z.Er73Ud7zWhUT4yueCCFl2xCLkUZGHi8JtJYYwxp3NHtbBK", "mail1@email" +
                     ".com", UserType.USER));
+            userTaskService.generateUserTasksForUser(user3.getId());
             User user4 = userService.createUser(new User("pudzian", "$2b$12$6J4h6z.Er73Ud7zWhUT4yueCCFl2xCLkUZGHi8JtJYYwxp3NHtbBK", "polakpudzian" +
                     "@email.com", UserType.USER));
+            userTaskService.generateUserTasksForUser(user4.getId());
             User user5 = userService.createUser(new User("malysz", "$2b$12$6J4h6z.Er73Ud7zWhUT4yueCCFl2xCLkUZGHi8JtJYYwxp3NHtbBK", "malysz@git.com"
                     , UserType.USER));
+            userTaskService.generateUserTasksForUser(user5.getId());
 
             notificationRepository.save(new Notification("Title1", "Content1"));
             notificationRepository.save(new Notification("Title2", "Content2"));
@@ -84,11 +112,16 @@ public class GreenGameIoApplication {
             odznakaRepository.save(new Odznaka(7L, "nazwa7", "opis7", "test7.png"));
 
 
-            userRepository.save(new User("user1", "$2b$12$6J4h6z.Er73Ud7zWhUT4yueCCFl2xCLkUZGHi8JtJYYwxp3NHtbBK", "user1@email.com", UserType.USER));//, new HashSet<Long>()));
-            userRepository.save(new User("user2", "$2b$12$6J4h6z.Er73Ud7zWhUT4yueCCFl2xCLkUZGHi8JtJYYwxp3NHtbBK", "user2@email.com", UserType.USER));
-            userRepository.save(new User("user3", "$2b$12$6J4h6z.Er73Ud7zWhUT4yueCCFl2xCLkUZGHi8JtJYYwxp3NHtbBK", "user3@email.com", UserType.USER));
-            userRepository.save(new User("user4", "$2b$12$6J4h6z.Er73Ud7zWhUT4yueCCFl2xCLkUZGHi8JtJYYwxp3NHtbBK", "user4@email.com", UserType.USER));
-            userRepository.save(new User("user5", "$2b$12$6J4h6z.Er73Ud7zWhUT4yueCCFl2xCLkUZGHi8JtJYYwxp3NHtbBK", "user5@email.com", UserType.USER));
+            User user6 = userRepository.save(new User("user1", "$2b$12$6J4h6z.Er73Ud7zWhUT4yueCCFl2xCLkUZGHi8JtJYYwxp3NHtbBK", "user1@email.com", UserType.USER));//, new HashSet<Long>()));
+            userTaskService.generateUserTasksForUser(user6.getId());
+            User user7 = userRepository.save(new User("user2", "$2b$12$6J4h6z.Er73Ud7zWhUT4yueCCFl2xCLkUZGHi8JtJYYwxp3NHtbBK", "user2@email.com", UserType.USER));
+            userTaskService.generateUserTasksForUser(user7.getId());
+            User user8 = userRepository.save(new User("user3", "$2b$12$6J4h6z.Er73Ud7zWhUT4yueCCFl2xCLkUZGHi8JtJYYwxp3NHtbBK", "user3@email.com", UserType.USER));
+            userTaskService.generateUserTasksForUser(user8.getId());
+            User user9 = userRepository.save(new User("user4", "$2b$12$6J4h6z.Er73Ud7zWhUT4yueCCFl2xCLkUZGHi8JtJYYwxp3NHtbBK", "user4@email.com", UserType.USER));
+            userTaskService.generateUserTasksForUser(user9.getId());
+            User user10 = userRepository.save(new User("user5", "$2b$12$6J4h6z.Er73Ud7zWhUT4yueCCFl2xCLkUZGHi8JtJYYwxp3NHtbBK", "user5@email.com", UserType.USER));
+            userTaskService.generateUserTasksForUser(user10.getId());
 
             userOdznakaRepository.save(new UserOdznaka(1L, 1L));
             userOdznakaRepository.save(new UserOdznaka(2L, 1L));
@@ -143,6 +176,8 @@ public class GreenGameIoApplication {
             HiScore hiScore2 = new HiScore(quiz2, user, 2);
             highScoreRepository.save(hiScore);
             highScoreRepository.save(hiScore2);
+
+            userTaskService.generateUserTasksAtMidnight();
         };
     }
 

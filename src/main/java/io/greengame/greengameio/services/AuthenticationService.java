@@ -22,11 +22,13 @@ public class AuthenticationService {
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
     private final UserMapper userMapper;
+    private final UserTaskService userTaskService;
 
-    public AuthenticationService(UserRepository userRepository, PasswordEncoder passwordEncoder, UserMapper userMapper) {
+    public AuthenticationService(UserRepository userRepository, PasswordEncoder passwordEncoder, UserMapper userMapper, UserTaskService userTaskService) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
         this.userMapper = userMapper;
+        this.userTaskService = userTaskService;
     }
 
     public UserDto findByLogin(String username) {
@@ -42,6 +44,12 @@ public class AuthenticationService {
             throw new LoginAlreadyExistsException(Messages.LOGIN_ALREADY_EXISTS);
         }
 
+        Optional<User> optionalUser1 = userRepository.findByEmail(userDto.getEmail());
+
+        if(optionalUser1.isPresent()) {
+            throw new EmailAlreadyExistsException(Messages.EMAIL_ALREADY_EXISTS);
+        }
+
         if(!validatePassword(Arrays.toString(userDto.getPassword()))) {
             throw new PasswordIsToWeekException(Messages.PASSWORD_IS_TO_WEEK);
         }
@@ -50,6 +58,8 @@ public class AuthenticationService {
         user.setPassword(passwordEncoder.encode(CharBuffer.wrap(userDto.getPassword())));
 
         User savedUser = userRepository.save(user);
+
+        userTaskService.generateUserTasksForUser(savedUser.getId());
 
         return userMapper.toUserDto(savedUser);
     }

@@ -5,6 +5,7 @@ import io.greengame.greengameio.entity.User;
 import io.greengame.greengameio.entity.UserType;
 import io.greengame.greengameio.repository.TaskRepository;
 import io.greengame.greengameio.repository.UserRepository;
+import io.greengame.greengameio.services.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
@@ -26,6 +27,8 @@ public class TestDataTasksSeeder {
     @Autowired
     UserRepository userRepository;
 
+    @Autowired
+    UserService userService;
     private static final List<Task> tasks = new ArrayList<>();
 
     @Bean
@@ -34,8 +37,8 @@ public class TestDataTasksSeeder {
 
         Task sampleTask = new Task(null,"Sample Task", "Sample Description", 10, true);
         Task sampleTaskInactive = new Task(null,"Sample Task2", "Sample Description", 10, false);
-        User admin = new User(1L, "admin", "$2b$12$6J4h6z.Er73Ud7zWhUT4yueCCFl2xCLkUZGHi8JtJYYwxp3NHtbBK", "admin@email.com", UserType.ADMINISTRATOR, null, null, true);
-        User user = new User(2L, "user", "$2b$12$6J4h6z.Er73Ud7zWhUT4yueCCFl2xCLkUZGHi8JtJYYwxp3NHtbBK", "user@email.com", UserType.USER, null, null, true);
+        User admin = new User(1L, "adminn", "$2b$12$6J4h6z.Er73Ud7zWhUT4yueCCFl2xCLkUZGHi8JtJYYwxp3NHtbBK", "admin@email.com", UserType.ADMINISTRATOR, null, null, true);
+        User user = new User(2L, "userr", "$2b$12$6J4h6z.Er73Ud7zWhUT4yueCCFl2xCLkUZGHi8JtJYYwxp3NHtbBK", "user@email.com", UserType.USER, null, null, true);
 
         return args -> {
             userRepository.save(admin);

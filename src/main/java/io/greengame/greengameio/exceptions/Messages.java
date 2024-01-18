@@ -2,6 +2,8 @@ package io.greengame.greengameio.exceptions;
 
 public class Messages {
     public static String LOGIN_ALREADY_EXISTS = "Użytkownik o podanym loginie już istnieje.";
+    public static String EMAIL_ALREADY_EXISTS = "Użytkownik o podanym adresie email już istnieje.";
+    public static String USER_ALREADY_EXISTS = "Użytkownik o podanym loginie lub adresie email już istnieje.";
     public static String UNKNOWN_USER = "Użytkownik nie istnieje.";
     public static String INVALID_PASSWORD = "Nieprawidłowe hasło.";
     public static String ACCOUNT_IS_NOT_ENABLE = "Konto nie jest aktywne.";
