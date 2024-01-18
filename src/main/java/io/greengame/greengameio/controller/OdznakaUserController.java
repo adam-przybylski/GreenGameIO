@@ -32,8 +32,8 @@ public class OdznakaUserController {
     }
 
     @GetMapping("/przyznajOdznake")
-    void przyznajOdznake() {
-        odznakaService.dodajOdznakeDlaUzytkownika();
+    void przyznajOdznake(@RequestParam Long idUsera, @RequestParam Long idOdznaka) {
+        odznakaService.dodajOdznakeDlaUzytkownika(idUsera, idOdznaka);
     }
 
     @GetMapping("/przypnij")

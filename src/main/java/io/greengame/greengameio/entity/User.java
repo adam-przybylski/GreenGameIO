@@ -43,7 +43,7 @@ public class User {
     @OneToMany(targetEntity = UserNotification.class)
     private List<UserNotification> userNotifications;
 
-    @Column(name = "odznaka", nullable = false)
+    @Column(name = "odznaka")
     private Long odznaka;
 
     @Column(name = "enabled", nullable = false)
@@ -55,6 +55,5 @@ public class User {
         this.password = password;
         this.email = email;
         this.type = type;
-        this.odznaka = 1L;
     }
 }

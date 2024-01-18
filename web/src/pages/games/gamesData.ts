@@ -11,6 +11,10 @@ export const games = {
     name: "Fruit Catcher",
     url: "fruitCatcher/index.html",
   },
+  plumber: {
+    name: "Plumber",
+    url: "plumber/index.html",
+  },
 } as const;
 
 export const isGameKey = (name: string): name is keyof typeof games => {

@@ -1,7 +1,7 @@
 import { FC, useState } from "react";
 import { NavLink } from "react-router-dom";
 import { FaGamepad, FaWrench, FaUser } from "react-icons/fa";
-import { MdQuiz } from "react-icons/md";
+import {MdLeaderboard, MdQuiz} from "react-icons/md";
 import { IconType } from "react-icons";
 import { classNames } from "../utils/tailwind";
 import LogoutButton from "./LogoutButton";
@@ -32,8 +32,9 @@ const Nav: FC = () => {
     { to: "quizzes", icon: MdQuiz, label: "Quizy" },
     { to: "user/notifications", icon: IoNotificationsSharp,label: "Powiadomienia" },
     { to: "user/tasks", icon: FaTasks, label: "Zadania" },
-    { to: "awards", icon: BiAward, label: "Odznaki" }
+    { to: "awards", icon: BiAward, label: "Odznaki" },
 
+      { to: "leaderboard", icon: MdLeaderboard, label: "Wyniki" },
   ];
 
   return (

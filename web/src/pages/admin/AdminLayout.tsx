@@ -11,12 +11,15 @@ import { logoutUser } from "../../api/logout";
 import AdminQuizzes from "./quizzesAdmin";
 import { ToastContainer } from "react-toastify";
 import Notifications from "../notifications";
+import AdminAwards from "./awardsAdmin";
+
 
 const panels = {
   users: <AdminUsers />,
   tasks: <AdminTasks />,
   quizzes: <AdminQuizzes />,
   notifications: <Notifications />,
+  awards: <AdminAwards />
 } as const;
 
 export type Panel = keyof typeof panels;
@@ -66,6 +69,9 @@ const AdminLayout: FC = () => {
         </SubPanel>
         <SubPanel onClick={handleSubPanelClick} message="notifications">
           <p>Powiadomienia</p>
+        </SubPanel>
+        <SubPanel onClick={handleSubPanelClick} message="awards">
+          <p>Nagrody</p>
         </SubPanel>
         <LogoutButton logoutUser={logoutUser}></LogoutButton>
       </AdministrationNav>

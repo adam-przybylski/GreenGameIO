@@ -59,12 +59,13 @@ class FruitCatcherGame{
         this.itemSpawnFrames=50;
         this.items = [];
         this.score = 0;
+        this.scoreCopy = 0;
         this.scoreHandle = document.getElementById("score");
         this.livesHandle = document.getElementById("lives");
         this.isGameRunning = true;
         // this.userId = JSON.parse(window.localStorage.getItem("account").id);
-        this.userId = 2;
-        this.scoreCopy = 0;
+        const urlParams = new URLSearchParams(window.location.search);
+        this.userId = urlParams.get("id") !== "null" ? urlParams.get("id") : null;
     }
 
     gameLoop(){
@@ -120,28 +121,30 @@ class FruitCatcherGame{
     }
 
     endGame(){
+        this.addExperience();
         this.isGameRunning = false;
         let bestScore = 0;
         this.scoreCopy = this.score;
-        let xhttp = new XMLHttpRequest();
-        xhttp.open("GET", "http://localhost:8081/api/v1/games/fruitCatcher/"+this.userId,true);
-        xhttp.timeout = 2000;
-        xhttp.onload = () => {
-            if(xhttp.status === 200){
-                bestScore = xhttp.responseText;
-                document.getElementById("showBestScore").innerText = bestScore;
-                if(this.scoreCopy>bestScore) document.getElementById("saveButton").disabled = false;
+        if(this.userId !== null){
+            let xhttp = new XMLHttpRequest();
+            xhttp.open("GET", "http://localhost:8081/api/v1/games/fruitCatcher/"+this.userId,true);
+            xhttp.timeout = 2000;
+            xhttp.onload = () => {
+                if(xhttp.status === 200){
+                    bestScore = xhttp.responseText;
+                    document.getElementById("showBestScore").innerText = bestScore;
+                    if(this.scoreCopy>bestScore) document.getElementById("saveButton").disabled = false;
+                }
+                else if( xhttp.status === 500){
+                    document.getElementById("saveButton").disabled = false;
+                }
             }
-            else if( xhttp.status === 500){
-                document.getElementById("saveButton").disabled = false;
+            xhttp.ontimeout = () => {
+                document.getElementById("response").innerText="Brak połączenia";
+                document.getElementById("response").style.setProperty("color","yellow");
             }
+            xhttp.send(null);
         }
-        xhttp.ontimeout = () => {
-            document.getElementById("response").innerText="Brak połączenia";
-            document.getElementById("response").style.setProperty("color","yellow");
-        }
-        xhttp.send(null);
-
         document.getElementById("showScore").innerText = this.score;
         document.getElementById("showBestScore").innerText = "";
         document.getElementById("endScreen").style.setProperty("display", "flex");
@@ -169,6 +172,7 @@ class FruitCatcherGame{
     }
 
     saveScore(){
+        if(this.userId === null) return;
         let xhttp = new XMLHttpRequest();
         xhttp.open("POST", "http://localhost:8081/api/v1/games/fruitCatcher/"+this.userId+"/"+this.scoreCopy,true);
         // xhttp.timeout = 2000;
@@ -185,6 +189,12 @@ class FruitCatcherGame{
             document.getElementById("response").innerText="Błąd";
             document.getElementById("response").style.setProperty("color","red");
         }
+        xhttp.send();
+    }
+    addExperience(){
+        if(this.score<=0 || this.userId === null)return;
+        let xhttp = new XMLHttpRequest();
+        xhttp.open("POST", "http://localhost:8081/api/v1/games/updateUserXP/"+this.userId+"/100",true);
         xhttp.send();
     }
 }
