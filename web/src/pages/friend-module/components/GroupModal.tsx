@@ -11,9 +11,9 @@ const GroupModal = ({close, group}) => {
                     <h1>{group.name}</h1>
                 </div>
                 <div id="group-data">
-                    <h2>Description</h2>
+                    <h2>Opis</h2>
                     <p>{group.description}</p>
-                    <h2>Members</h2>
+                    <h2>Członkowie</h2>
                     <ul>
                         {Object.values(group.members).map((x, i) => {
                             return <li>{x}</li>

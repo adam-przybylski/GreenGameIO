@@ -210,6 +210,12 @@ public class FriendManager {
     public Message sendMessage(String chatId, Message message) {
         var chat = chatRepository.findById(chatId)
                 .orElseThrow(() -> new NotFoundException(ErrorMessages.NotFoundErrorMessages.CHAT_NOT_FOUND));
+        message.setSenderName(userFMRepository
+                .findById(Long.parseLong(message.getSenderID()))
+                .orElseThrow(() -> new NotFoundException(ErrorMessages
+                        .NotFoundErrorMessages
+                        .USER_NOT_FOUND))
+                .getUsername());
         chat.getMessages().add(message);
         chat = chatRepository.save(chat);
         return chat.getMessages().get(chat.getMessages().size() - 1);

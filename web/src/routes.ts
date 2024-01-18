@@ -14,8 +14,6 @@ import AwardsPage from "./pages/awards";
 
 export const UnprotectedRoutes = [
   { path: "/", Component: MainPage },
-  { path: "/notifications", Component: Notifications },
-  { path: "/user/notifications", Component: UserNotifications },
   { path: "/user/tasks", Component: UserTasks },
   { path: "/games", Component: GamesPage },
   { path: "/games/:name", Component: GamePage },
@@ -23,10 +21,15 @@ export const UnprotectedRoutes = [
   { path: "/account", Component: Account },
   {path: "/leaderboard", Component: Leaderboard},
   {path: "/awards", Component: AwardsPage},
+
 ] satisfies RouteObject[];
 export const ProtectedRoutes = [
-  { path: ":id/friends", Component: FriendPage },
   { path: "/user/notifications", Component: UserNotifications },
+  {
+    path: "/quizzes",
+    Component: Quizzes,
+  },
+  { path: "/friends", Component: FriendPage }
 ] satisfies RouteObject[];
 
 export const AdminRoutes = [

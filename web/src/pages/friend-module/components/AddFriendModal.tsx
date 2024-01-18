@@ -22,10 +22,10 @@ const AddFriendModal = ({ close, userID, users }) => {
                             <path stroke="black" strokeWidth="0.3" d="M2.146 2.854a.5.5 0 1 1 .708-.708L8 7.293l5.146-5.147a.5.5 0 0 1 .708.708L8.707 8l5.147 5.146a.5.5 0 0 1-.708.708L8 8.707l-5.146 5.147a.5.5 0 0 1-.708-.708L7.293 8z"/>
                         </svg>
                     </button>
-                    <h1>Add friend</h1>
+                    <h1>Dodaj znajomego</h1>
                 </div>
                 <div id="input">
-                   <input value={userFilter} onChange={e => setUserFilter(e.target.value)} type="text" name="username" id="username" placeholder="Filter list"></input>
+                   <input value={userFilter} onChange={e => setUserFilter(e.target.value)} type="text" name="username" id="username" placeholder="Filtruj"></input>
                 </div>
                 <div id="data">
                     {filteredUsers.map((x, i) => {

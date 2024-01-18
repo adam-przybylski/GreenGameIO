@@ -1,0 +1,364 @@
+#friend-module-component .add-friend {
+  background-color: white;
+  margin: 1rem;
+  padding: 1rem 0;
+  border-radius: 3rem;
+  transition: 0.1s;
+  box-shadow: -1px 1px 3px black;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  height: 4rem;
+}
+
+#friend-module-component .add-friend:hover {
+  background-color: #b9faca;
+}
+
+#friend-module-component .add-friend > #name > h2 {
+  font-size: x-large;
+  text-shadow: -1px 1px 0 #000, 1px 1px 0 #000, 1px -1px 0 #000,
+    -1px -1px 0 #000;
+  margin-left: 1rem;
+}
+
+#friend-module-component #modal-background {
+  position: fixed;
+  top: 0;
+  left: 0;
+  height: 100vh;
+  width: 100vw;
+  background-color: rgba(0, 0, 0, 0.75);
+}
+
+#friend-module-component #modal {
+  position: fixed;
+  background-color: lightgreen;
+  width: 50vw;
+  height: 35rem;
+  top: 20vh;
+  left: 25vw;
+  box-shadow: -1px 1px 3px black;
+  border-radius: 3rem;
+}
+
+#friend-module-component #modal > #heading > h1 {
+  text-align: center;
+  font-size: 48px;
+  margin: 0 2rem 1rem 2rem;
+  text-shadow: -2px 2px 0 #000, 1px 1px 0 #000, 1px -1px 0 #000,
+    -1px -1px 0 #000;
+  background-color: green;
+  padding: 1rem 3rem 1rem 3rem;
+  border-radius: 10rem 0 10rem 0;
+  box-shadow: -1px 1px 3px black;
+}
+
+#friend-module-component #modal > #heading > button {
+  text-align: left;
+}
+
+#friend-module-component #input {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+#friend-module-component #input > input {
+  width: 20vw;
+  text-align: center;
+  height: 5vh;
+  font-size: large;
+  color: black;
+  border-radius: 3rem;
+  transition: 0.1s;
+  box-shadow: -1px 1px 3px black;
+  margin-bottom: 0.5rem;
+}
+
+#friend-module-component #input > input:hover {
+  background-color: lightgray;
+}
+
+#friend-module-component #input > input:focus {
+  background-color: lightgray;
+  outline: none;
+}
+
+#friend-module-component #close-button {
+  margin: 1rem;
+  transition: 0.1s;
+}
+
+#friend-module-component #close-button:hover {
+  color: green;
+}
+
+#friend-module-component #data {
+  height: 19rem;
+  overflow: auto;
+  border-radius: 4rem;
+}
+
+/* width */
+#friend-module-component ::-webkit-scrollbar {
+  width: 0.5rem;
+}
+
+/* Track */
+#friend-module-component ::-webkit-scrollbar-track {
+  background: #f1f1f1;
+}
+
+/* Handle */
+#friend-module-component ::-webkit-scrollbar-thumb {
+  background: #888;
+}
+
+/* Handle on hover */
+#friend-module-component ::-webkit-scrollbar-thumb:hover {
+  background: #555;
+}
+
+#friend-module-component #group-members {
+  height: 10rem;
+  overflow: auto;
+}
+
+#friend-module-component .friend {
+  background-color: white;
+  margin: 1rem;
+  padding: 1rem 0;
+  border-radius: 3rem;
+  transition: 0.1s;
+  box-shadow: -1px 1px 3px black;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+#friend-module-component .friend:hover {
+  background-color: #b9faca;
+}
+
+#friend-module-component .friend > #name > h2 {
+  font-size: x-large;
+  text-shadow: -1px 1px 0 #000, 1px 1px 0 #000, 1px -1px 0 #000,
+    -1px -1px 0 #000;
+  margin-left: 1rem;
+}
+
+#friend-module-component .group {
+  background-color: white;
+  margin: 1rem;
+  padding: 1rem 0;
+  border-radius: 3rem;
+  transition: 0.1s;
+  box-shadow: -1px 1px 3px black;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+#friend-module-component .group:hover {
+  background-color: #b9faca;
+}
+
+#friend-module-component .group > h2 {
+  font-size: x-large;
+  text-shadow: -1px 1px 0 #000, 1px 1px 0 #000, 1px -1px 0 #000,
+    -1px -1px 0 #000;
+  margin-left: 1rem;
+}
+
+#friend-module-component .group > #group-buttons {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: center;
+}
+
+#friend-module-component #group-data > h2 {
+  font-size: xx-large;
+  text-shadow: -2px 2px 0 #000, 1px 1px 0 #000, 1px -1px 0 #000,
+    -1px -1px 0 #000;
+  text-align: center;
+}
+
+#friend-module-component #group-data > p {
+  text-align: center;
+  text-shadow: -1px 1px 0 #000, 1px 1px 0 #000, 1px -1px 0 #000,
+    -1px -1px 0 #000;
+}
+
+#friend-module-component #group-data > ul {
+  list-style: none;
+}
+
+#friend-module-component #group-data > ul > li {
+  text-align: center;
+  text-shadow: -1px 1px 0 #000, 1px 1px 0 #000, 1px -1px 0 #000,
+    -1px -1px 0 #000;
+}
+
+#friend-module-component #list {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  margin: 0em 2em 0em 2em;
+}
+
+#friend-module-component #list > #heading {
+  font-size: 64px;
+  margin: 0 2rem 5rem 2rem;
+  text-shadow: -2px 2px 0 #000, 1px 1px 0 #000, 1px -1px 0 #000,
+    -1px -1px 0 #000;
+  box-shadow: -1px 1px 3px black;
+  background-color: green;
+  padding: 1rem 3rem 1rem 3rem;
+  border-radius: 10rem 0 10rem 0;
+}
+
+#friend-module-component .button {
+  padding: 1rem 2rem 1rem 2rem;
+  background-color: green;
+  margin: 1rem;
+  box-shadow: -1px 1px 3px black;
+  border-radius: 3rem 0 3rem 0;
+  transition: 0.1s;
+}
+
+#friend-module-component .button:hover {
+  background-color: #01400c;
+}
+
+#friend-module-component #friends-button {
+  margin: 0;
+  width: 50%;
+  border-radius: 3rem 0 0 0;
+  border: 1px solid black;
+  box-shadow: none;
+}
+
+#friend-module-component #groups-button {
+  margin: 0;
+  width: 50%;
+  border-radius: 0 3rem 0 0;
+  border: 1px solid black;
+  box-shadow: none;
+}
+
+#friend-module-component #content {
+  background-color: lightgreen;
+  border-radius: 3.5rem;
+  min-height: 22.4em;
+  overflow: auto;
+  width: 50vw;
+}
+
+#friend-module-component .pressed {
+  background-color: #002606;
+}
+
+#friend-module-component #friends,
+#friend-module-component #groups {
+  max-height: 18rem;
+  overflow: auto;
+}
+
+#friend-module-component .request {
+  background-color: white;
+  margin: 1rem;
+  padding: 1rem 0;
+  border-radius: 3rem;
+  transition: 0.1s;
+  box-shadow: -1px 1px 3px black;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  height: 4rem;
+}
+
+#friend-module-component .request:hover {
+  background-color: #b9faca;
+}
+
+#friend-module-component .request > #name > h2 {
+  font-size: x-large;
+  text-shadow: -1px 1px 0 #000, 1px 1px 0 #000, 1px -1px 0 #000,
+    -1px -1px 0 #000;
+  margin-left: 1rem;
+}
+
+#friend-module-component #user-data > * {
+  text-align: center;
+}
+
+#friend-module-component #user-data h2 {
+  font-size: x-large;
+  text-shadow: -1px 1px 0 #000, 1px 1px 0 #000, 1px -1px 0 #000,
+    -1px -1px 0 #000;
+}
+
+#friend-module-component .text {
+  width: 20vw;
+  text-align: center;
+  height: 5vh;
+  font-size: large;
+  color: black;
+  border-radius: 3rem;
+  transition: 0.1s;
+  box-shadow: -1px 1px 3px black;
+  margin-bottom: 0.5rem;
+}
+
+#friend-module-component .text:hover {
+  background-color: lightgray;
+}
+
+#friend-module-component .text:focus {
+  background-color: lightgray;
+  outline: none;
+}
+
+#friend-module-component .chat {
+  width: 100%;
+  overflow: auto;
+  height: 70%;
+  max-height: 70%;
+}
+
+#friend-module-component .message {
+  color: black;
+  background-color: white;
+  margin: .1rem;
+}
+
+#friend-module-component .right-user {
+  text-align: end;
+}
+
+#friend-module-component .message-input {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+@media (max-width: 940px) {
+  #friend-module-component #functional-buttons {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+  }
+
+  #friend-module-component #content {
+    width: 75vw;
+  }
+
+  #friend-module-component #data {
+    height: 14rem;
+  }
+}

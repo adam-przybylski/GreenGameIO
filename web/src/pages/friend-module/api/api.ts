@@ -9,6 +9,7 @@ export default {
           temp.push({
             id: Object.keys(friend.members)[0],
             name: Object.values(friend.members)[0],
+            chatId: friend.chatId
           });
         });
         setFriends(temp);
@@ -184,4 +185,9 @@ export default {
       })
       .catch((err) => console.error(err));
   },
+  getChat: (id, setChat) => {
+    fetch(`http://localhost:8081/friend-module/chats/${id}`)
+      .then(response => response.json()).then(data => setChat(data))
+      .catch(err => console.error(err));
+  }
 };
