@@ -18,6 +18,16 @@ export const smallModalStyles = {
     },
 };
 
+export const smallModalStyles3 = {
+    content: {
+        width: '40%',
+        height: '40%',
+        margin: 'auto',
+        padding: '20px',
+        paddingBottom: '10px',
+    },
+};
+
 export const smallModalStyles2 = {
     content: {
         width: '40%',

@@ -311,7 +311,7 @@ const Quizzes: FC = () => {
                 isOpen={modalIsOpen}
                 onRequestClose={closeModal}
                 contentLabel="Selected Quiz"
-                style={styles.smallModalStyles}
+                style={styles.smallModalStyles3}
                 ariaHideApp={false}
             >
                 {selectedQuiz && (
@@ -325,9 +325,7 @@ const Quizzes: FC = () => {
 
                         <button style={{
                             ...styles.buttonStyles2,
-                            position: 'absolute',
                             left: '50%',
-                            transform: 'translateX(-50%)'
                         }} onClick={(e) => {
                             e.stopPropagation();
                             closeModal();
@@ -335,12 +333,12 @@ const Quizzes: FC = () => {
                         }}>
                             Rozpocznij Quiz
                         </button>
+                        <br/>
+                        <br/>
                         <button style={{
                             ...styles.buttonStyles,
-                            position: 'absolute',
                             bottom: '10px',
                             left: '50%',
-                            transform: 'translateX(-50%)'
                         }} onClick={closeModal}>
                             Zamknij
                         </button>
