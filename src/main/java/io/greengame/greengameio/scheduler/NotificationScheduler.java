@@ -23,7 +23,7 @@ public class NotificationScheduler {
     private final UserService userService;
     private final Logger logger = LoggerFactory.getLogger(NotificationScheduler.class);
 
-    @Scheduled(cron = "0 */1 * * * *")
+    @Scheduled(cron = "0 */2 * * * *")
     public void scheduleNotificationTask() {
         logger.info("Sending notifications");
         List<SchedulerSettings> settings = schedulerSettingsService.getByActive(true);
