@@ -3,18 +3,20 @@ import { useNavigate } from "react-router-dom";
 
 interface LogoutButtonProps {
     logoutUser: () => void,
+    className?: string,
 }
 
-const LogoutButton: FC<LogoutButtonProps> = ({ logoutUser }) => {
+const LogoutButton: FC<LogoutButtonProps> = ({ logoutUser, className }) => {
     const navigation = useNavigate();
 
     const handleLogout = () => {
         logoutUser();
-        navigation("/login");
+        navigation("/");
+        window.location.reload();
     }
 
     return (
-        <button onClick={handleLogout}>
+        <button className={className} onClick={handleLogout}>
             Wyloguj się
         </button>
     );

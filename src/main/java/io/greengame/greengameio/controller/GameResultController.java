@@ -52,4 +52,13 @@ public class GameResultController {
         return gameResultService.updateFruitCatcherResult(userId, fruitCatcherScore);
     }
 
+    @GetMapping("/plumber/{userId}")
+    int getPlumberScoreByUserId(@PathVariable Long userId) {
+        return gameResultService.getPlumberScoreByUserId(userId);
+    }
+
+    @PostMapping("plumber/{userId}/{plumberScore}")
+    GameResult updatePlumberResult(@PathVariable Long userId,@PathVariable int plumberScore) {
+        return gameResultService.updatePlumberResult(userId, plumberScore);
+    }
 }

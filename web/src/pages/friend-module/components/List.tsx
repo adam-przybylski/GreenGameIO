@@ -10,6 +10,7 @@ import AddGroupMembersModal from "./AddGroupMembersModal";
 import UserModal from "./UserModal";
 import GroupModal from "./GroupModal";
 import EditGroupModal from "./EditGroupModal";
+import { useUserContext } from "../../../context/userContext";
 
 const List: FC = () => {
     const [areFriendsDisplayed, setAreFriendsDisplayed] = useState(true);
@@ -30,7 +31,7 @@ const List: FC = () => {
     const [viewedGroup, setViewedGroup] = useState();
     const [viewedUser, setViewedUser] = useState();
     const [editGroup, setEditGroup] = useState();
-    const { id } = useParams();
+    const id = useUserContext().account?.id;
 
     useEffect(() => {
         api.getFriendsOfUser(setFriends, id);
@@ -68,10 +69,13 @@ const List: FC = () => {
 
     useEffect(() => {
         const interval = setInterval(() => {
-            api.getFriendsOfUser(setFriends, id);
-            api.getPendingRequests(id, setRequests);
-            api.getAllUsers(id, setUsers);
-            api.getUsersGroups(id, setGroups);
+            if (id) {
+                api.getFriendsOfUser(setFriends, id);
+                api.getPendingRequests(id, setRequests);
+                api.getAllUsers(id, setUsers);
+                api.getUsersGroups(id, setGroups);
+
+            }
         }, 1000);
         return () => clearInterval(interval);
     }, []);
@@ -86,17 +90,17 @@ const List: FC = () => {
 
     return (
         <div id="list">
-            <h1 id="heading">Friends</h1>
+            <h1 id="heading">Znajomi</h1>
             {areFriendsDisplayed ? <input className="text" value={filter} type="text" name="" id="user-filter" onChange={(e) => {setFilter(e.target.value)}} placeholder="Filter friends"/> : <></>}
             <div id="functional-buttons">
-                {areFriendsDisplayed && <button className="button" onClick={displayAddFriendModal}>Add friend</button>}
-                {!areFriendsDisplayed && <button className="button" onClick={displayCreateGroupModal}>Create group</button>}
-                <button className="button" onClick={displayPendingRequestModal}>Friend requests</button>
+                {areFriendsDisplayed && <button className="button" onClick={displayAddFriendModal}>Dodaj znajomego</button>}
+                {!areFriendsDisplayed && <button className="button" onClick={displayCreateGroupModal}>Utwórz grupę</button>}
+                <button className="button" onClick={displayPendingRequestModal}>Zaproszenia</button>
             </div>
             <div id="content">
                 <div id="switch-buttons">
-                    <button className={`button ${areFriendsDisplayed ? "pressed" : ""}`} id="friends-button" onClick={displayFriends}>Friends</button>
-                    <button className={`button ${areFriendsDisplayed ? "" : "pressed"}`} id="groups-button" onClick={displayGroups}>Groups</button>
+                    <button className={`button ${areFriendsDisplayed ? "pressed" : ""}`} id="friends-button" onClick={displayFriends}>Znajomi</button>
+                    <button className={`button ${areFriendsDisplayed ? "" : "pressed"}`} id="groups-button" onClick={displayGroups}>Grupy</button>
                 </div>
                 {areFriendsDisplayed && 
                 <div id="friends">

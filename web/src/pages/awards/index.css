@@ -1,0 +1,106 @@
+.center {
+    text-align: center;
+}
+
+.enlarge-font {
+    font-size: 2.5em;
+}
+
+.flex-container {
+    display: flex;
+    flex-wrap: wrap;
+}
+
+.rectangle {
+    border: 8px solid greenyellow;
+    padding: 10px;
+    margin: 10px;
+    width: 200px; /* Możesz dostosować szerokość prostokąta do swoich preferencji */
+    height: 300px;
+    background-color: white;
+}
+
+.rectangle2 {
+    border: 8px solid red;
+    padding: 10px;
+    margin: 10px;
+    width: 200px; /* Możesz dostosować szerokość prostokąta do swoich preferencji */
+    height: 300px;
+    background-color: white;
+}
+
+
+.full-width-height {
+    width: 100%;
+    height: 100%;
+    object-fit: cover; /* Dostosowuje obrazek, aby wypełnił kontener, zachowując proporcje */
+}
+
+.custom-modal {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 90%; /* Zwiększamy szerokość modala */
+    max-width: 300px; /* Maksymalna szerokość modala */
+    height: 90%; /* Zwiększamy wysokość modala */
+    max-height: 500px; /* Maksymalna wysokość modala */
+    overflow: hidden;
+    border: 4px solid green;
+    background-color: rgba(255, 255, 255, 0.8);
+}
+
+.custom-modal2 {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 90%; /* Zwiększamy szerokość modala */
+    max-width: 300px; /* Maksymalna szerokość modala */
+    height: 90%; /* Zwiększamy wysokość modala */
+    max-height: 550px; /* Maksymalna wysokość modala */
+    overflow: hidden;
+    border: 4px solid green;
+    background-color: rgba(255, 255, 255, 0.8);
+}
+
+.custom-overlay {
+    background-color: rgba(0, 0, 0, 0.5);
+}
+
+.modal-image {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+}
+
+.modal-title {
+    text-align: center;
+    font-size: 1.5em; /* Zwiększamy rozmiar czcionki dla tytułu */
+    font-weight: bold;
+    margin-bottom: 10px;
+}
+
+.modal-description {
+    text-align: center;
+    font-size: 1.2em; /* Zwiększamy rozmiar czcionki dla opisu */
+    margin-bottom: 20px;
+    font-weight: bold;
+}
+
+.modal-button {
+    text-align: center;
+    background-color: #4caf50; /* Kolor tła przycisku */
+    color: white; /* Kolor tekstu przycisku */
+    padding: 10px 15px; /* Wielkość wypełnienia przycisku */
+    border: none; /* Brak obramowania przycisku */
+    border-radius: 5px; /* Zaokrąglenie rogów przycisku */
+    cursor: pointer; /* Kursor wskazujący na interaktywny element */
+    font-size: 1.2em; /* Zwiększamy rozmiar czcionki dla przycisku */
+    margin: auto; /* Wyśrodkowanie przycisku */
+    width: 100%;
+}
+
+.modal-button:hover {
+    background-color: #45a049; /* Kolor tła przycisku po najechaniu kursorem */
+}

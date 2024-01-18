@@ -8,9 +8,12 @@ const GamePage: FC = () => {
   if (!isGameKey(name)) return;
   const game = games[name];
 
+  let localStorageAccount = localStorage.getItem("account") || "null";
+  let userID = localStorageAccount !== "null" ? JSON.parse(localStorageAccount).id : null;
+
   return (
     <iframe
-      src={`http://localhost:8081/${game.url}`}
+      src={`http://localhost:8081/${game.url}?id=${userID}`}
       className="w-full h-full"
     />
   );

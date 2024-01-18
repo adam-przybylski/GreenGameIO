@@ -2,9 +2,9 @@ package io.greengame.greengameio.entity;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
+import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -26,7 +26,7 @@ public class Question {
     private Long questionID;
 
     @Column(name = "quiz_content", nullable = false)
-    @NotEmpty(message = "Question content could not be an empty string.")
+    @NotBlank(message = "Question content could neither be null nor empty string.")
     private String questionContent;
 
     @Column(name = "question_number")
@@ -34,20 +34,23 @@ public class Question {
     private int questionNumber;
 
     @OneToMany
-    @NotNull(message = "List of questions for a quiz could not be blank.")
-    private List<Answer> questionAnswers;
+    @NotNull(message = "List of answers for a question could not be null.")
+    @Size(min = 2, message = "Every question must contain at least two answers.")
+    @Size(max = 5, message = "Question could not have more than 5 total answers.")
+    private List<Answer> listOfAnswers;
 
-    @OneToOne
-    @NotNull(message = "Every question must have a correct answer.")
-    private Answer correctAnswer;
-
-    public Question(String questionContent,
-                    int questionNumber,
-                    @NotNull(message = "List of questions for a quiz could not be blank.") List<Answer> questionAnswers,
-                    @NotNull(message = "Every question must have a correct answer.") Answer correctAnswer) {
+    public Question(@NotBlank(message = "Question content could neither be null nor empty string.") String questionContent,
+                    @Positive(message = "Question could not have a number that is non positive.") int questionNumber,
+                    @NotNull(message = "List of questions for a quiz could not be blank.")
+                    @NotNull(message = "List of answers for a question could not be null.")
+                    @Size(min = 2, message = "Every question must contain at least two answers.")
+                    @Size(max = 5, message = "Question could not have more than 5 total answers.") List<Answer> listOfAnswers) {
         this.questionContent = questionContent;
         this.questionNumber = questionNumber;
-        this.questionAnswers = questionAnswers;
-        this.correctAnswer = correctAnswer;
+        this.listOfAnswers = listOfAnswers;
+    }
+
+    public Answer getCertainAnswer(int answerNumber) {
+        return this.getListOfAnswers().get(answerNumber);
     }
 }

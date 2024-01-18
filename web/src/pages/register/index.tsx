@@ -5,7 +5,7 @@ import Button from "../../components/Button";
 import { RegisterRequest } from "../../types/registerRequest";
 import { api } from "../../api/api.config.ts";
 import { useNavigate } from "react-router-dom";
-
+import { toast } from "react-toastify";
 
 const RegisterPage: FC = () => {
 
@@ -23,12 +23,15 @@ const RegisterPage: FC = () => {
   const onSubmit = handleSubmit((values) => {
     api.post('/authentication/register', values)
       .then(response => {
+        toast.success("Utworzono konto");
         console.log(response);
         navigation("/login");
-      })
-      .catch(error => {
+      },
+        ((error => {
+        toast.error(error.response.data);
         console.error(error);
-      })
+      }))
+      )
   });
 
   return (

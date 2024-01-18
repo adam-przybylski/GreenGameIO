@@ -4,8 +4,10 @@ import Input from "../../components/fields/Input";
 import Button from "../../components/Button";
 import { api, setAuthHeader } from "../../api/api.config.ts";
 import { LoginRequest } from "../../types/loginRequest.ts";
-import { useNavigate } from "react-router-dom";
+import { NavLink, useNavigate } from "react-router-dom";
 import { useUserContext } from "../../context/userContext.tsx";
+import { toast } from "react-toastify";
+import {AccountTypeEnum} from "../../types/accountType.ts";
 
 
 const LoginPage: FC = () => {
@@ -29,20 +31,17 @@ const LoginPage: FC = () => {
           type: response.data.userType
         });
 
-        // if (response.data.userType === AccountTypeEnum.ADMIN) {
-        //   navigation("/admin");
-        //   return;
-        // }
+        if (response.data.userType === AccountTypeEnum.ADMIN) {
+          navigation("/admin");
+          return;
+        }
         navigation("/");
       })
       .catch(error => {
-        console.error(error);
+        toast.error(error.response.data);
       })
   });
 
-  const handleClick = () => {
-    navigation("/register")
-  }
 
   return (
     <>
@@ -52,8 +51,9 @@ const LoginPage: FC = () => {
           <form onSubmit={onSubmit} className="pt-[50px] w-[60%]">
             <Input label="Login: " placeholder="Podaj login" name="login" />
             <Input label="Hasło: " placeholder="Podaj hasło" name="password" type="password" />
-            <div onClick={handleClick} className="hover:cursor-pointer">
-              <p>Zarejestruj się</p>
+            <div className="flex justify-between">
+              <NavLink className="hover:cursor-pointer" to={"/register"}>Zarejestruj się</NavLink>
+              <NavLink to={"/reset"} className="hover:cursor-pointer">Zapomniałem hasła</NavLink>
             </div>
             <div className="flex justify-center">
               <Button type="submit" label="Zaloguj się" className="bg-nice-green w-full mt-6 h-9 rounded-md font-medium" />

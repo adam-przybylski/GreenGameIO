@@ -27,10 +27,14 @@ public class UserNotification extends Notification {
         this.user = user;
     }
 
-
     public UserNotification(Long id, @NotBlank(message = "Title is mandatory") String title, @NotBlank(message = "Content is mandatory") String content, boolean sended, User user) {
         super(id, title, content);
         this.sended = sended;
         this.user = user;
+    }
+
+    public UserNotification(Notification notification, Boolean sended) {
+        super(notification.getId(), notification.getTitle(), notification.getContent());
+        this.sended = sended;
     }
 }

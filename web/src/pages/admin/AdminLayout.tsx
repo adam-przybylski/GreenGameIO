@@ -1,5 +1,5 @@
 import { FC, useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import {NavLink, useNavigate} from "react-router-dom";
 import { useUserContext } from "../../context/userContext";
 import { AccountTypeEnum } from "../../types/accountType";
 import AdministrationNav from "../../components/AdministrationNav";
@@ -9,11 +9,17 @@ import AdminTasks from "./tasksAdmin";
 import LogoutButton from "../../components/LogoutButton";
 import { logoutUser } from "../../api/logout";
 import AdminQuizzes from "./quizzesAdmin";
+import { ToastContainer } from "react-toastify";
+import Notifications from "../notifications";
+import AdminAwards from "./awardsAdmin";
+
 
 const panels = {
   users: <AdminUsers />,
   tasks: <AdminTasks />,
   quizzes: <AdminQuizzes />,
+  notifications: <Notifications />,
+  awards: <AdminAwards />
 } as const;
 
 export type Panel = keyof typeof panels;
@@ -39,6 +45,19 @@ const AdminLayout: FC = () => {
   return (
     <>
       <AdministrationNav>
+        <ToastContainer
+          position="top-center"
+          autoClose={3000}
+          hideProgressBar
+          newestOnTop={false}
+          closeOnClick
+          rtl={false}
+          pauseOnFocusLoss
+          draggable
+          pauseOnHover
+          theme="colored"
+        />
+        <NavLink to={"/"}>Strona domowa 🏚</NavLink>
         <SubPanel onClick={handleSubPanelClick} message="users">
           <p>Użytkownicy</p>
         </SubPanel>
@@ -47,6 +66,12 @@ const AdminLayout: FC = () => {
         </SubPanel>
         <SubPanel onClick={handleSubPanelClick} message="tasks">
           <p>Zadania codzienne</p>
+        </SubPanel>
+        <SubPanel onClick={handleSubPanelClick} message="notifications">
+          <p>Powiadomienia</p>
+        </SubPanel>
+        <SubPanel onClick={handleSubPanelClick} message="awards">
+          <p>Nagrody</p>
         </SubPanel>
         <LogoutButton logoutUser={logoutUser}></LogoutButton>
       </AdministrationNav>

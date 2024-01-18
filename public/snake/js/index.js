@@ -17,7 +17,8 @@ bootle_taken=false;
 is_paused = false;
 xp = 0
 //id= JSON.parse(window.localStorage.getItem("account")).id;
-id = 25 //todo
+const urlParams = new URLSearchParams(window.location.search);
+let id = urlParams.get("id") !== "null" ? urlParams.get("id") : null;
 
 function genereteXYforTrashes(){
     let min = 1;

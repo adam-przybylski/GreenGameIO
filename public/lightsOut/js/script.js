@@ -7,9 +7,15 @@ let gameDuration = 2500; // milliseconds
 let currentTime = 0;
 let gamePaused = false;
 let ended = false;
-
+const urlParams = new URLSearchParams(window.location.search);
+let userId = urlParams.get("id") !== "null" ? urlParams.get("id") : null;
+let previousXp = 0;
 
 function createBoard() {
+    let temp = getXpByUserId(userId);
+    temp.then(r => {
+        previousXp = r
+    });
     const boardElement = document.getElementById('board');
     boardElement.innerHTML = '';
 
@@ -28,6 +34,23 @@ function createBoard() {
             lights.push({id: light.id, active: false, activationTime: 0});
         }
         boardElement.appendChild(document.createElement('br'));
+    }
+}
+
+async function getXpByUserId(userId) {
+    const url = `http://localhost:8081/api/v1/games/xp/${userId}`;
+
+    try {
+        const response = await fetch(url);
+
+        if (!response.ok) {
+            throw new Error('Network response was not ok');
+        }
+
+        return await response.json().then(r => r);
+    } catch (error) {
+        console.error('There was a problem with the fetch operation:', error);
+        return 0;
     }
 }
 
@@ -51,6 +74,14 @@ function checkEndGame() {
 }
 
 function startGame() {
+    if(userId === null) {
+        alert("Musisz się zalogować aby zagrać w tą grę!");
+        return;
+    }
+    if (previousXp < 300) {
+        alert("Musisz mieć minimum 300 XP aby zagrać w tą grę! Masz " + previousXp + " XP.");
+        return;
+    }
     function gameIntervalHandler() {
         if (!gamePaused) {
             currentTime += generationSpeed;
@@ -109,9 +140,9 @@ function endGame() {
     showGameOverModal(points)
     const xpEarned = calculateXPfromPoints(points);
 
-    updateXPInDatabase(30, xpEarned); //TODO userId
+    updateXPInDatabase(userId, xpEarned);
     setTimeout(function(){
-        updateLightsOutResult(30, points);//TODO userId
+        updateLightsOutResult(userId, points);
     }, 1000);
 
     resetGame();

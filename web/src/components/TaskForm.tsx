@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { TaskType } from "../types/taskType";
+import { TaskType } from "../types/task";
 import {
   Typography,
 } from "@material-tailwind/react";

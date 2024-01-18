@@ -14,9 +14,10 @@ import org.springframework.stereotype.Controller;
 @RequiredArgsConstructor
 public class Messenger {
     private final FriendManager friendManager;
+
     @MessageMapping("/chat/{chatId}")
-    @SendTo("/topic/chat/{chatId}")
-    public Message sendMessage(@Payload Message message, @DestinationVariable String chatId) {
+    @SendTo("/topic/{chatId}")
+    public Message sendMessage(Message message, @DestinationVariable String chatId) {
         return friendManager.sendMessage(chatId, message);
     }
 }

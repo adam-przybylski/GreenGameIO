@@ -1,7 +1,9 @@
-import { FC } from "react";
+import { FC, useState } from "react";
 import api from "../api/api";
+import GroupChatModal from "./GroupChatModal";
 
 const Group: FC = ({ group, id, displayAddModal, setClickedGroup, displayModal, setViewedGroup, displayEditGroupModal, setEditGroup }) => {
+    const [displayGroupChat, setDisplayGroupChat] = useState(false);
     const setClickedGroupAndDisplayAddModal = () => {
         setClickedGroup(group.id);
         displayAddModal()
@@ -46,6 +48,15 @@ const Group: FC = ({ group, id, displayAddModal, setClickedGroup, displayModal, 
                         <path fill-rule="evenodd" d="M1 13.5A1.5 1.5 0 0 0 2.5 15h11a1.5 1.5 0 0 0 1.5-1.5v-6a.5.5 0 0 0-1 0v6a.5.5 0 0 1-.5.5h-11a.5.5 0 0 1-.5-.5v-11a.5.5 0 0 1 .5-.5H9a.5.5 0 0 0 0-1H2.5A1.5 1.5 0 0 0 1 2.5z"/>
                     </svg>
                 </button>
+                <button className="button" onClick={e => {
+                    e.stopPropagation();
+                    setDisplayGroupChat(true);
+                }}>
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" className="bi bi-chat-left-dots-fill" viewBox="0 0 16 16">
+                        <path d="M0 2a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H4.414a1 1 0 0 0-.707.293L.854 15.146A.5.5 0 0 1 0 14.793zm5 4a1 1 0 1 0-2 0 1 1 0 0 0 2 0m4 0a1 1 0 1 0-2 0 1 1 0 0 0 2 0m3 1a1 1 0 1 0 0-2 1 1 0 0 0 0 2"/>
+                    </svg>
+                </button>
+                { displayGroupChat && <GroupChatModal id={id} group={group} close={() => setDisplayGroupChat(false)}></GroupChatModal> }
             </div>
         </div>
     )

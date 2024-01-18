@@ -3,12 +3,12 @@ package io.greengame.greengameio.services;
 import io.greengame.greengameio.entity.HiScore;
 import io.greengame.greengameio.entity.Quiz;
 import io.greengame.greengameio.entity.User;
-import io.greengame.greengameio.exceptions.hiScore.HiScoreNotFoundException;
 import io.greengame.greengameio.repository.HiScoreRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -24,7 +24,7 @@ public class HiScoreService {
 
     // Read
 
-    public HiScore getHighScoreByUserAndQuiz(User user, Quiz quiz) {
+    public Optional<HiScore> getHighScoreByUserAndQuiz(User user, Quiz quiz) {
         return hiScoreRepository.getHiScoreByUserAndQuiz(user, quiz);
     }
 
@@ -52,7 +52,7 @@ public class HiScoreService {
         hiScoreRepository.deleteAllByUser(user);
     }
 
-    public void deleteAllHighScoresForQuiz(Quiz quiz) {
-        hiScoreRepository.deleteAllByQuiz(quiz);
+    public void deleteAllHiScoresByQuizId(Long quizId) {
+        hiScoreRepository.deleteHiScoresByQuiz_QuizID(quizId);
     }
 }
