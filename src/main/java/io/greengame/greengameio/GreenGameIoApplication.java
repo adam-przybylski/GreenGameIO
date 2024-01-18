@@ -20,7 +20,6 @@ import java.util.List;
 
 @EnableScheduling
 @SpringBootApplication
-@EnableScheduling
 public class GreenGameIoApplication {
 
     public static void main(String[] args) {

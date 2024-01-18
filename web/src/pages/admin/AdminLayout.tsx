@@ -1,5 +1,5 @@
 import { FC, useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import {NavLink, useNavigate} from "react-router-dom";
 import { useUserContext } from "../../context/userContext";
 import { AccountTypeEnum } from "../../types/accountType";
 import AdministrationNav from "../../components/AdministrationNav";
@@ -54,6 +54,7 @@ const AdminLayout: FC = () => {
           pauseOnHover
           theme="colored"
         />
+        <NavLink to={"/"}>Strona domowa 🏚</NavLink>
         <SubPanel onClick={handleSubPanelClick} message="users">
           <p>Użytkownicy</p>
         </SubPanel>

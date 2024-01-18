@@ -7,6 +7,7 @@ import { LoginRequest } from "../../types/loginRequest.ts";
 import { NavLink, useNavigate } from "react-router-dom";
 import { useUserContext } from "../../context/userContext.tsx";
 import { toast } from "react-toastify";
+import {AccountTypeEnum} from "../../types/accountType.ts";
 
 
 const LoginPage: FC = () => {
@@ -30,10 +31,10 @@ const LoginPage: FC = () => {
           type: response.data.userType
         });
 
-        // if (response.data.userType === AccountTypeEnum.ADMIN) {
-        //   navigation("/admin");
-        //   return;
-        // }
+        if (response.data.userType === AccountTypeEnum.ADMIN) {
+          navigation("/admin");
+          return;
+        }
         navigation("/");
       })
       .catch(error => {
