@@ -78,7 +78,7 @@ const AwardsPage: FC = () => {
 
     return (
         <div className="text-center">
-            <h1 className="enlarge-font">Hello, World!</h1>
+            <h1 className="enlarge-font">Odznaki</h1>
             <button className="my-button" onClick={handleShowMyAwards}>
                 Moje Odznaki
             </button>

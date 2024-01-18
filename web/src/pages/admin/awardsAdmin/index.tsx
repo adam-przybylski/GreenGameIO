@@ -48,7 +48,7 @@ const AwardsAwards: FC = () => {
                     <button style={{width: "100px", height: "50px", backgroundColor: "forestgreen", margin: "10px"}} onClick={doPrzodu}>Nastepna</button>
                     <input type="text" placeholder="Wprowadź tekst" onChange={handleInputChange1} value={textInputValue1} style={{ width: "220px", height: "30px", margin: "10px", border: "2px solid #00ff00", borderRadius: "5px" }} />
                     <input type="text" placeholder="Wprowadź tekst" onChange={handleInputChange2} value={textInputValue2} style={{ width: "220px", height: "30px", margin: "10px", border: "2px solid #00ff00", borderRadius: "5px" }} />
-                    <button style={{width: "220px", height: "50px", backgroundColor: "#00ff00", margin: "10px"}} onClick={handleOkClick}>Nastepna</button>
+                    <button style={{width: "220px", height: "50px", backgroundColor: "#00ff00", margin: "10px"}} onClick={handleOkClick}>Stwórz</button>
                 </div>
 
             </div>
