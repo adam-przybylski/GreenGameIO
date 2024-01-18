@@ -105,7 +105,7 @@ const AwardsPage: FC = () => {
                         <img src={selectedItem.source} alt={`Pełny obrazek dla ${selectedItem.nazwa}`} className="modal-image" />
                         <h2 className="modal-title">{selectedItem.nazwa}</h2>
                         <p className="modal-description">{selectedItem.opis}</p>
-                        {czyDodacPrzycisk && <button  className="modal-button" onClick={() => handlePrzypnijOdznake(selectedItem?.id)}>Zapnij mnie</button>  }
+                        {czyDodacPrzycisk && <button  className="modal-button" onClick={() => handlePrzypnijOdznake(selectedItem?.id)}>Przypnij</button>  }
                         <button className="modal-button" onClick={handleCloseModal}>
                             Zamknij
                         </button>

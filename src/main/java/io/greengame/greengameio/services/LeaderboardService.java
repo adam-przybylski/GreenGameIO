@@ -4,9 +4,11 @@ package io.greengame.greengameio.services;
 import io.greengame.greengameio.dtos.LeaderboardDto;
 import io.greengame.greengameio.entity.User;
 import lombok.RequiredArgsConstructor;
+import org.hibernate.mapping.Collection;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 @Service
@@ -32,12 +34,14 @@ public class LeaderboardService {
             leaderboardDto.setScore(gameResultService.getSnakeScoreByUserId(user.getId()));
             leaderboard.add(leaderboardDto);
         }
+        //Collections.reverse(leaderboard);
         return leaderboard;
     }
 
     public List<LeaderboardDto> getLightsOutLeaderboard() {
         List<LeaderboardDto> leaderboard = new ArrayList<>();
         List<User> users = userService.getUsers();
+
 
         for (User user : users) {
             LeaderboardDto leaderboardDto = new LeaderboardDto();

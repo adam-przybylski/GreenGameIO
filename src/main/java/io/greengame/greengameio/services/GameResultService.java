@@ -52,6 +52,9 @@ public class GameResultService {
         if(score > 5) {
             odznakaService.dodajOdznakeDlaUzytkownika(userId, 4L);
         }
+        if(score > 11) {
+            odznakaService.dodajOdznakeDlaUzytkownika(userId, 6L);
+        }
         Optional<GameResult> optionalGameResult = gameResultRepository.findByUserId(userId);
         if (optionalGameResult.isPresent()) {
             GameResult gameResult = optionalGameResult.get();
@@ -72,7 +75,7 @@ public class GameResultService {
 
     public GameResult updateLightsOutResult(Long userId, int score) {
         if(score > 5) {
-            odznakaService.dodajOdznakeDlaUzytkownika(userId, 1L);
+            odznakaService.dodajOdznakeDlaUzytkownika(userId, 3L);
         }
         Optional<GameResult> optionalGameResult = gameResultRepository.findByUserId(userId);
         if (optionalGameResult.isPresent()) {
@@ -111,6 +114,9 @@ public class GameResultService {
     }
 
     public GameResult updateFruitCatcherResult(Long userId, int score) {
+        if(score > 299) {
+            odznakaService.dodajOdznakeDlaUzytkownika(userId, 5L);
+        }
         Optional<GameResult> optionalGameResult = gameResultRepository.findByUserId(userId);
         if (optionalGameResult.isPresent()) {
             GameResult gameResult = optionalGameResult.get();

@@ -102,12 +102,12 @@ public class GreenGameIoApplication {
             friendManager.addGroupMember(user.getId(), group.getId(), user4.getId());
             friendManager.addGroupMember(user.getId(), group.getId(), user5.getId());
 
-            odznakaRepository.save(new Odznaka(1L, "nazwa1", "opis1", "test1.png"));//, new HashSet<Long>()));
-            odznakaRepository.save(new Odznaka(2L, "nazwa2", "opis2", "test2.png"));//, new HashSet<Long>()));
-            odznakaRepository.save(new Odznaka(3L, "nazwa3", "opis3", "test3.png"));
-            odznakaRepository.save(new Odznaka(4L, "Wężowy Mistrz", "Zdobyto 10 pkt w Snake", "test4.png"));
-            odznakaRepository.save(new Odznaka(5L, "nazwa5", "opis5", "test5.png"));
-            odznakaRepository.save(new Odznaka(6L, "nazwa6", "opis6", "test6.png"));
+            odznakaRepository.save(new Odznaka(1L, "Zieleona gra", "Witaj w grze", "test1.png"));//, new HashSet<Long>()));
+            odznakaRepository.save(new Odznaka(2L, "Ja tu rządze", "Admin zielonej gry", "test2.png"));//, new HashSet<Long>()));
+            odznakaRepository.save(new Odznaka(3L, "Świetlik", "Zdobyto 6 pkt w Światła", "test3.png"));
+            odznakaRepository.save(new Odznaka(4L, "Wężowy Mistrz", "Zdobyto 6 pkt w Snake", "test4.png"));
+            odznakaRepository.save(new Odznaka(5L, "Koszykarz", "Zdobyto 300pkt w koszyk", "test5.png"));
+            odznakaRepository.save(new Odznaka(6L, "Węzowy król", "Zdobyto 12pkt w Snake", "test6.png"));
             odznakaRepository.save(new Odznaka(7L, "nazwa7", "opis7", "test7.png"));
 
 
@@ -122,7 +122,7 @@ public class GreenGameIoApplication {
             User user10 = userRepository.save(new User("user5", "$2b$12$6J4h6z.Er73Ud7zWhUT4yueCCFl2xCLkUZGHi8JtJYYwxp3NHtbBK", "user5@email.com", UserType.USER));
             userTaskService.generateUserTasksForUser(user10.getId());
 
-//            userOdznakaRepository.save(new UserOdznaka(1L, 1L));
+            userOdznakaRepository.save(new UserOdznaka(1L, 2L));
             userOdznakaRepository.save(new UserOdznaka(2L, 1L));
             userOdznakaRepository.save(new UserOdznaka(3L, 1L));
             userOdznakaRepository.save(new UserOdznaka(4L, 1L));

@@ -13,4 +13,13 @@ public class LeaderboardDto {
     Double xp;
     Long pinnedAwardId;
     Integer score;
+
+//    public Integer getScore() {
+//        return this.score;
+//    }
+//
+//    @Override
+//    public int compareTo(LeaderboardDto u) {
+//        return this.score - u.getScore();
+//    }
 }

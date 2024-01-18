@@ -9,6 +9,7 @@ export const Leaderboard: FC = () => {
     const handleGet = (game: string) => {
         api.get("/leaderboard/" + game).then((res) => {
             setLeaderboardData(res.data);
+			console.log(res.data.sort((a, b) => b.score - a.score));
         });
     };
 
