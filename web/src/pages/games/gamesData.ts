@@ -1,18 +1,18 @@
 export const games = {
   snake: {
-    name: "Snake",
+    name: "Snake 🐍",
     url: "snake/index.html",
   },
   lightsOut: {
-    name: "Lights Out",
+    name: "Lights Out 💡",
     url: "lightsOut/index.html",
   },
   fruitCatcher: {
-    name: "Fruit Catcher",
+    name: "Fruit Catcher 🍉",
     url: "fruitCatcher/index.html",
   },
   plumber: {
-    name: "Plumber",
+    name: "Plumber 🪠",
     url: "plumber/index.html",
   },
 } as const;
