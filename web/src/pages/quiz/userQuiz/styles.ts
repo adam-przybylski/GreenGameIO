@@ -31,7 +31,7 @@ export const smallModalStyles3 = {
 export const smallModalStyles2 = {
     content: {
         width: '40%',
-        height: '20%',
+        height: '25%',
         margin: 'auto',
         padding: '20px',
         paddingBottom: '10px',

@@ -198,7 +198,7 @@ const Quizzes: FC = () => {
                     ariaHideApp={false}
                 >
                     <div>
-                        <h2 style={styles.headingStyles}>Wyniki quizu</h2>
+                        <h2 style={styles.headingStyles}>Wynik quizu</h2>
                         {currentScore !== null && (
                             <div>
                                 <strong>Ilość poprawnych odpowiedzi: {currentScore}</strong><br/><br/>
