@@ -3,7 +3,6 @@ import Friend from "./Friend";
 import Group from "./Group";
 import AddFriendModal from "./AddFriendModal";
 import PendingRequestsModal from "./PendingRequestsModal";
-import { useParams } from "react-router-dom";
 import api from "../api/api";
 import CreateGroupModal from "./CreateGroupModal";
 import AddGroupMembersModal from "./AddGroupMembersModal";
@@ -11,6 +10,7 @@ import UserModal from "./UserModal";
 import GroupModal from "./GroupModal";
 import EditGroupModal from "./EditGroupModal";
 import { useUserContext } from "../../../context/userContext";
+import "../index.css";
 
 const List: FC = () => {
     const [areFriendsDisplayed, setAreFriendsDisplayed] = useState(true);
