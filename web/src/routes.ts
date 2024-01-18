@@ -1,4 +1,4 @@
-import { RouteObject } from "react-router-dom";
+import {RouteObject} from "react-router-dom";
 import MainPage from "./pages/main";
 import Notifications from "./pages/notifications";
 import UserNotifications from "./pages/userNotifications";
@@ -35,4 +35,5 @@ export const ProtectedRoutes = [
 export const AdminRoutes = [
   { path: "/admin/notifications", Component: Notifications },
   { path: "/admin", Component: AdminLayout },
+
 ] satisfies RouteObject[];

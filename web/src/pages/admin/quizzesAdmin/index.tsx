@@ -1,347 +1,314 @@
-import {FC, useEffect, useState} from "react";
+import React, {FC, useEffect, useState} from "react";
 import Modal from "react-modal";
 import {api} from "../../../api/api.config.ts";
 import * as styles from "./styles";
+import AddQuizModal from "../../../components/modals/AddQuizModal.tsx";
+import EditQuizModal from "../../../components/modals/EditQuizModal.tsx";
+import {FaCheck} from "react-icons/fa";
+
+interface Answer {
+    answerContent: string;
+    correct: boolean;
+}
+
+interface Question {
+    questionContent: string;
+    listOfAnswers: Answer[];
+}
 
 interface Quiz {
     quizID: number;
     quizTitle: string;
-    quizCreator: {
-        id: number;
-        username: string;
-    };
-    quizOpenDate: string;
-    listOfQuestions: Array<{
-        questionID: number;
-        questionNumber: number;
-        questionContent: string;
-        questionAnswers: Array<{
-            answerID: number;
-            answerContent: string;
-        }>;
-        correctAnswer: {
-            answerID: number;
-            answerContent: string;
-        };
-    }>;
+    quizCreatorName: string;
+    quizOpenDate: Date;
+    listOfQuestions: Question[];
 }
 
 const AdminQuizzes: FC = () => {
     const [quizzes, setQuizzes] = useState<Quiz[] | null>(null);
     const [selectedQuiz, setSelectedQuiz] = useState<Quiz | null>(null);
     const [modalIsOpen, setModalIsOpen] = useState(false);
-    const [addModalIsOpen, setAddModalIsOpen] = useState(false);
     const [editModalIsOpen, setEditModalIsOpen] = useState(false);
-    const [deleteModalIsOpen, setDeleteModalIsOpen] = useState(false);
+    const [addModalIsOpen, setAddModalIsOpen] = useState(false);
+    const [deleteConfirmationModalIsOpen, setDeleteConfirmationModalIsOpen] = useState(false);
+    const [quizToDelete, setQuizToDelete] = useState<Quiz | null>(null);
 
     useEffect(() => {
-        api.get("/quizzes")
-            .then(function (response) {
-                setQuizzes(response.data);
-            })
-            .catch(function (error) {
+        api.get("/quizzes/correct")
+            .then(response => setQuizzes(response.data))
+            .catch(error => {
                 console.error("Error fetching quizzes:", error);
                 setQuizzes([]);
             });
     }, []);
 
-const openModal = (quiz: Quiz) => {
-    setSelectedQuiz(quiz);
-    setModalIsOpen(true);
-};
-
-const closeModal = () => {
-    setSelectedQuiz(null);
-    setModalIsOpen(false);
-};
-
-const formatOpeningDate = (dateString: string) => {
-    const options = {
-        year: 'numeric',
-        month: 'long',
-        day: 'numeric',
-        hour: 'numeric',
-        minute: 'numeric',
-        second: 'numeric'
+    const openSelectedQuizModal = (quiz: Quiz) => {
+        setSelectedQuiz(quiz);
+        setModalIsOpen(true);
     };
-    return new Date(dateString).toLocaleString('PL', options);
-};
 
-return (
-    <div>
-        <h2 style={styles.headingStyles}>Panel zarządzania quizami</h2>
+    const closeSelectedQuizModal = () => {
+        setSelectedQuiz(null);
+        setModalIsOpen(false);
+    };
 
-        <div style={{marginBottom: '10px', marginTop: '20px', textAlign: 'center'}}>
-            <button
-                style={{
-                    ...styles.buttonStyles,
-                    backgroundColor: 'green',
-                }}
-                onClick={() => setAddModalIsOpen(true)}
-            >
-                Dodaj Quiz
-            </button>
-            <button
-                style={{
-                    ...styles.buttonStyles,
-                    backgroundColor: 'blue',
-                    marginLeft: '10px',
-                }}
-                onClick={() => setEditModalIsOpen(true)}
-            >
-                Edytuj Quiz
-            </button>
-            <button
-                style={{
-                    ...styles.buttonStyles,
-                    backgroundColor: 'red',
-                    marginLeft: '10px',
-                }}
-                onClick={() => setDeleteModalIsOpen(true)}
-            >
-                Usuń Quiz
-            </button>
-        </div>
+    const formatOpeningDate = (dateString: Date) => {
+        const options = {
+            year: 'numeric',
+            month: 'long',
+            day: 'numeric',
+            hour: 'numeric',
+            minute: 'numeric',
+            second: 'numeric'
+        };
+        return new Date(dateString).toLocaleString('PL', options);
+    };
+    const openEditQuizModal = (quiz: Quiz) => {
+        setSelectedQuiz(quiz);
+        setEditModalIsOpen(true);
+    };
 
-        <div style={{display: 'flex', flexWrap: 'wrap'}}>
-            {quizzes && quizzes.length > 0 ? (
-                quizzes.map((quiz) => (
-                    <div
-                        key={quiz.quizID}
-                        onClick={() => openModal(quiz)}
-                        style={styles.squareStyles}
-                    >
-                        <div style={{textAlign: 'center'}}>
-                            <strong>{quiz.quizTitle}</strong><br/><br/>
-                        </div>
-                        <strong>Twórca:</strong> {quiz.quizCreator.username}<br/>
-                        <strong>Data Otwarcia:</strong> {formatOpeningDate(quiz.quizOpenDate)}<br/><br/>
-                        <strong>Liczba pytań:</strong> {quiz.listOfQuestions.length}<br/>
+    const postNewQuiz = async (newQuiz: Quiz) => {
+        try {
+            await api.post("/quizzes", newQuiz);
+            api.get("/quizzes")
+                .then(response => setQuizzes(response.data))
+        } catch (error) {
+            console.error('Error', error);
+        }
+    }
 
-                    </div>
-                ))
-            ) : (
-                <p>Brak quizów.</p>
-            )}
-        </div>
-        <Modal
-            isOpen={modalIsOpen}
-            onRequestClose={closeModal}
-            contentLabel="Selected Quiz"
-            style={styles.modalStyles}
-        >
-            {selectedQuiz && (
-                <div>
-                    <h2 style={styles.headingStyles}>{selectedQuiz.quizTitle}</h2>
-                    <strong>ID Quizu:</strong> {selectedQuiz.quizID}<br/>
-                    <strong>Twórca:</strong> {selectedQuiz.quizCreator.username}<br/>
-                    <strong>Data Otwarcia:</strong> {formatOpeningDate(selectedQuiz.quizOpenDate)}<br/><br/>
-                    <h3 style={styles.headingStyles2}>Pytania</h3>
-                    <ul>
-                        {selectedQuiz.listOfQuestions.map((question, index) => (
-                            <li key={question.questionID}>
-                                <strong>Pytanie {index + 1}:</strong> {question.questionContent}<br/>
-                                <strong>Odpowiedzi:</strong>
-                                <ul>
-                                    {question.questionAnswers.map((answer) => (
-                                        <li key={answer.answerID}
-                                            style={answer.answerID === question.correctAnswer.answerID ? styles.correctAnswerStyles : styles.answerStyles}>
-                                            {answer.answerContent}
-                                        </li>
-                                    ))}
-                                </ul>
-                                <br/>
-                            </li>
-                        ))}
-                    </ul>
-                    <button style={{
+    const postUpdatedQuiz = async (updatedQuiz: Quiz) => {
+        const quizGeneralInfo = {
+            quizTitle: updatedQuiz.quizTitle,
+            quizOpenDate: updatedQuiz.quizOpenDate
+        }
+
+        const quizModifiedQuestions = {
+            listOfQuestions: updatedQuiz.listOfQuestions
+        }
+
+        try {
+            await api.put(`/quizzes/id/${Number(updatedQuiz.quizID)}/modify-general`, quizGeneralInfo)
+        } catch (error) {
+            console.error('Error', error);
+        }
+
+        try {
+            await api.put(`/quizzes/id/${Number(updatedQuiz.quizID)}/modify-questions`, quizModifiedQuestions)
+        } catch (error) {
+            console.error('Error', error);
+        } finally {
+            api.get("/quizzes/correct")
+                .then(response => setQuizzes(response.data))
+        }
+    }
+
+    const closeEditQuizModal = () => {
+        setSelectedQuiz(null);
+        setEditModalIsOpen(false);
+    };
+
+    const deleteQuiz = (quiz: Quiz) => {
+        setQuizToDelete(quiz);
+        setDeleteConfirmationModalIsOpen(true);
+    };
+
+    const confirmDeleteQuiz = async () => {
+        if (quizToDelete) {
+            try {
+                await api.delete(`/quizzes/id/${quizToDelete.quizID}`);
+                setQuizzes(prevQuizzes => prevQuizzes?.filter(q => q.quizID !== quizToDelete.quizID) || []);
+                setDeleteConfirmationModalIsOpen(false);
+            } catch (error) {
+                console.error('Error deleting quiz:', error);
+            }
+        }
+    };
+
+    const updateQuiz = (updatedQuiz: Quiz) => {
+        // console.log("Updated Quiz:", updatedQuiz);
+        closeEditQuizModal();
+    };
+
+    return (
+        <div>
+            <h2 style={styles.headingStyles}>Panel zarządzania quizami</h2>
+
+            <div style={{marginBottom: '10px', marginTop: '20px', textAlign: 'center'}}>
+                <button
+                    style={{
                         ...styles.buttonStyles,
-                        position: 'absolute',
-                        bottom: '10px',
-                        left: '50%',
-                        transform: 'translateX(-50%)'
-                    }} onClick={closeModal}>
-                        Zamknij
-                    </button>
-                </div>
-            )}
-        </Modal>
-        <Modal
-            isOpen={addModalIsOpen}
-            onRequestClose={() => setAddModalIsOpen(false)}
-            contentLabel="Add Quiz"
-            style={styles.modalStyles}
-        >
-            <h2 style={styles.headingStyles}>Dodaj Quiz</h2>
-            <h3 style={styles.headingStyles2}>Uzupełnij dane o quizie:</h3><br/>
-            <button
-                style={{
-                    ...styles.buttonStyles,
-                    position: 'absolute',
-                    bottom: '10px',
-                    left: '50%',
-                    transform: 'translateX(-50%)',
-                }}
-                onClick={() => setAddModalIsOpen(false)}
+                    }}
+                    onClick={() => setAddModalIsOpen(true)}
+                >
+                    <strong>Utwórz Nowy Quiz</strong>
+                </button>
+            </div>
+
+            <div style={{display: 'flex', flexWrap: 'wrap'}}>
+                {quizzes && quizzes.length > 0 ? (
+                    quizzes.map(quiz => (
+                        <div
+                            key={quiz.quizTitle}
+                            onClick={() => openSelectedQuizModal(quiz)}
+                            style={styles.squareStyles}
+                        >
+                            <div style={{textAlign: 'center'}}>
+                                <h5 style={styles.headingStyles3}>{quiz.quizTitle}</h5>
+                            </div>
+                            <strong>Twórca:</strong> {quiz.quizCreatorName}<br/>
+                            <strong>Data Otwarcia:</strong> {formatOpeningDate(quiz.quizOpenDate)}<br/><br/>
+                            <strong>Liczba pytań:</strong> {quiz.listOfQuestions.length}<br/>
+                            <button
+                                style={{
+                                    ...styles.buttonStylesClose,
+                                    backgroundColor: 'red',
+                                    marginTop: '20px',
+                                    marginLeft: '15%'
+                                }}
+                                onClick={(e) => {
+                                    e.stopPropagation();
+                                    deleteQuiz(quiz);
+                                }}
+                            >
+                                <strong>Usuń</strong>
+                            </button>
+                            <button
+                                style={{
+                                    ...styles.buttonStylesClose,
+                                    marginTop: '20px',
+                                    marginLeft: '24%',
+                                }}
+                                onClick={(e) => {
+                                    e.stopPropagation();
+                                    openEditQuizModal(quiz);
+                                }}
+                            >
+                                <strong>Edytuj</strong>
+                            </button>
+                        </div>
+                    ))
+                ) : (
+                    <strong>Brak dostępnych quizów.</strong>
+                )}
+            </div>
+            <Modal
+                isOpen={modalIsOpen}
+                onRequestClose={closeSelectedQuizModal}
+                contentLabel="Selected Quiz"
+                style={styles.modalStyles}
+                ariaHideApp={false}
             >
-                Zamknij
-            </button>
-        </Modal>
-        <Modal
-            isOpen={addModalIsOpen}
-            onRequestClose={() => setAddModalIsOpen(false)}
-            contentLabel="Add Quiz"
-            style={styles.modalStyles}
-        >
-            <h2 style={styles.headingStyles}>Dodaj Quiz</h2>
-            <h3 style={styles.headingStyles2}>Uzupełnij dane o quizie:</h3>
-            <form>
-                <div style={{ marginBottom: '15px' }}>
-                    <label style={{ fontWeight: 'bold' }}>Nazwa Quizu:</label>
-                    <input type="text" style={{ boxShadow: '2px 2px 5px rgba(0, 0, 0, 0.1)', marginLeft: '10px' }} />
-                </div>
-                <div style={{ marginBottom: '15px' }}>
-                    <label style={{ fontWeight: 'bold' }}>Twórca Quizu:</label>
-                    <input type="text" style={{ boxShadow: '2px 2px 5px rgba(0, 0, 0, 0.1)', marginLeft: '10px' }} />
-                </div>
-                <div style={{ marginBottom: '15px' }}>
-                    <label style={{ fontWeight: 'bold' }}>Data Otwarcia Quizu:</label>
-                    <input type="datetime-local" style={{ boxShadow: '2px 2px 5px rgba(0, 0, 0, 0.1)', marginLeft: '10px' }} />
-                </div>
-                <div style={{ marginBottom: '15px' }}>
-                    <label style={{ fontWeight: 'bold' }}>Pytania:</label>
+                {selectedQuiz && (
                     <div>
-                        <input type="text" placeholder="Treść pytania" style={{ boxShadow: '2px 2px 5px rgba(0, 0, 0, 0.1)', marginRight: '10px' }} />
+                        <h2 style={styles.headingStyles}>{selectedQuiz.quizTitle}</h2>
+                        <strong>Twórca:</strong><br/>
+                        {selectedQuiz.quizCreatorName}<br/><br/>
+                        <strong>Data Otwarcia:</strong><br/> {formatOpeningDate(selectedQuiz.quizOpenDate)}<br/>
+                        <h3 style={styles.headingStyles2}>Lista pytań:</h3>
+                        <ul>
+                            {selectedQuiz.listOfQuestions.map((question, index) => (
+                                <li key={question.questionContent}>
+                                    <strong style={{fontSize: "1.1em"}}>Pytanie {index + 1}:</strong>
+                                    <strong style={{fontSize: "1.1em"}}>  {question.questionContent}<br/></strong>
+
+                                    <strong>Odpowiedzi:</strong>
+                                    <ul>
+                                        {question.listOfAnswers.map(answer => (
+                                            <li
+                                                key={answer.answerContent}
+                                                style={{
+                                                    color: answer.correct ? 'green' : 'black',
+                                                    display: 'flex',
+                                                    alignItems: 'center'
+                                                }}
+                                            >
+                                                {answer.correct && <FaCheck
+                                                    style={{marginRight: '5px'}}/>}
+                                                {answer.answerContent}
+                                            </li>
+                                        ))}
+                                    </ul>
+                                    <br/>
+                                </li>
+                            ))}
+                        </ul>
                         <button
                             style={{
                                 ...styles.buttonStyles,
-                                backgroundColor: 'black',
+                                bottom: '20px',
+                                left: '50%',
                             }}
-                            onClick={(e) => {
-                                e.preventDefault();
-                                console.log('Add new question (dummy action)');
-                            }}
+                            onClick={() => closeSelectedQuizModal()}
                         >
-                            Dodaj pytanie
+                            <strong>Zamknij</strong>
                         </button>
                     </div>
-                    <div style={{ marginTop: '10px' }}>
-                        <br/><label style={{ fontWeight: 'bold' }}>Wybierz poprawną odpowiedź:</label>
-                        <select style={{ boxShadow: '2px 2px 5px rgba(0, 0, 0, 0.1)', marginLeft: '10px' }}>
-                            <option value="1">Odpowiedź 1</option>
-                            <option value="2">Odpowiedź 2</option>
-                        </select>
-                    </div>
-                </div>
-            </form>
-            <button
-                style={{
-                    ...styles.buttonStyles,
-                    position: 'absolute',
-                    bottom: '10px',
-                    left: '50%',
-                    transform: 'translateX(-50%)',
-                }}
-                onClick={() => setAddModalIsOpen(false)}
+                )}
+            </Modal>
+            <Modal
+                isOpen={deleteConfirmationModalIsOpen}
+                onRequestClose={() => setDeleteConfirmationModalIsOpen(false)}
+                contentLabel="Delete Confirmation"
+                style={styles.smallModalStyles}
+                ariaHideApp={false}
             >
-                Zamknij
-            </button>
-            <button
-                style={{
-                    ...styles.buttonStyles,
-                    position: 'absolute',
-                    bottom: '200px',
-                    left: '50%',
-                    transform: 'translateX(-50%)',
-                    backgroundColor: 'green',
-                }}
-            >
-                Zapisz Quiz
-            </button>
-        </Modal>
-
-        <Modal
-            isOpen={editModalIsOpen}
-            onRequestClose={() => setEditModalIsOpen(false)}
-            contentLabel="Edit Quiz"
-            style={styles.modalStyles}
-        >
-            <h2 style={styles.headingStyles}>Edytuj Quiz</h2>
-            <h3 style={styles.headingStyles2}>Wybierz quiz do edycji:</h3><br/>
-            <ul style={{listStyleType: 'none', padding: 0}}>
-                {quizzes &&
-                    quizzes.map((quiz) => (
-                        <li key={quiz.quizID} style={{marginBottom: '10px', display: 'flex', alignItems: 'center'}}>
-                    <span style={{marginRight: '20px'}}>
-                        <strong>{quiz.quizTitle}</strong>
-                    </span>
-                            <button
-                                style={{
-                                    ...styles.buttonStyles,
-                                    backgroundColor: 'blue',
-                                }}
-                            >
-                                Edytuj
-                            </button>
-                        </li>
-                    ))}
-            </ul>
-            <button
-                style={{
-                    ...styles.buttonStyles,
-                    position: 'absolute',
-                    bottom: '10px',
-                    left: '50%',
-                    transform: 'translateX(-50%)',
-                }}
-                onClick={() => setEditModalIsOpen(false)}
-            >
-                Zamknij
-            </button>
-        </Modal>
-
-        <Modal
-            isOpen={deleteModalIsOpen}
-            onRequestClose={() => setDeleteModalIsOpen(false)}
-            contentLabel="Delete Quiz"
-            style={styles.modalStyles}
-        >
-            <h2 style={styles.headingStyles}>Usuń Quiz</h2>
-            <h3 style={styles.headingStyles2}>Wybierz quiz do usunięcia:</h3><br/>
-            <ul style={{listStyleType: 'none', padding: 0}}>
-                {quizzes &&
-                    quizzes.map((quiz) => (
-                        <li key={quiz.quizID} style={{marginBottom: '10px', display: 'flex', alignItems: 'center'}}>
-                    <span style={{marginRight: '20px'}}>
-                        <strong>{quiz.quizTitle}</strong>
-                    </span>
+                <div style={{textAlign: 'center'}}>
+                    <h2 style={styles.smallModalText}>
+                        Czy na pewno chcesz usunąć quiz "{quizToDelete?.quizTitle}"?
+                    </h2>
+                    {quizToDelete && (
+                        <div style={{display: 'flex', justifyContent: 'center'}}>
                             <button
                                 style={{
                                     ...styles.buttonStyles,
                                     backgroundColor: 'red',
+                                    margin: '10px',
                                 }}
+                                onClick={confirmDeleteQuiz}
                             >
-                                Usuń
+                                <strong>Tak, usuń</strong>
                             </button>
-                        </li>
-                    ))}
-            </ul>
-            <button
-                style={{
-                    ...styles.buttonStyles,
-                    position: 'absolute',
-                    bottom: '10px',
-                    left: '50%',
-                    transform: 'translateX(-50%)',
-                }}
-                onClick={() => setDeleteModalIsOpen(false)}
+                            <button
+                                style={{
+                                    ...styles.buttonStyles,
+                                    marginLeft: '10px',
+                                    margin: '10px',
+                                }}
+                                onClick={() => setDeleteConfirmationModalIsOpen(false)}
+                            >
+                                <strong>Anuluj</strong>
+                            </button>
+                        </div>
+                    )}
+                </div>
+            </Modal>
+            <Modal
+                isOpen={addModalIsOpen}
+                onRequestClose={() => setAddModalIsOpen(false)}
+                contentLabel="Add Quiz"
+                style={styles.modalStyles}
+                ariaHideApp={false}
             >
-                Zamknij
-            </button>
-        </Modal>
-    </div>
-);
-    }
-;
+                <h2 style={styles.headingStyles}>Utwórz Nowy Quiz</h2>
+                <h3 style={styles.headingStyles2}>Informacje ogólne o quizie:</h3>
+                <AddQuizModal postNewQuiz={postNewQuiz} setAddModalIsOpen={setAddModalIsOpen}/>
+            </Modal>
+            <Modal
+                isOpen={editModalIsOpen}
+                onRequestClose={() => setEditModalIsOpen(false)}
+                contentLabel="Edit Quiz"
+                style={styles.modalStyles}
+                ariaHideApp={false}
+            >
+                <h2 style={styles.headingStyles}>Edytuj Quiz</h2>
+                <h3 style={styles.headingStyles2}>Informacje ogólne o quizie:</h3>
+                <EditQuizModal postUpdatedQuiz={postUpdatedQuiz} setEditModalIsOpen={setEditModalIsOpen}
+                               onUpdateQuiz={updateQuiz} selectedQuiz={selectedQuiz}/>
+            </Modal>
+        </div>
+    );
+};
 
 export default AdminQuizzes;
