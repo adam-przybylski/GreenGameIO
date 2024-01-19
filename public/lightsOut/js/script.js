@@ -12,7 +12,7 @@ let userId = urlParams.get("id") !== "null" ? urlParams.get("id") : null;
 let previousXp = 0;
 let highscore = 0;
 var modal;
-
+let flag = false;
 function createBoard() {
     let temp = getXpByUserId(userId);
     temp.then(r => {
@@ -79,6 +79,9 @@ async function getHighscore(userId) {
 
 
 function toggleLight(lightId) {
+    if(!flag) {
+        return;
+    }
     const light = lights.find(l => l.id === lightId);
     if (light) {
         if (light.active) {
@@ -97,12 +100,13 @@ function checkEndGame() {
 }
 
 function startGame() {
+    flag = true;
     if(userId === null) {
-        alert("Musisz się zalogować aby zagrać w tą grę!");
+        showNotLogged();
         return;
     }
     if (previousXp < 300) {
-        alert("Musisz mieć minimum 300 XP aby zagrać w tą grę! Masz " + previousXp + " XP.");
+        showNotEnoughXP();
         return;
     }
     function gameIntervalHandler() {
@@ -167,7 +171,7 @@ function endGame() {
     setTimeout(function(){
         updateLightsOutResult(userId, points);
     }, 1000);
-
+    flag = false;
     resetGame();
 }
 
@@ -213,6 +217,18 @@ function showGameOverModal(points) {
     document.getElementById('pointsEarned').innerText = points + " punktów" + "\n" + "Zdobyłeś " + calculateXPfromPoints(points) + " XP" + "\n" + "Twój rekord przed podejściem: " + highscore + " punktów";
 
     modal = document.getElementById("gameOverModal");
+    modal.style.display = "block";
+}
+
+function showNotLogged() {
+    modal = document.getElementById("notLoggedModal");
+    modal.style.display = "block";
+}
+
+function showNotEnoughXP() {
+    modal = document.getElementById("notEnoughXPModal");
+    let xpText = document.getElementById("xpText");
+    xpText.innerText = "Musisz mieć minimum 300 XP, aby zagrać w tę grę! Masz " + previousXp + " XP.";
     modal.style.display = "block";
 }
 

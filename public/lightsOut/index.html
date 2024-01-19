@@ -14,7 +14,7 @@
     <h1 class="mt-5">Lights Out!</h1>
     <div><p id="pointsDisplay">Punkty: <span id="points">0</span></p></div>
     <div id="board" class="mb-3"></div>
-    <button class="btn btn-primary" onclick="startGame()">Start</button>
+    <button style="background-color: #4caf50; color: white" class="btn" onclick="startGame()">Start</button>
 </div>
 
 <div class="note-header">
@@ -24,16 +24,16 @@
     </div>
 </div>
 
-<div class="note-container" style="background-color: rgb(128,128,128)">
+<div class="note-container" style="background-color: #4caf50; color: white">
     <div class="note-content">
-        <h1 style="margin-right: 10%; margin-left: 10%; text-align: center">Poradnik do gry Lights Out!</h1>
+        <h1 style="margin-right: 10%; margin-left: 10%; text-align: center; font-family: 'Comic Sans MS'">Poradnik do gry Lights Out!</h1>
         <ul>
             <li>Aby rozpocząć grę kliknij przycisk "Start"</li>
             <li>Twoim zadaniem jest wyłączanie wszystkich zapalonych świateł</li>
             <li>Światła zapalają się losowo</li>
             <li>Jeśli światło jest zapalone, kliknij je myszką, aby je wyłączyć</li>
             <li>Jeśli nie zdążysz wyłączyć światła, przegrywasz</li>
-            <li>Kazde wyłączone świało to jeden punkt</li>
+            <li>Każde wyłączone świało to jeden punkt</li>
         </ul>
     </div>
 </div>
@@ -51,8 +51,26 @@
         <h5>Przegrana</h5>
         <p>Zdobyte punkty: <span id="pointsEarned"></span></p>
         <div id="modalButtonsContainer">
-            <button id="playAgain" class="btn btn-primary" onclick="window.location.reload()">Zagraj ponownie</button>
-            <button id="backToMenu" class="btn btn-primary" onclick="window.history.back()">Powrót do menu</button>
+            <button id="playAgain" style="background-color: #4caf50; color: white" class="btn" onclick="window.location.reload()">Zagraj ponownie</button>
+            <button id="backToMenu" style="background-color: #4caf50; color: white" class="btn" onclick="window.history.back()">Powrót do menu</button>
+        </div>
+    </div>
+</div>
+
+<div class="overlay" id="notLoggedModal" style="display: none;">
+    <div class="modal-content">
+        <h5>Musisz się zalogować aby zagrać w tę grę!</h5>
+        <div id="modalButtonContainer">
+            <button id="backToMenu2" style="background-color: #4caf50; color: white" class="btn" onclick="window.history.back()">Powrót do menu</button>
+        </div>
+    </div>
+</div>
+
+<div class="overlay" id="notEnoughXPModal" style="display: none;">
+    <div class="modal-content">
+        <h5 id="xpText"></h5>
+        <div id="modalButtonContainer2">
+            <button id="backToMenu3" style="background-color: #4caf50; color: white" class="btn" onclick="window.history.back()">Powrót do menu</button>
         </div>
     </div>
 </div>
