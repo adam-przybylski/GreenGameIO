@@ -121,7 +121,7 @@ public class QuizController {
         List<QuizWithHighScoreOutputDTO> listOfQuizzes = new ArrayList<>();
         for (Quiz quiz : listOfAllQuizzes) {
             Optional<HiScore> hiScore = hiScoreService.getHighScoreByUserAndQuiz(user, quiz);
-            hiScore.ifPresent(score -> listOfQuizzes.add(new QuizWithHighScoreOutputDTO(QuizMapper.toQuizOutputDTO(quiz), score.getHiScore())));
+            hiScore.ifPresent(score -> listOfQuizzes.add(new QuizWithHighScoreOutputDTO(QuizMapper.toQuizWithCorrectAnswersDTO(quiz), score.getHiScore())));
         }
 
         if (listOfQuizzes.isEmpty()) {
@@ -136,11 +136,11 @@ public class QuizController {
         User user = userService.getUserById(userID);
 
         List<Quiz> listOfAllQuizzes = quizService.getAllQuizzes();
-        List<QuizOutputDTO> listOfQuizzes = new ArrayList<>();
+        List<QuizWithCorrectAnswersDTO> listOfQuizzes = new ArrayList<>();
         for (Quiz quiz : listOfAllQuizzes) {
             Optional<HiScore> hiScore = hiScoreService.getHighScoreByUserAndQuiz(user, quiz);
             if (hiScore.isEmpty()) {
-                listOfQuizzes.add(QuizMapper.toQuizOutputDTO(quiz));
+                listOfQuizzes.add(QuizMapper.toQuizWithCorrectAnswersDTO(quiz));
             }
         }
 

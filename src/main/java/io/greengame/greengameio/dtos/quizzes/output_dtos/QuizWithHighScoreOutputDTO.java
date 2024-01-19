@@ -11,6 +11,6 @@ import lombok.Setter;
 @AllArgsConstructor
 public class QuizWithHighScoreOutputDTO {
 
-    private QuizOutputDTO quizOutputDTO;
+    private QuizWithCorrectAnswersDTO quizWithCorrectAnswersDTO;
     private int userHiScore;
 }
