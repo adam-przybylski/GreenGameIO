@@ -212,11 +212,8 @@ function updateLightsOutResult(userId, score) {
 function showGameOverModal(points) {
     document.getElementById('pointsEarned').innerText = points + " punktów" + "\n" + "Zdobyłeś " + calculateXPfromPoints(points) + " XP" + "\n" + "Twój rekord przed podejściem: " + highscore + " punktów";
 
-
-
     modal = document.getElementById("gameOverModal");
     modal.style.display = "block";
-    // $('#gameOverModal').modal('show');
 }
 
 function resetGame() {
@@ -233,11 +230,12 @@ function resetGame() {
 
 function toggleGame() {
     gamePaused = !gamePaused;
+    let pauseModal = document.getElementById("pauseAlertModal");
     if (gamePaused) {
         clearInterval(gameInterval);
-        $('#pauseAlertModal').modal('show'); // Show the pause alert modal
+        pauseModal.style.display = "block";
     } else {
-        $('#pauseAlertModal').modal('hide'); // Hide the pause alert modal
+        pauseModal.style.display = "none";
         startGame();
     }
 }
