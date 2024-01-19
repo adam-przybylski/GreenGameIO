@@ -11,6 +11,7 @@ import io.greengame.greengameio.dtos.quizzes.modification_dtos.QuizGeneralInfoMo
 import io.greengame.greengameio.dtos.quizzes.modification_dtos.QuizQuestionModificationDTO;
 import io.greengame.greengameio.dtos.quizzes.output_dtos.QuizOutputDTO;
 import io.greengame.greengameio.dtos.quizzes.output_dtos.QuizWithCorrectAnswersDTO;
+import io.greengame.greengameio.dtos.quizzes.output_dtos.QuizWithHighScoreOutputDTO;
 import io.greengame.greengameio.entity.*;
 import io.greengame.greengameio.services.*;
 import jakarta.transaction.Transactional;
@@ -112,6 +113,44 @@ public class QuizController {
         return ResponseEntity.ok().contentType(MediaType.APPLICATION_JSON).body("No high score for given user was found.");
     }
 
+    @GetMapping("/user-id/{userID}/solved")
+    public ResponseEntity<?> findAllSolvedQuizzesByUserId(@PathVariable Long userID) {
+        User user = userService.getUserById(userID);
+
+        List<Quiz> listOfAllQuizzes = quizService.getAllQuizzes();
+        List<QuizWithHighScoreOutputDTO> listOfQuizzes = new ArrayList<>();
+        for (Quiz quiz : listOfAllQuizzes) {
+            Optional<HiScore> hiScore = hiScoreService.getHighScoreByUserAndQuiz(user, quiz);
+            hiScore.ifPresent(score -> listOfQuizzes.add(new QuizWithHighScoreOutputDTO(QuizMapper.toQuizOutputDTO(quiz), score.getHiScore())));
+        }
+
+        if (listOfQuizzes.isEmpty()) {
+            return ResponseEntity.noContent().build();
+        } else {
+            return ResponseEntity.ok().contentType(MediaType.APPLICATION_JSON).body(listOfQuizzes);
+        }
+    }
+
+    @GetMapping("/user-id/{userID}/unsolved")
+    public ResponseEntity<?> findAllUnsolvedQuizzesByUserId(@PathVariable Long userID) {
+        User user = userService.getUserById(userID);
+
+        List<Quiz> listOfAllQuizzes = quizService.getAllQuizzes();
+        List<QuizOutputDTO> listOfQuizzes = new ArrayList<>();
+        for (Quiz quiz : listOfAllQuizzes) {
+            Optional<HiScore> hiScore = hiScoreService.getHighScoreByUserAndQuiz(user, quiz);
+            if (hiScore.isEmpty()) {
+                listOfQuizzes.add(QuizMapper.toQuizOutputDTO(quiz));
+            }
+        }
+
+        if (listOfQuizzes.isEmpty()) {
+            return ResponseEntity.noContent().build();
+        } else {
+            return ResponseEntity.ok().contentType(MediaType.APPLICATION_JSON).body(listOfQuizzes);
+        }
+    }
+
     // Update methods
 
     @PutMapping("/id/{quizID}/modify-general")
@@ -205,30 +244,25 @@ public class QuizController {
             }
 
             User user = userService.getUserById(quizCheckDTO.getUserID());
-            Optional<Quiz> quizOpt = quizService.getQuiz(quizID);
 
-            if (quizOpt.isPresent()) {
-                Quiz quiz = quizOpt.get();
+            HiScore hiScore;
+            Optional<HiScore> newHiScoreOpt;
 
-                HiScore hiScore;
-                Optional<HiScore> newHiScoreOpt;
-
-                Optional<HiScore> hiScoreOpt = hiScoreService.getHighScoreByUserAndQuiz(user, quiz);
-                if (hiScoreOpt.isPresent()) {
-                    hiScore = hiScoreOpt.get();
-                    if (hiScore.getHiScore() < numberOfCorrectAnswers) {
-                        hiScore.setHiScore(numberOfCorrectAnswers);
-                        hiScoreService.updateHiScore(hiScore);
-                    }
-                } else {
-                    hiScore = new HiScore(quiz, user, numberOfCorrectAnswers);
-                    hiScoreService.createHiScore(hiScore);
+            Optional<HiScore> hiScoreOpt = hiScoreService.getHighScoreByUserAndQuiz(user, quizFromDB);
+            if (hiScoreOpt.isPresent()) {
+                hiScore = hiScoreOpt.get();
+                if (hiScore.getHiScore() < numberOfCorrectAnswers) {
+                    hiScore.setHiScore(numberOfCorrectAnswers);
+                    hiScoreService.updateHiScore(hiScore);
                 }
+            } else {
+                hiScore = new HiScore(quizFromDB, user, numberOfCorrectAnswers);
+                hiScoreService.createHiScore(hiScore);
+            }
 
-                newHiScoreOpt = hiScoreService.getHighScoreByUserAndQuiz(user, quiz);
-                if (newHiScoreOpt.isPresent()) {
-                    return ResponseEntity.ok().contentType(MediaType.APPLICATION_JSON).body(HiScoreMapper.toHiScoreOutputDTO(newHiScoreOpt.get(), numberOfCorrectAnswers));
-                }
+            newHiScoreOpt = hiScoreService.getHighScoreByUserAndQuiz(user, quizFromDB);
+            if (newHiScoreOpt.isPresent()) {
+                return ResponseEntity.ok().contentType(MediaType.APPLICATION_JSON).body(HiScoreMapper.toHiScoreOutputDTO(newHiScoreOpt.get(), numberOfCorrectAnswers));
             }
         }
         return ResponseEntity.ok().contentType(MediaType.APPLICATION_JSON).body(0);
