@@ -71,7 +71,7 @@ function updateGame(){
 
     // Part 1: Updating the snake array & Food
     if(checkCollision(snakeArray)){
-        gameOver("Wjechałes w ścianę");
+        gameOver("Wjechales w sciane");
     }
 
     // If the snake has eaten the trash  , increment the score and regenerate the trash
@@ -255,7 +255,7 @@ function resetGame(){
 function showGameOverModal(cause) {
      
 
-    let infoTologged;
+    let infoTologged = "";
     console.log("max przed +"+highscore)
     if(id != null){
         infoTologged = "Twój rekord przed podejściem: " + highscore + " punktów"
