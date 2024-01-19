@@ -1,7 +1,7 @@
 import React, {FC, useEffect, useState} from "react";
 import Modal from "react-modal";
-import {api} from "../../../api/api.config.ts";
-import * as styles from "./styles";
+import {api} from "../../../../api/api.config.ts";
+import * as styles from "../styles.ts";
 
 interface Answer {
     answerContent: string;
@@ -14,11 +14,14 @@ interface Question {
 }
 
 interface Quiz {
-    quizID: number;
-    quizTitle: string;
-    quizCreatorName: string;
-    quizOpenDate: Date;
-    listOfQuestions: Question[];
+    quizWithCorrectAnswersDTO: {
+        quizID: number;
+        quizTitle: string;
+        quizCreatorName: string;
+        quizOpenDate: Date;
+        listOfQuestions: Question[];
+    }
+    userHiScore: number;
 }
 
 interface UserAnswer {
@@ -26,20 +29,24 @@ interface UserAnswer {
     answerNumber: number;
 }
 
-const Quizzes: FC = () => {
+const SolvedQuizzes: FC = () => {
     const [quizzes, setQuizzes] = useState<Quiz[] | null>(null);
     const [selectedQuiz, setSelectedQuiz] = useState<Quiz | null>(null);
     const [modalIsOpen, setModalIsOpen] = useState(false);
     const [solveModalIsOpen, setSolveModalIsOpen] = useState(false);
-    const [bestScore, setBestScore] = useState<number | null>(null);
     const [hiScore, setHiScore] = useState<number | null>(null);
     const [currentScore, setCurrentScore] = useState<number | null>(null);
     const [resultModalIsOpen, setResultModalIsOpen] = useState(false);
 
     useEffect(() => {
-        api.get("/quizzes/correct")
+        const localStorageItem = localStorage.getItem("account");
+        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+        // @ts-expect-error
+        const parsedData = JSON.parse(localStorageItem);
+        const idValue = parsedData.id;
+        api.get(`/quizzes/user-id/${idValue}/solved`)
             .then(function (response) {
-                const filteredQuizzes = response.data.filter(quiz => new Date(quiz.quizOpenDate) < new Date());
+                const filteredQuizzes = response.data.filter(quiz => new Date(quiz.quizWithCorrectAnswersDTO.quizOpenDate) < new Date());
                 setQuizzes(filteredQuizzes);
             })
             .catch(function (error) {
@@ -48,30 +55,6 @@ const Quizzes: FC = () => {
             });
 
     }, []);
-
-    useEffect(() => {
-        const localStorageItem = localStorage.getItem("account");
-        if (localStorageItem) {
-            const parsedData = JSON.parse(localStorageItem);
-            const userID = parsedData.id;
-
-            if (userID != null) {
-                if (selectedQuiz) {
-                    api.get(`/quizzes/id/${selectedQuiz.quizID}/user-id/${userID}`)
-                        .then((response) => {
-                            setBestScore(response.data || null);
-                            if (response.data == "No high score for given user was found.") {
-                                setBestScore(0)
-                            }
-                        })
-                        .catch((error) => {
-                            console.error('Error:', error.message);
-                            setBestScore(null);
-                        });
-                }
-            }
-        }
-    }, [selectedQuiz])
 
     const openModal = (quiz: Quiz) => {
         setSelectedQuiz(quiz);
@@ -107,7 +90,7 @@ const Quizzes: FC = () => {
 
     function SolveQuiz({selectedQuiz, isOpen, onClose}) {
         const [formFieldsQuestion, setFormFieldsQuestion] = useState(
-            selectedQuiz?.listOfQuestions.map((question) => {
+            selectedQuiz?.quizWithCorrectAnswersDTO.listOfQuestions.map((question) => {
                 return {
                     questionContent: question.questionContent,
                     questionNumber: question.questionNumber,
@@ -137,16 +120,33 @@ const Quizzes: FC = () => {
         };
 
         const postAnswers: (listOfUserAnswers, selectedQuizID) => Promise<void> = async (listOfUserAnswers, selectedQuizID) => {
+            const localStorageItem = localStorage.getItem("account");
+            // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+            // @ts-expect-error
+            const parsedData = JSON.parse(localStorageItem);
+            const idValue = parsedData.id;
             try {
                 const response = await api.post(`/quizzes/id/${Number(selectedQuizID)}/check`, listOfUserAnswers)
                 setHiScore(response.data.hiScore);
                 setCurrentScore(response.data.currentScore);
+                setQuizzes(prevQuizzes => {
+                    const updatedQuizzes = prevQuizzes?.map(quiz => {
+                        if (quiz.quizWithCorrectAnswersDTO.quizID === selectedQuizID) {
+                            return {
+                                ...quiz,
+                                userHiScore: response.data.hiScore,
+                            };
+                        }
+                        return quiz;
+                    });
+                    return updatedQuizzes || prevQuizzes;
+                });
             } catch (error) {
                 console.error('Error', error);
             } finally {
-                api.get("/quizzes/correct")
+                api.get(`/quizzes/user-id/${idValue}/solved`)
                     .then(function (response) {
-                        const filteredQuizzes = response.data.filter(quiz => new Date(quiz.quizOpenDate) < new Date());
+                        const filteredQuizzes = response.data.filter(quiz => new Date(quiz.quizWithCorrectAnswersDTO.quizOpenDate) < new Date());
                         setQuizzes(filteredQuizzes);
                     })
             }
@@ -177,7 +177,7 @@ const Quizzes: FC = () => {
                 listOfUserAnswers: listOfUserAnswers,
             }
 
-            postAnswers(toSend, selectedQuiz.quizID);
+            postAnswers(toSend, selectedQuiz.quizWithCorrectAnswersDTO.quizID);
             closeSolveQuizModal()
             setResultModalIsOpen(true)
         };
@@ -194,14 +194,16 @@ const Quizzes: FC = () => {
                     isOpen={resultModalIsOpen}
                     onRequestClose={closeResultModal}
                     currentScore={currentScore}
+                    hiScore={hiScore}
                     style={styles.smallModalStyles2}
                     ariaHideApp={false}
                 >
                     <div>
-                        <h2 style={styles.headingStyles}>Wynik quizu</h2>
+                        <h2 style={styles.headingStyles}>Wyniki quizu</h2>
                         {currentScore !== null && (
                             <div>
-                                <strong>Ilość poprawnych odpowiedzi: {currentScore}</strong><br/><br/>
+                                <strong>Ilość poprawnych odpowiedzi: </strong>{currentScore}<br/><br/>
+                                <strong>Najlepszy dotychczasowy wynik: </strong>{hiScore}<br/><br/>
                             </div>
                         )}
                         <button
@@ -287,24 +289,26 @@ const Quizzes: FC = () => {
 
     return (
         <div>
-            <h2 style={styles.headingStyles}>Quizy</h2>
+            <h2 style={styles.headingStyles}>Quizy Rozwiązane</h2>
             <div style={{display: 'flex', flexWrap: 'wrap'}}>
                 {quizzes && quizzes.length > 0 ? (
                     quizzes.map((quiz) => (
                         <div
-                            key={quiz.quizID}
+                            key={quiz.quizWithCorrectAnswersDTO.quizID}
                             onClick={() => openModal(quiz)}
                             style={styles.squareStyles}
                         >
                             <div style={{textAlign: 'center'}}>
-                                <h3 style={styles.headingStyles3}>{quiz.quizTitle}</h3><br/>
+                                <h3 style={styles.headingStyles4}>{quiz.quizWithCorrectAnswersDTO.quizTitle}</h3><br/>
                             </div>
-                            <strong>Data Otwarcia:</strong> {formatOpeningDate(quiz.quizOpenDate)}<br/><br/>
-                            <strong>Liczba pytań:</strong> {quiz.listOfQuestions.length}<br/>
+                            <strong>Liczba
+                                pytań: </strong>{quiz.quizWithCorrectAnswersDTO.listOfQuestions.length}<br/><br/>
+                            <strong>Najlepszy osiągnięty
+                                wynik: </strong>{quiz.userHiScore}
                         </div>
                     ))
                 ) : (
-                    <strong>Brak dostępnych quizów.</strong>
+                    <strong>Brak rozwiązanych quizów.</strong>
                 )}
             </div>
             <Modal
@@ -316,12 +320,14 @@ const Quizzes: FC = () => {
             >
                 {selectedQuiz && (
                     <div>
-                        <h2 style={styles.headingStyles}>{selectedQuiz.quizTitle}</h2>
-                        <strong>Twórca:</strong> {selectedQuiz.quizCreatorName}<br/>
-                        <strong>Data otwarcia:</strong> {formatOpeningDate(selectedQuiz.quizOpenDate)}<br/>
-                        <strong>Liczba pytań:</strong> {selectedQuiz.listOfQuestions.length}<br/><br/>
+                        <h2 style={styles.headingStyles}>{selectedQuiz.quizWithCorrectAnswersDTO.quizTitle}</h2>
+                        <strong>Twórca:</strong> {selectedQuiz.quizWithCorrectAnswersDTO.quizCreatorName}<br/>
+                        <strong>Data
+                            otwarcia:</strong> {formatOpeningDate(selectedQuiz.quizWithCorrectAnswersDTO.quizOpenDate)}<br/>
+                        <strong>Liczba
+                            pytań:</strong> {selectedQuiz.quizWithCorrectAnswersDTO.listOfQuestions.length}<br/><br/>
                         <strong>Najlepszy osiągnięty
-                            wynik: </strong>{bestScore !== null ? bestScore : "0"}<br/><br/><br/>
+                            wynik: {selectedQuiz.userHiScore}</strong><br/><br/><br/>
 
                         <button style={{
                             ...styles.buttonStyles2,
@@ -355,4 +361,4 @@ const Quizzes: FC = () => {
 };
 
 
-export default Quizzes;
+export default SolvedQuizzes;

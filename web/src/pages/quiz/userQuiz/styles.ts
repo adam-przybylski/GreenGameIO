@@ -51,6 +51,14 @@ export const headingStyles3 = {
     margin: '10px 0',
 };
 
+export const headingStyles4 = {
+    fontSize: '1.3em',
+    fontWeight: 'bold',
+    textAlign: 'center',
+    margin: '10px 0',
+    color: '#22C55D'
+};
+
 export const bigModalStyles = {
     content: {
         width: 'auto%',
