@@ -16,11 +16,14 @@ paper_taken=false;
 bootle_taken=false;
 is_paused = false;
 xp = 0
+let highscore ;
+var modal;
 //id= JSON.parse(window.localStorage.getItem("account")).id;
 const urlParams = new URLSearchParams(window.location.search);
 let id = urlParams.get("id") !== "null" ? urlParams.get("id") : null;
 
 function genereteXYforTrashes(){
+
     let min = 1;
     let max = 16;
     let bootle, paper,head;
@@ -64,6 +67,7 @@ function checkCollision(snake) {
 }
 
 function updateGame(){
+   
 
     // Part 1: Updating the snake array & Food
     if(checkCollision(snakeArray)){
@@ -159,8 +163,15 @@ function updateGame(){
     glass_trash.style.gridColumnStart = glass_bin.x;
     glass_trash.classList.add('bin_glass')
     gameBoard.appendChild(glass_trash);
+    if(id != null){
+        let temp2 = getHighscore(id);
+        temp2.then(r => {
+            highscore = r
+        });
+    }
 }
 function gameOver(cause){
+console.log("gameOver , najwyzszy wynik przed podesjsciem"+highscore)
     lost = true;
     if(id != null) {
         let xpEarned = getXp();
@@ -213,6 +224,22 @@ function updateSnakeResult(userId, score) {
 function  getXp(){
     return score/5
 }
+async function getHighscore(id) {
+    const url = `http://localhost:8081/api/v1/games/snake/${id}`;
+
+    try {
+        const response = await fetch(url);
+
+        if (!response.ok) {
+            throw new Error('Network response was not ok');
+        }
+
+        return await response.json().then(r => r);
+    } catch (error) {
+        console.error('There was a problem with the fetch operation:', error);
+        return 0;
+    }
+}
 function resetGame(){
     score = 0;
     xp = 0;
@@ -226,8 +253,16 @@ function resetGame(){
     scoreView.innerHTML = "Score: " + score +" Xp "+xp;
 }
 function showGameOverModal(cause) {
-    document.getElementById('pointsEarned').innerText = cause+" ,zdobyte punkty "+ score;
-    $('#gameOverModal').modal('show');
+     
+
+    let infoTologged;
+    console.log("max przed +"+highscore)
+    if(id != null){
+        infoTologged = "Twój rekord przed podejściem: " + highscore + " punktów"
+    }
+    document.getElementById('pointsEarned').innerText = cause+" ,zdobyte punkty "+ score  + "\n" + "Zdobyłeś " + getXp() + " XP" + "\n" + infoTologged ;
+    modal = document.getElementById("gameOverModal");
+    modal.style.display = "block";
 }
 function continueGameAfterLost(){
     $('#gameOverModal').modal('hide');

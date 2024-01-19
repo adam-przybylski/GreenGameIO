@@ -6,6 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Snake</title>
     <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
 </head>
 <body>
     <div class="body">
@@ -18,9 +19,9 @@
             <div class="note-text">Jak grać?</div>
         </div>
     </div>
-    <div class="note-container">
+    <div class="note-container" style="background-color: #4caf50; color: white" >
         <div class="note-content">
-            <h1 style="margin-right: 10%; margin-left: 10%; text-align: center" >Poradnik do gry Snake</h1>
+            <h1 style="margin-right: 10%; margin-left: 10%;font-family: 'Comic Sans MS'; text-align: center" >Poradnik do gry Snake</h1>
             <ul>
                 <li>Celem gry jest zbieranie śmieci na planszy za pomocą poruszającego się węża.</li>
                 <li>Oddawaj zebrane śmieci do odpowiedniego kosza, aby zdobywać punkty</li>
@@ -37,6 +38,10 @@
         <div class="modal-content">
             <h5>Przegrana</h5>
             <p>Przegrałeś!  <span id="pointsEarned"></span></p>
+            <div id="modalButtonsContainer">
+                <button id="playAgain" style="background-color: #4caf50; color: white" class="btn" onclick="window.location.reload()">Zagraj ponownie</button>
+                <button id="backToMenu" style="background-color: #4caf50; color: white" class="btn" onclick="window.history.back()">Powrót do menu</button>
+            </div>
         </div>
     </div>
     <div class="overlay" id="pauseAlertModal" style="display: none;">
