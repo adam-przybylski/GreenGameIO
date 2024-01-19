@@ -10,11 +10,17 @@ let ended = false;
 const urlParams = new URLSearchParams(window.location.search);
 let userId = urlParams.get("id") !== "null" ? urlParams.get("id") : null;
 let previousXp = 0;
+let highscore = 0;
+var modal;
 
 function createBoard() {
     let temp = getXpByUserId(userId);
     temp.then(r => {
         previousXp = r
+    });
+    let temp2 = getHighscore(userId);
+    temp2.then(r => {
+        highscore = r
     });
     const boardElement = document.getElementById('board');
     boardElement.innerHTML = '';
@@ -39,6 +45,23 @@ function createBoard() {
 
 async function getXpByUserId(userId) {
     const url = `http://localhost:8081/api/v1/games/xp/${userId}`;
+
+    try {
+        const response = await fetch(url);
+
+        if (!response.ok) {
+            throw new Error('Network response was not ok');
+        }
+
+        return await response.json().then(r => r);
+    } catch (error) {
+        console.error('There was a problem with the fetch operation:', error);
+        return 0;
+    }
+}
+
+async function getHighscore(userId) {
+    const url = `http://localhost:8081/api/v1/games/lightsOut/${userId}`;
 
     try {
         const response = await fetch(url);
@@ -187,9 +210,13 @@ function updateLightsOutResult(userId, score) {
 }
 
 function showGameOverModal(points) {
-    document.getElementById('pointsEarned').innerText = points;
+    document.getElementById('pointsEarned').innerText = points + " punktów" + "\n" + "Zdobyłeś " + calculateXPfromPoints(points) + " XP" + "\n" + "Twój rekord przed podejściem: " + highscore + " punktów";
 
-    $('#gameOverModal').modal('show');
+
+
+    modal = document.getElementById("gameOverModal");
+    modal.style.display = "block";
+    // $('#gameOverModal').modal('show');
 }
 
 function resetGame() {

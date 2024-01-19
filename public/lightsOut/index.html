@@ -49,7 +49,11 @@
 <div class="overlay" id="gameOverModal" style="display: none;">
     <div class="modal-content">
         <h5>Przegrana</h5>
-        <p>Przegrałeś! Zdobyte punkty: <span id="pointsEarned"></span></p>
+        <p>Zdobyte punkty: <span id="pointsEarned"></span></p>
+        <div id="modalButtonsContainer">
+            <button id="playAgain" class="btn btn-primary" onclick="window.location.reload()">Zagraj ponownie</button>
+            <button id="backToMenu" class="btn btn-primary" onclick="window.history.back()">Powrót do menu</button>
+        </div>
     </div>
 </div>
 
