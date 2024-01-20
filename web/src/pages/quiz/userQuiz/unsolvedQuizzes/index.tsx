@@ -123,7 +123,6 @@ const UnsolvedQuizzes: FC = () => {
             const idValue = parsedData.id;
             try {
                 const response = await api.post(`/quizzes/id/${Number(selectedQuizID)}/check`, listOfUserAnswers)
-                setHiScore(response.data.hiScore);
                 setCurrentScore(response.data.currentScore);
             } catch (error) {
                 console.error('Error', error);
@@ -221,7 +220,7 @@ const UnsolvedQuizzes: FC = () => {
                                         <text style={{
                                             fontSize: "1.1em",
                                             fontWeight: "bold"
-                                        }}>{form.questionContent}</text>
+                                        }}> {form.questionContent}</text>
                                         {form.questionAnswers.map((answer, answerIndex) => (
                                             <div key={answerIndex}
                                                  style={{marginBottom: '5px', display: 'flex', alignItems: 'center'}}>

@@ -266,7 +266,7 @@ const AddQuizModal: React.FC<AddQuizProps> = ({postNewQuiz, setAddModalIsOpen}) 
                                         placeholder="Treść odpowiedzi"
                                         onChange={(event) => handleAnswerFormChange(event, questionIndex, answerIndex)}
                                         value={answer.answerContent}
-                                        style={{width: '25%'}}
+                                        style={{width: '45%'}}
                                         required={true}
                                     />
                                     <input

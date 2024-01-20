@@ -288,7 +288,7 @@ const EditQuizModal: FC<EditQuizProps> = ({selectedQuiz, setEditModalIsOpen, onU
                                     </button>
                                     <br/>
                                     <input
-                                        style={{width: '25%'}}
+                                        style={{width: '45%'}}
                                         name="answerContent"
                                         placeholder="Treść odpowiedzi"
                                         onChange={(event) => handleAnswerFormChange(event, questionIndex, answerIndex)}
