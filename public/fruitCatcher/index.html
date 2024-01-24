@@ -3,22 +3,21 @@
 <head>
     <meta charset="UTF-8">
     <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
     <title>FruitCatcher</title>
 </head>
 <body>
 <div id="body">
-    <div id="endScreen" class="modal">
+    <div class="overlay" id="endScreen" style="display: none;">
         <div class="modal-content">
-            <div>
-                <span>Zdobyty wynik:</span>
-                <span id="showScore"></span>
-                <span>Najlepszy wynik:</span>
-                <span id="showBestScore"></span>
-                <span id="response"></span>
-            </div>
-            <div>
-                <button id="saveButton" type="button" disabled onclick="game.saveScore()">Zapisz wynik</button>
-                <button type="button" onclick="game.closeModal()">Zamknij</button>
+            <h5>Przegrana</h5>
+            <p>Przegrałeś!  <span id="showScore"></span></p>
+            <p>Najlepszy wynik: <span id="showBestScore"></span></p>
+            <p><span id="response"></span></p>
+            <div id="modalButtonsContainer">
+                <button id="playAgain" style="background-color: #4caf50; color: white" class="btn" onclick="game.closeModal()">Zagraj ponownie</button>
+                <button id="saveButton" style="background-color: #4caf50; color: white" class="btn" onclick="game.saveScore()">Zapisz wynik</button>
+                <button id="backToMenu" style="background-color: #4caf50; color: white" class="btn" onclick="window.history.back()">Powrót do menu</button>
             </div>
         </div>
     </div>
@@ -33,7 +32,7 @@
                 <span>Wynik:</span>
                 <span id="score">0</span>
             </div>
-            <button type="button" onclick="game.endGame()">Zakończ grę</button>
+            <button style="background-color: #4caf50; color: white" class="btn" onclick="game.endGame()">Zakończ grę</button>
         </div>
         <div id="board">
             <div id="player"></div>

@@ -230,7 +230,7 @@ class PipesGame {
         }
         document.getElementById("showScore").innerText = this.score;
         document.getElementById("showBestScore").innerText = "";
-        document.getElementById("endScreen").style.setProperty("display", "flex");
+        document.getElementById("endScreen").style.setProperty("display", "block");
     }
 
     closeModal() {
